@@ -28,6 +28,13 @@ android {
     }
 }
 
+task wrapper(type: Wrapper){
+    gradleVersion = '7.4.0'
+}
+task prepareKotlinBuildScriptModel {
+
+}
+
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.6.0'
