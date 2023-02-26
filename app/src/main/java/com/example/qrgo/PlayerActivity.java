@@ -10,14 +10,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+public class PlayerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_player);
         // Hide the action bar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -30,12 +31,12 @@ public class MainActivity extends AppCompatActivity {
             window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
             window.setStatusBarColor(Color.TRANSPARENT);
         }
-        // Set up the Navigate button
-        Button goToPlayerActivityButton = findViewById(R.id.button_go_to_player_activity);
+        // Set up the close button
+        FloatingActionButton goToPlayerActivityButton = findViewById(R.id.close_button);
         goToPlayerActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+                Intent intent = new Intent(PlayerActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
