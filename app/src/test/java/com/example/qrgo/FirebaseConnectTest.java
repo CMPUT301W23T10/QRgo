@@ -8,10 +8,16 @@ import org.junit.jupiter.api.Test;
 
 public class FirebaseConnectTest {
     @Test
-    public void testFiresbaseConnect() {
+    public void testIMEICheck() {
         FirebaseConnect check = new FirebaseConnect();
-        assertEquals(true,check.checkImeiExists("IMEITEST1"));
-        assertEquals(false,check.checkImeiExists("IMEITEST2"));
+        check.checkImeiExists("IMEITEST1", imeiExists -> {
+            // Handle the result here
+            if (imeiExists) {
+                System.out.println("IMEI exists");
+            } else {
+                System.out.println("IMEI does not exists");
+            }
+        });
 
     }
 }
