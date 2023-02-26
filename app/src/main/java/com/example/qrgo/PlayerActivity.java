@@ -10,10 +10,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.squareup.picasso.Picasso;
 
 public class PlayerActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,5 +43,10 @@ public class PlayerActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        String imageUrl = "https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight2&accessoriesType=Prescription02&hairColor=BrownDark&facialHairType=MoustacheMagnum&facialHairColor=Blonde&clotheType=CollarSweater&clotheColor=Gray02&eyeType=Squint&eyebrowType=DefaultNatural&mouthType=Serious&skinColor=Pale";
+        ImageView imageView = findViewById(R.id.play_image_view);
+        Picasso.get().load("https://i.imgur.com/DvpvklR.png").transform(new CircleTransform()).into(imageView);
+
+
     }
 }

@@ -8,6 +8,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-<!--    Custon colors-->
-    <color name="close_button">#FF282626</color>
+    <!--PlayerProfile colors-->
+    <color name="play_close_button">#FF282626</color>
+    <color name="play_sub_head">#FFB3B3B3</color>
+    <color name="play_image_view">#FFe0ccfc</color>
+
+
+<!--    QR code list colors-->
+    <color name="qr_list_pts">#FF00BC40</color>
+
 </resources>
