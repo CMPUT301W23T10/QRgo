@@ -3,10 +3,21 @@ package com.example.qrgo;
 import java.util.Date;
 
 public class Comment {
+
+    protected String commentId;
     protected String commentString;
-    protected QRCode qrCode;
+    protected String qrCodeId;
+    protected String playerUsername;
+    protected String datetime;
     protected PlayerProfile player;
     protected Date date;
+    public Comment(String commentId, String commentString, String qrCodeId, String playerUsername, String datetime) {
+        this.commentId = commentId;
+        this.commentString = commentString;
+        this.qrCodeId = qrCodeId;
+        this.playerUsername = playerUsername;
+        this.datetime = datetime;
+    }
 
     public String getCommentString() {
         return commentString;
@@ -16,12 +27,12 @@ public class Comment {
         this.commentString = commentString;
     }
 
-    public QRCode getQrCode() {
-        return qrCode;
+    public String getQrCodeId() {
+        return qrCodeId;
     }
 
-    public void setQrCode(QRCode qrCode) {
-        this.qrCode = qrCode;
+    public void setQrCodeId(String qrCodeId) {
+        this.qrCodeId = qrCodeId;
     }
 
     public PlayerProfile getPlayer() {
