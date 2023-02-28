@@ -1,16 +1,16 @@
 package com.example.qrgo;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.util.Collection;
 import java.util.List;
 
 public class QRCode {
    // Crucial Attributes
-    protected String username;
-    protected Photo profilePhoto;
     protected String qrString;
     protected String humanReadableQR;
-    protected String qrCodePoints;
-    protected List<GeoLocation> locations;
+    protected int qrCodePoints;
+    protected List<GeoPoint> locations;
     protected List<String> photoIds;
     protected List<String> scannedPlayerIds;
     protected List<String> commentIds;
@@ -21,9 +21,7 @@ public class QRCode {
     protected List<Comment> comments;
     protected List<BasicPlayerProfile> scannedPlayer;
 
-    public QRCode(String username, Photo profilePhoto, String qrString, String humanReadableQR, String qrCodePoints, List<GeoLocation> locations, List<String> photoIds, List<String> scannedPlayerIds, List<String> commentIds) {
-        this.username = username;
-        this.profilePhoto = profilePhoto;
+    public QRCode(String qrString, String humanReadableQR, int qrCodePoints, List<GeoPoint> locations, List<String> photoIds, List<String> scannedPlayerIds, List<String> commentIds) {
         this.qrString = qrString;
         this.humanReadableQR = humanReadableQR;
         this.qrCodePoints = qrCodePoints;
@@ -37,13 +35,6 @@ public class QRCode {
         return photoIds;
     }
 
-    public void setProfilePhoto(Photo profilePhoto) {
-        this.profilePhoto = profilePhoto;
-    }
-
-    public Photo getProfilePhoto() {
-        return profilePhoto;
-    }
 
     public void setPhotoIds(List<String> photoIds) {
         this.photoIds = photoIds;
@@ -74,19 +65,12 @@ public class QRCode {
         this.player = player;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getQrCodePoints() {
+    public int getQrCodePoints() {
         return qrCodePoints;
     }
 
-    public void setQrCodePoints(String qrCodePoints) {
+    public void setQrCodePoints(int qrCodePoints) {
         this.qrCodePoints = qrCodePoints;
     }
 
@@ -107,11 +91,11 @@ public class QRCode {
         this.commentIds = commentIds;
     }
 
-    public List<GeoLocation> getLocations() {
+    public List<GeoPoint> getLocations() {
         return locations;
     }
 
-    public void setLocations(List<GeoLocation> locations) {
+    public void setLocations(List<GeoPoint> locations) {
         this.locations = locations;
     }
 

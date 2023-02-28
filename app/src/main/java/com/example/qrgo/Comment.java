@@ -11,12 +11,12 @@ public class Comment {
     protected String datetime;
     protected PlayerProfile player;
     protected Date date;
-    public Comment(String commentId, String commentString, String qrCodeId, String playerUsername, String datetime) {
+    public Comment(String commentId, String commentString, String qrCodeId, String playerUsername,  Date date) {
         this.commentId = commentId;
         this.commentString = commentString;
         this.qrCodeId = qrCodeId;
         this.playerUsername = playerUsername;
-        this.datetime = datetime;
+        this.date = date;
     }
 
     public String getCommentString() {
