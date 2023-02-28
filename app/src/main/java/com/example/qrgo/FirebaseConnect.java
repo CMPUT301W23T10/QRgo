@@ -1,14 +1,22 @@
 package com.example.qrgo;
 
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,7 +166,7 @@ public class FirebaseConnect {
                                                         String commentString = commentDoc.getString("commentText");
                                                         String qrCodeId = commentDoc.getString("commentQRCode");
                                                         String commentUser = commentDoc.getString("commentUser");
-                                                        String date = commentDoc.getString("dateAndTime");
+                                                        Date date = commentDoc.getDate("dateAndTime");
                                                         Comment comment = new Comment(id, commentString,qrCodeId, commentUser, date);
 
                                                         commentList.add(comment);
@@ -186,8 +194,291 @@ public class FirebaseConnect {
     }
 
     /**
-     * Interface for callbacks when a player profile is retrieved.
+     Scans a QR code and updates the user's profile and the QR code document in the database accordingly.
+     @param qrString The hash of the QR code to be scanned.
+     @param username The username of the user scanning the QR code.
+     @param latitude The latitude of the user's location when scanning the QR code. Use 181 to skip.
+     @param longitude The longitude of the user's location when scanning the QR code. Use 181 to skip.
+     @param photoUrl The URL of the photo taken by the user when scanning the QR code.
+     @param points The number of points awarded to the user for scanning the QR code.
+     @param listener A callback listener to notify when the QR code scan is complete.
      */
+    public void scanQRCode(String qrString, String username, String humanReadableQR, double latitude, double longitude, String photoUrl, int points, OnQRCodeScannedListener listener) {
+        // Check if a QR Code document exists with the given qrString attribute
+        Query query = db.collection("QRCodes").whereEqualTo("qrString", qrString);
+        query.get().addOnSuccessListener(querySnapshot -> {
+            if (!querySnapshot.isEmpty()) {
+                // QR Code document with the given qrString exists
+                DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
+                String qrCodeId = documentSnapshot.getId();
+
+                List<String> scanUsers = (List<String>) documentSnapshot.get("scannedUsers");
+
+                // The user has scanned the same code previously
+                if (scanUsers.contains(username)) {
+                    listener.onQRScanComplete(false);
+                    return;
+                }
+
+                // Add the user's photo URL to "locationObjectPhoto"
+                db.collection("QRCodes").document(qrCodeId)
+                        .update("locationObjectPhoto", FieldValue.arrayUnion(photoUrl));
+
+                // Add the user's location coordinates to the "locations" array
+                if (latitude != 181 && longitude != 181) {
+                    GeoPoint location = new GeoPoint(latitude, longitude);
+                    db.collection("QRCodes").document(qrCodeId)
+                            .update("locations", FieldValue.arrayUnion(location));
+                }
+
+                // Add the user's username to the "scannedUsers" array
+                db.collection("QRCodes").document(qrCodeId)
+                        .update("scannedUsers", FieldValue.arrayUnion(username));
+            } else {
+                // QR Code document with the given qrString does not exist, so create a new document
+                Map<String, Object> data = new HashMap<>();
+                data.put("humanReadableQR", humanReadableQR);
+                data.put("qrString", qrString);
+                data.put("scannedUsers", Arrays.asList(username));
+                data.put("locationObjectPhoto", Arrays.asList(photoUrl));
+                data.put("qrPoints", points);
+                if (latitude != 0 && longitude != 0) {
+                    data.put("locations", Arrays.asList(new GeoPoint(latitude, longitude)));
+                }
+                db.collection("QRCodes").add(data).addOnSuccessListener(documentReference -> {
+                    String qrCodeId = documentReference.getId();
+
+                    // Add the newly created QR Code ID to the user's "qrScans" array
+                    db.collection("Profiles").document(username)
+                            .update("qrScans", FieldValue.arrayUnion(qrCodeId));
+                });
+            }
+
+            // Check if the points assigned is greater than the user's highestScore or lower than their lowestScore and update them accordingly
+            db.collection("Profiles").document(username).get().addOnSuccessListener(documentSnapshot -> {
+                int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                if (points > highestScore) {
+                    db.collection("Profiles").document(username)
+                            .update("highestScore", points);
+                }
+                if (points < lowestScore) {
+                    db.collection("Profiles").document(username)
+                            .update("lowestScore", points);
+                }
+                if (totalScore == 0) {
+                    db.collection("Profiles").document(username)
+                            .update("lowestScore", points);
+                }
+                // Update the user's points and totalScans
+                db.collection("Profiles").document(username)
+                    .update("totalScore", FieldValue.increment(points),
+                            "totalScans", FieldValue.increment(1));
+                listener.onQRScanComplete(true);
+            });
+        });
+    }
+
+    /**
+     Retrieves a QRCode from the Firestore database given a QR string.
+     If the QR string does not match any QRCode in the database, the listener will receive an onQRCodeNotFound() callback.
+     If the QRCode is successfully retrieved, the listener will receive an onQRCodeRetrieved() callback with the retrieved QRCode.
+     If the retrieval process fails, the listener will receive an onQRCodeLoadFailure() callback with the Exception that caused the failure.
+     @param qrString the QR string to match with a QRCode in the database
+     @param listener the listener that will receive the callbacks after the QRCode is retrieved or if there is a failure
+     */
+    public void getQRCode(String qrString, QRCodeListener listener) {
+        Task<QuerySnapshot> docRef = db.collection("QRCodes").whereEqualTo("qrString", qrString).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (queryDocumentSnapshots.isEmpty()) {
+                    listener.onQRCodeNotFound();
+                } else {
+                    DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+                    QRCode qrCode = new QRCode(documentSnapshot.getString("qrString"),
+                            documentSnapshot.getString("humanReadableQR"),
+                            (int) documentSnapshot.getLong("qrPoints").intValue(),
+                            (List<GeoPoint>) documentSnapshot.get("locations"),
+                            (List<String>) documentSnapshot.get("locationObjectPhoto"),
+                            (List<String>) documentSnapshot.get("scannedUsers"),
+                            (List<String>) documentSnapshot.get("comments")
+                    );
+
+                    // Scanned Users
+                    List<String> scannedUsers = (List<String>) documentSnapshot.get("scannedUsers");
+                    if (scannedUsers != null) {
+                        List<BasicPlayerProfile> scannedPlayer = new ArrayList<>();
+                        for (String username : scannedUsers) {
+                            getBasicPlayerProfile(username, new OnBasicPlayerProfileLoadedListener() {
+                                @Override
+                                public void onBasicPlayerProfileLoaded(BasicPlayerProfile basicPlayerProfile) {
+                                    scannedPlayer.add(basicPlayerProfile);
+                                    if (scannedPlayer.size() == scannedUsers.size()) {
+                                        qrCode.setScannedPlayer(scannedPlayer);
+                                    }
+                                }
+
+                                @Override
+                                public void onBasicPlayerProfileLoadFailure(Exception e) {
+
+                                }
+
+                            });
+                        }
+                    }
+
+                    // Comments
+                    List<String> comments = (List<String>) documentSnapshot.get("comments");
+                    if (comments != null) {
+                        List<Comment> commentList = new ArrayList<>();
+                        for (String commentId : comments) {
+                            getComment(commentId, new OnCommentLoadedListener() {
+                                @Override
+                                public void onCommentLoaded(Comment comment) {
+                                    commentList.add(comment);
+                                    if (commentList.size() == comments.size()) {
+                                        qrCode.setComments(commentList);
+                                        listener.onQRCodeRetrieved(qrCode);
+                                    }
+                                }
+
+                                @Override
+                                public void onCommentLoadFailure(Exception e) {
+
+                                }
+                            });
+                        }
+                    } else {
+                        listener.onQRCodeRetrieved(qrCode);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     Get BasicPlayerProfile object for given username.
+     @param username The username of the player.
+     @param listener The listener to be called when the BasicPlayerProfile is loaded or load fails.
+     */
+     public void getBasicPlayerProfile(String username, OnBasicPlayerProfileLoadedListener listener) {
+        db.collection("Profiles")
+                .document(username)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                        int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, totalScore, highestScore, lowestScore);
+                        listener.onBasicPlayerProfileLoaded(basicPlayerProfile);
+                    } else {
+                        listener.onBasicPlayerProfileLoadFailure(new Exception("Profile does not exist."));
+                    }
+                })
+                .addOnFailureListener(e -> listener.onBasicPlayerProfileLoadFailure(e));
+    }
+
+    /**
+     Get Comment object for given comment id.
+     @param commentId The id of the comment.
+     @param listener The listener to be called when the Comment is loaded or load fails.
+     */
+     public void getComment(String commentId, OnCommentLoadedListener listener) {
+        db.collection("Comments")
+                .document(commentId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String commentString = documentSnapshot.getString("commentText");
+                        String qrCodeId = documentSnapshot.getString("commentQRCode");
+                        String playerUsername = documentSnapshot.getString("commentUser");
+                        Date datetime = documentSnapshot.getDate("dateAndTime");
+                        Comment comment = new Comment(commentId, commentString, qrCodeId, playerUsername, datetime);
+                        listener.onCommentLoaded(comment);
+                    } else {
+                        listener.onCommentLoadFailure(new Exception("Comment does not exist."));
+                    }
+                })
+                .addOnFailureListener(e -> listener.onCommentLoadFailure(e));
+    }
+
+    /**
+     * Listener for when a BasicPlayerProfile object has been successfully loaded from Firebase Firestore.
+     */
+    public interface OnBasicPlayerProfileLoadedListener {
+
+        /**
+         * Called when a BasicPlayerProfile object has been successfully loaded from Firebase Firestore.
+         *
+         * @param basicPlayerProfile the BasicPlayerProfile object that was loaded
+         */
+        void onBasicPlayerProfileLoaded(BasicPlayerProfile basicPlayerProfile);
+
+        /**
+         * Called when there was an error loading the BasicPlayerProfile object from Firebase Firestore.
+         *
+         * @param e the exception that occurred during loading
+         */
+        void onBasicPlayerProfileLoadFailure(Exception e);
+    }
+
+
+    /**
+     * Listener for when a Comment object has been successfully loaded from Firebase Firestore.
+     */
+    public interface OnCommentLoadedListener {
+
+        /**
+         * Called when a Comment object has been successfully loaded from Firebase Firestore.
+         *
+         * @param comment the Comment object that was loaded
+         */
+        void onCommentLoaded(Comment comment);
+
+        /**
+         * Called when there was an error loading the Comment object from Firebase Firestore.
+         *
+         * @param e the exception that occurred during loading
+         */
+        void onCommentLoadFailure(Exception e);
+    }
+
+
+    /**
+     * Listener for when a QRCode object has been retrieved from Firebase Firestore.
+     */
+    public interface QRCodeListener {
+
+        /**
+         * Called when a QRCode object has been successfully retrieved from Firebase Firestore.
+         *
+         * @param qrCode the QRCode object that was retrieved
+         */
+        void onQRCodeRetrieved(QRCode qrCode);
+
+        /**
+         * Called when a QRCode object could not be found in Firebase Firestore.
+         */
+        void onQRCodeNotFound();
+    }
+
+
+
+    /**
+     An interface that defines a callback method to be invoked when a QR code is scanned.
+     */
+    public interface OnQRCodeScannedListener {
+
+        /**
+         Called when a QR code is successfully scanned.
+         @param success Indicates whether the scan was successful or not.
+         */
+        void onQRScanComplete(boolean success);
+    }
+
+
     /**
      * Interface for callbacks when a player profile is retrieved.
      */

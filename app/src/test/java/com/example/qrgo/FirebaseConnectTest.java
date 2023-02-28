@@ -25,4 +25,5 @@ import org.mockito.MockitoAnnotations;
 
 public class FirebaseConnectTest {
     //TODO: Write tests for methods of the FirebaseConnect class.
+
 }
