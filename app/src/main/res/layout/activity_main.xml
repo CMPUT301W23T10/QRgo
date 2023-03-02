@@ -12,13 +12,7 @@
     android:background="@drawable/login_page"
 
     tools:context=".MainActivity">
-    <Button
-        android:id="@+id/button_go_to_player_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Go to PlayerActivity"
-        android:layout_gravity="center"
-        android:onClick="goToPlayerActivity" />
+
 
 
 

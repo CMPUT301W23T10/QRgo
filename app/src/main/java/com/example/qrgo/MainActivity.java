@@ -33,14 +33,12 @@ public class MainActivity extends AppCompatActivity {
             window.setNavigationBarColor(getResources().getColor(R.color.transparent));
             window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
         }
-        // Set up the Navigate button
-        Button goToPlayerActivityButton = findViewById(R.id.button_go_to_player_activity);
-        goToPlayerActivityButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
-                startActivity(intent);
-            }
-        });
+
+        // Navigate to next page directly
+
+
+        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+        startActivity(intent);
+
     }
 }
