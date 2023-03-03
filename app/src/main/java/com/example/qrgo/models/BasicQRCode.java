@@ -1,4 +1,4 @@
-package com.example.qrgo;
+package com.example.qrgo.models;
 
 public class BasicQRCode {
     protected String firebaseId;
