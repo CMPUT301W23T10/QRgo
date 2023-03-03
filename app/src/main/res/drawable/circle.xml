@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#808080" /> <!-- change the color to your desired shade of grey -->
+    <corners android:radius="50dp" /> <!-- set the radius to half of the width/height to create a circle -->
+</shape>
