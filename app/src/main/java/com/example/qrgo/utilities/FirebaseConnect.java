@@ -96,10 +96,12 @@ public class FirebaseConnect {
      * @param lowestScore The lowest score of the player. Pass in 0 initially.
      * @param listener The listener to handle the result of the operation.
      */
-    public void addNewPlayerProfile(String username, String contactPhone, String contactEmail,
+    public void addNewPlayerProfile(String username, String firstName, String lastName, String contactPhone, String contactEmail,
                                int totalScore, int highestScore, int lowestScore, OnUserProfileAddListener listener) {
         DocumentReference docRef = db.collection("Profiles").document(username);
         Map<String, Object> data = new HashMap<>();
+        data.put("firstName", firstName);
+        data.put("lastName", lastName);
         data.put("contactPhone", contactPhone);
         data.put("contactEmail", contactEmail);
         data.put("totalScore", totalScore);
@@ -132,6 +134,8 @@ public class FirebaseConnect {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
+                    String firstName = document.getString("firstName");
+                    String lastName = document.getString("lastName");
                     String contactPhone = document.getString("contactPhone");
                     String contactEmail = document.getString("contactEmail");
                     int totalScore = document.getLong("totalScore").intValue();
@@ -177,7 +181,7 @@ public class FirebaseConnect {
                                                     }
 
                                                     // Create a PlayerProfile object with the retrieved data
-                                                    PlayerProfile playerProfile = new PlayerProfile(username, contactPhone, contactEmail,
+                                                    PlayerProfile playerProfile = new PlayerProfile(username, firstName, lastName, contactPhone, contactEmail,
                                                             totalScore, highestScore, lowestScore, totalScans, qrScans, qrCodes, commentList);
                                                     listener.onPlayerProfileGet(playerProfile);
                                                 } else {
@@ -372,10 +376,12 @@ public class FirebaseConnect {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
                         int totalScore = documentSnapshot.getLong("totalScore").intValue();
                         int highestScore = documentSnapshot.getLong("highestScore").intValue();
                         int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, totalScore, highestScore, lowestScore);
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
                         listener.onBasicPlayerProfileLoaded(basicPlayerProfile);
                     } else {
                         listener.onBasicPlayerProfileLoadFailure(new Exception("Profile does not exist."));
