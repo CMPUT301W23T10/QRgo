@@ -42,4 +42,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+    // When BACK BUTTON is pressed, the activity on the stack is restarted (REMOVE THIS)
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        // When BACK BUTTON is pressed, the activity on the stack is restarted
+        // Do what you want on the refresh procedure here
+        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+        startActivity(intent);
+    }
 }

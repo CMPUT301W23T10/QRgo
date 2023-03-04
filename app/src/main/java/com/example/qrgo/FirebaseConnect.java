@@ -140,7 +140,7 @@ public class FirebaseConnect {
                             (List<String>) document.get("comments") : new ArrayList<>();
 
                     // Query the qrCodes collection for the qrScans IDs
-                    db.collection("qrCodes")
+                    db.collection("QRCodes")
                             .whereIn(FieldPath.documentId(), qrScans)
                             .get()
                             .addOnCompleteListener(qrCodesTask -> {
@@ -150,12 +150,12 @@ public class FirebaseConnect {
                                         String firebaseid = qrCodeDoc.getId();
                                         String humanReadableQR = qrCodeDoc.getString("humanReadableQR");
                                         String qrString = qrCodeDoc.getString("qrString");
-                                        String qrPoints = qrCodeDoc.getString("qrPoints");
-                                        BasicQRCode qrCode = new BasicQRCode(firebaseid,humanReadableQR, qrString, qrPoints);
+                                        int qrPoints = qrCodeDoc.getLong("qrPoints").intValue();
+                                        BasicQRCode qrCode = new BasicQRCode(firebaseid, qrString,humanReadableQR, qrPoints);
                                         qrCodes.add(qrCode);
                                     }
 
-                                    db.collection("comments")
+                                    db.collection("Comments")
                                             .whereIn(FieldPath.documentId(), comments)
                                             .get()
                                             .addOnCompleteListener(commentsTask -> {
