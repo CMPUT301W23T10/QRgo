@@ -38,10 +38,16 @@ public class MainActivity extends AppCompatActivity {
             window.setNavigationBarColor(getResources().getColor(R.color.transparent));
             window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
         }
+        // Navigate to Signup Page if not signed up
+        // I need to implement if statement for if they are not signed up
+//        Intent intent_signup = new Intent(MainActivity.this, SignupActivity.class);
+//        startActivity(intent_signup);
 
         // Navigate to next page directly
         Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
         startActivity(intent);
 
+        Intent intent_signup = new Intent(MainActivity.this, SignupActivity.class);
+        startActivity(intent_signup);
     }
 }
