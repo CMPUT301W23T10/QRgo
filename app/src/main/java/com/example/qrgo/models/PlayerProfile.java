@@ -19,12 +19,11 @@ public class PlayerProfile {
     protected int totalScans;
 
     protected List<BasicQRCode> qrCodeBasicProfiles;
-    protected List<Comment> basicCommentProfiles;
 
     public PlayerProfile(String username, String contactPhone, String contactEmail,
                        int totalScore, int highestScore, int lowestScore, int totalScans,
-                       List<String> qrScans, List<String> comments, List<BasicQRCode> qrCodeBasicProfiles,
-                         List<Comment> basicCommentProfiles){
+                       List<String> qrScans, List<BasicQRCode> qrCodeBasicProfiles,
+                         List<Comment> comments){
         this.username = username;
         this.contactPhone = contactPhone;
         this.contactEmail = contactEmail;
@@ -33,9 +32,8 @@ public class PlayerProfile {
         this.lowestScore = lowestScore;
         this.totalScans = totalScans;
         this.qrCodeIds = qrScans;
-        this.commentIds = comments;
         this.qrCodeBasicProfiles = qrCodeBasicProfiles;
-        this.basicCommentProfiles = basicCommentProfiles;
+        this.comments = comments;
     }
     public String getUsername() {
         return username;
@@ -161,13 +159,6 @@ public class PlayerProfile {
         this.qrCodeBasicProfiles = qrCodeBasicProfiles;
     }
 
-    public List<Comment> getBasicCommentProfiles() {
-        return basicCommentProfiles;
-    }
-
-    public void setBasicCommentProfiles(List<Comment> basicCommentProfiles) {
-        this.basicCommentProfiles = basicCommentProfiles;
-    }
 
     public interface Scoring{
         public Collection<PlayerProfile> viewLeaderBoard();

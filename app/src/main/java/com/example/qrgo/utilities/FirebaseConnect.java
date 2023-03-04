@@ -39,7 +39,7 @@ public class FirebaseConnect {
     /**
      * Constructor that initializes the Firebase Firestore database instance.
      */
-    FirebaseConnect() {
+    public FirebaseConnect() {
         db = FirebaseFirestore.getInstance();
     }
 
@@ -144,7 +144,7 @@ public class FirebaseConnect {
                             (List<String>) document.get("comments") : new ArrayList<>();
 
                     // Query the qrCodes collection for the qrScans IDs
-                    db.collection("qrCodes")
+                    db.collection("QRCodes")
                             .whereIn(FieldPath.documentId(), qrScans)
                             .get()
                             .addOnCompleteListener(qrCodesTask -> {
@@ -154,12 +154,12 @@ public class FirebaseConnect {
                                         String firebaseid = qrCodeDoc.getId();
                                         String humanReadableQR = qrCodeDoc.getString("humanReadableQR");
                                         String qrString = qrCodeDoc.getString("qrString");
-                                        String qrPoints = qrCodeDoc.getString("qrPoints");
+                                        int qrPoints = qrCodeDoc.getLong("qrPoints").intValue();
                                         BasicQRCode qrCode = new BasicQRCode(firebaseid,humanReadableQR, qrString, qrPoints);
                                         qrCodes.add(qrCode);
                                     }
 
-                                    db.collection("comments")
+                                    db.collection("Comments")
                                             .whereIn(FieldPath.documentId(), comments)
                                             .get()
                                             .addOnCompleteListener(commentsTask -> {
@@ -178,7 +178,7 @@ public class FirebaseConnect {
 
                                                     // Create a PlayerProfile object with the retrieved data
                                                     PlayerProfile playerProfile = new PlayerProfile(username, contactPhone, contactEmail,
-                                                            totalScore, highestScore, lowestScore, totalScans, qrScans, comments, qrCodes, commentList);
+                                                            totalScore, highestScore, lowestScore, totalScans, qrScans, qrCodes, commentList);
                                                     listener.onPlayerProfileGet(playerProfile);
                                                 } else {
                                                     listener.onPlayerProfileGet(null);
