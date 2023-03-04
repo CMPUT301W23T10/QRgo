@@ -1,10 +1,12 @@
-package com.example.qrgo;
+package com.example.qrgo.models;
 
 import java.util.Collection;
 import java.util.List;
 
 public class PlayerProfile {
     protected String username;
+    protected String firstName;
+    protected String lastName;
     protected String playerLocation;
     protected boolean locationEnabled;
     protected String contactPhone;
@@ -19,13 +21,14 @@ public class PlayerProfile {
     protected int totalScans;
 
     protected List<BasicQRCode> qrCodeBasicProfiles;
-    protected List<Comment> basicCommentProfiles;
 
-    public PlayerProfile(String username, String contactPhone, String contactEmail,
+    public PlayerProfile(String username, String firstName, String lastName, String contactPhone, String contactEmail,
                        int totalScore, int highestScore, int lowestScore, int totalScans,
-                       List<String> qrScans, List<String> comments, List<BasicQRCode> qrCodeBasicProfiles,
-                         List<Comment> basicCommentProfiles){
+                       List<String> qrScans, List<BasicQRCode> qrCodeBasicProfiles,
+                         List<Comment> comments){
         this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.contactPhone = contactPhone;
         this.contactEmail = contactEmail;
         this.totalScore = totalScore;
@@ -33,16 +36,32 @@ public class PlayerProfile {
         this.lowestScore = lowestScore;
         this.totalScans = totalScans;
         this.qrCodeIds = qrScans;
-        this.commentIds = comments;
         this.qrCodeBasicProfiles = qrCodeBasicProfiles;
-        this.basicCommentProfiles = basicCommentProfiles;
+        this.comments = comments;
     }
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPlayerLocation() {
@@ -93,22 +112,6 @@ public class PlayerProfile {
         this.comments = comments;
     }
 
-    public int getSumScore() {
-        return totalScore;
-    }
-
-    public void setSumScore(int totalScore) {
-        this.totalScore = totalScore;
-    }
-
-    public Integer getTotalScans() {
-        return totalScans;
-    }
-
-    public void setTotalScans(Integer totalScans) {
-        this.totalScans = totalScans;
-    }
-
     public List<String> getQrCodeIds() {
         return qrCodeIds;
     }
@@ -149,6 +152,10 @@ public class PlayerProfile {
         this.lowestScore = lowestScore;
     }
 
+    public int getTotalScans() {
+        return totalScans;
+    }
+
     public void setTotalScans(int totalScans) {
         this.totalScans = totalScans;
     }
@@ -159,14 +166,6 @@ public class PlayerProfile {
 
     public void setQrCodeBasicProfiles(List<BasicQRCode> qrCodeBasicProfiles) {
         this.qrCodeBasicProfiles = qrCodeBasicProfiles;
-    }
-
-    public List<Comment> getBasicCommentProfiles() {
-        return basicCommentProfiles;
-    }
-
-    public void setBasicCommentProfiles(List<Comment> basicCommentProfiles) {
-        this.basicCommentProfiles = basicCommentProfiles;
     }
 
     public interface Scoring{

@@ -1,4 +1,4 @@
-package com.example.qrgo;
+package com.example.qrgo.models;
 
 public class BasicQRCode {
     protected String firebaseId;
@@ -10,7 +10,7 @@ public class BasicQRCode {
     public BasicQRCode(String firebaseId, String QRString, String humanReadableQR, int qrCodePoints) {
         this.QRString = QRString;
         this.humanReadableQR = humanReadableQR;
-        this.QrCodePoints = qrCodePoints;
+        QrCodePoints = qrCodePoints;
         this.firebaseId = firebaseId;
     }
 

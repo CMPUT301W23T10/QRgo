@@ -1,4 +1,4 @@
-package com.example.qrgo;
+package com.example.qrgo.models;
 
 import com.google.firebase.firestore.GeoPoint;
 

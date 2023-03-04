@@ -1,4 +1,4 @@
-package com.example.qrgo;
+package com.example.qrgo.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
