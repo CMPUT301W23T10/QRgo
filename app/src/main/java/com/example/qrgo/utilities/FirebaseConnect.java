@@ -159,7 +159,7 @@ public class FirebaseConnect {
                                         String humanReadableQR = qrCodeDoc.getString("humanReadableQR");
                                         String qrString = qrCodeDoc.getString("qrString");
                                         int qrPoints = qrCodeDoc.getLong("qrPoints").intValue();
-                                        BasicQRCode qrCode = new BasicQRCode(firebaseid,humanReadableQR, qrString, qrPoints);
+                                        BasicQRCode qrCode = new BasicQRCode(firebaseid, qrString,humanReadableQR, qrPoints);
                                         qrCodes.add(qrCode);
                                     }
 
