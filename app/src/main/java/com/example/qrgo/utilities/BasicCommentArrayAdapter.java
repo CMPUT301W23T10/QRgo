@@ -1,4 +1,4 @@
-package com.example.qrgo;
+package com.example.qrgo.utilities;
 
 import android.content.Context;
 import android.util.Log;
@@ -42,8 +42,27 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
         TextView commentedOnTextView = convertView.findViewById(R.id.commented_on);
         ImageView commentsProfilePictureImageView = convertView.findViewById(R.id.comment_profile_picture);
 
-        commentNameTextView.setText("Hon");
-        commentTimeTextView.setText("1 hour ago");
+        String tempDate = comment.getDate().toString();
+
+        long currentTime = System.currentTimeMillis();
+        long dateMs = comment.getDate().getTime();
+        long diffMs = currentTime - dateMs;
+        int diffHours = (int) (diffMs / 3600000);
+
+        if (diffHours >= 24) {
+            int diffDays = diffHours / 24;
+            int remainingHours = diffHours % 24;
+            commentTimeTextView.setText(diffDays + " days ago");
+            Log.d("Comment", "Time difference in days: " + diffDays);
+        } else {
+            commentTimeTextView.setText(diffHours + " h ago");
+            Log.d("Comment", "Time difference in hours: " + diffHours);
+        }
+        if (comment.getPlayer() != null) {
+            commentNameTextView.setText(comment.getPlayer().getUsername());
+        } else {
+            commentNameTextView.setText("CAN'T FIND PLAYER");
+        }
         commentBodyTimeTextView.setText(comment.getCommentString());
         commentedOnTextView.setText(comment.getQrCodeId());
 

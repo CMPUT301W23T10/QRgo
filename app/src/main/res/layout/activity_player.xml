@@ -262,7 +262,7 @@
                 <TableRow>
                     <!--    Player QR Code-->
                     <TextView
-                        android:id="@+id/play_qr_head"
+                        android:id="@+id/play_comment_head"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
@@ -273,6 +273,7 @@
                         android:textStyle="normal" />
 
                     <TextView
+                        android:id="@+id/play_comment_view_all"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"

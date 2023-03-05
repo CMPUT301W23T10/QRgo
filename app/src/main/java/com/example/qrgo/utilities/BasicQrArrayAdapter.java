@@ -1,4 +1,4 @@
-package com.example.qrgo.models;
+package com.example.qrgo.utilities;
 
 import android.content.Context;
 import android.view.LayoutInflater;

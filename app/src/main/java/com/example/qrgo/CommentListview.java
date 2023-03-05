@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.example.qrgo.models.BasicQRCode;
+import com.example.qrgo.models.Comment;
+import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -21,13 +22,13 @@ import java.util.ArrayList;
  * Use the {@link QrListview#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class QrListview extends Fragment {
+public class CommentListview extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private ArrayList<BasicQRCode> qrCodeList;
+    private ArrayList<Comment> commentList;
     ListView listView;
 
 
@@ -35,11 +36,11 @@ public class QrListview extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public QrListview() {
+    public CommentListview() {
         // Required empty public constructor
     }
-    public void setQrCodeList(ArrayList<BasicQRCode> qrCodeList) {
-        this.qrCodeList = qrCodeList;
+    public void setCommentList(ArrayList<Comment> commentList) {
+        this.commentList = commentList;
 
     }
     /**
@@ -51,9 +52,9 @@ public class QrListview extends Fragment {
      * @return A new instance of fragment QrListview.
      */
     // TODO: Rename and change types and number of parameters
-    public static QrListview newInstance(String param1, String param2) {
+    public static CommentListview newInstance(String param1, String param2) {
 
-        QrListview fragment = new QrListview();
+        CommentListview fragment = new CommentListview();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -70,8 +71,6 @@ public class QrListview extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-
-
     }
 
     @Override
@@ -83,11 +82,11 @@ public class QrListview extends Fragment {
         }
 
 
-        View rootView = inflater.inflate(R.layout.fragment_qr_listview, container, false);
-        listView = rootView.findViewById(R.id.fragment_qr_listview);
+        View rootView = inflater.inflate(R.layout.fragment_comment_listview, container, false);
+        listView = rootView.findViewById(R.id.fragment_comments_listview);
         FloatingActionButton closeButton = rootView.findViewById(R.id.back_button);
-        BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter(requireActivity(), qrCodeList);
-        listView.setAdapter(qrAdapter);
+        BasicCommentArrayAdapter commentAdapter = new BasicCommentArrayAdapter(getActivity(), R.layout.comment_items, commentList);
+        listView.setAdapter(commentAdapter);
 
 
 

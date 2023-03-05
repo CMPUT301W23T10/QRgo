@@ -4,28 +4,22 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.qrgo.BasicCommentArrayAdapter;
+import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.models.BasicQRCode;
-import com.example.qrgo.models.BasicQrArrayAdapter;
+import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.example.qrgo.models.Comment;
 import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.CircleTransform;
@@ -33,9 +27,7 @@ import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PlayerActivity extends AppCompatActivity {
@@ -67,6 +59,7 @@ public class PlayerActivity extends AppCompatActivity {
 
 // Create an ArrayAdapter for the list items
         FirebaseConnect firebaseConnect = new FirebaseConnect();
+        // GETTING THE PLAYER PROFILE FOR THE USER
         firebaseConnect.getPlayerProfile("testUser", new FirebaseConnect.OnPlayerProfileGetListener(){
             @Override
             public void onPlayerProfileGet(PlayerProfile playerProfile) {
@@ -90,6 +83,9 @@ public class PlayerActivity extends AppCompatActivity {
 
                     TextView play_qr_head = findViewById(R.id.play_qr_head);
                     play_qr_head.setText("QR Codes (" + playerProfile.getQrCodeBasicProfiles().size() + ")");
+
+                    TextView play_comment_head = findViewById(R.id.play_comment_head);
+                    play_comment_head.setText("Comments (" + playerProfile.getComments().size() + ")");
 
                     TextView emailTextView = findViewById(R.id.play_email);
                     emailTextView.setText(playerProfile.getContactEmail());
@@ -145,12 +141,24 @@ public class PlayerActivity extends AppCompatActivity {
                         commentArrayList = new ArrayList<>(commentArrayList.subList(0, 3));
                     }
 
-
-
                     BasicCommentArrayAdapter commentAdapter = new BasicCommentArrayAdapter(PlayerActivity.this, R.layout.comment_items, commentArrayList);
                     commentListView.setAdapter(commentAdapter);
+                    int comment_height = 0;
+                    if (commentArrayList.size() == 3) {
+                        comment_height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 324, getResources().getDisplayMetrics());
+                    } else if (commentArrayList.size() == 2) {
+                        comment_height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 224, getResources().getDisplayMetrics());
+                    } else {
+                        comment_height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                    }
+                    commentListView.getLayoutParams().height = (int) comment_height;
 
 
+
+
+
+
+                    // Set up the view all button for QR CODES
                     TextView play_qr_view_all = findViewById(R.id.play_qr_view_all);
                     play_qr_view_all.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -170,6 +178,27 @@ public class PlayerActivity extends AppCompatActivity {
                     });
 
 
+                    // Set up the view all button for COMMENTS
+                    TextView play_comment_view_all = findViewById(R.id.play_comment_view_all);
+                    play_comment_view_all.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            // Call your fragment here
+                            CommentListview  commentFragment = new CommentListview();
+                            ArrayList<Comment> commentArrayList = new ArrayList<>(commentList);
+                            // Pass qrCodeList as a parameter to the fragment
+                            commentFragment.setCommentList(commentArrayList);
+
+                            getSupportFragmentManager().beginTransaction()
+                                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                    .add(R.id.fragment_container, commentFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        }
+                    });
+
+
+
                 } else {
                     // Handle the case where the username is not found in the database
                     Log.d("FirebaseConnect", "Player profile not found for testUser");
@@ -177,19 +206,19 @@ public class PlayerActivity extends AppCompatActivity {
             }
         });
 //          code to add new user
-        firebaseConnect.scanQRCode("782", "testUser", "HUHA", 22.5, 24.5, "yahoo.cad",
-                500, new FirebaseConnect.OnQRCodeScannedListener(){
-            @Override
-            public void onQRScanComplete(boolean success) {
-                if (success) {
-                    // Do something with the player profile object
-                    Log.d("FirebaseConnect", "QR scan complete");
-                } else {
-                    // Handle the case where the username is not found in the database
-                    Log.d("FirebaseConnect", "QR scan failed");
-                }
-            }
-        });
+//        firebaseConnect.scanQRCode("7822", "testUser", "HUHAE", 22.5, 24.5, "yahoo.cad",
+//                500, new FirebaseConnect.OnQRCodeScannedListener(){
+//            @Override
+//            public void onQRScanComplete(boolean success) {
+//                if (success) {
+//                    // Do something with the player profile object
+//                    Log.d("FirebaseConnect", "QR scan complete");
+//                } else {
+//                    // Handle the case where the username is not found in the database
+//                    Log.d("FirebaseConnect", "QR scan failed");
+//                }
+//            }
+//        });
 
     }
 }
