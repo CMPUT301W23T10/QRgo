@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="20dp"
             android:src="@drawable/baseline_close_24"
             app:backgroundTint="@color/play_close_button"
             app:tint="@color/white" />
@@ -67,7 +67,7 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/play_rounded_corners"
                 android:scaleType="centerCrop" />
             <!--    Player Name -->

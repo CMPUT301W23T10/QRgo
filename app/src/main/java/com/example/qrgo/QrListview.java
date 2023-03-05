@@ -4,17 +4,18 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.example.qrgo.models.BasicQRCode;
+import com.example.qrgo.models.BasicQrArrayAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import com.example.qrgo.BasicCommentArrayAdapter;
+
 
 /**
  * A simple {@link Fragment} subclass.

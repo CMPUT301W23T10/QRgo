@@ -23,6 +23,13 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.qrgo.BasicCommentArrayAdapter;
+import com.example.qrgo.models.BasicQRCode;
+import com.example.qrgo.models.BasicQrArrayAdapter;
+import com.example.qrgo.models.Comment;
+import com.example.qrgo.models.PlayerProfile;
+import com.example.qrgo.utilities.CircleTransform;
+import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
@@ -56,36 +63,18 @@ public class PlayerActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.play_qr_listview);
 
 
-        ////////////////////////////////////ARRAY ADAPTER FOR COMMENTS /////////////////////////////////////////////
-        // Define your data
-        String[] hoursAgo = {"3 hrs ago", "4 hrs ago", "5 hrs ago"};
-        String[] commentBody = {"Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit"};
-        String[] commentedOn = {" 'QR 1' ", " 'QR 2' ", " 'QR 3' "};
-
-
-
-// Convert arrays to ArrayList<String>
-        ArrayList<String> hoursAgoList = new ArrayList<>(Arrays.asList(hoursAgo));
-        ArrayList<String> commentBodyList = new ArrayList<>(Arrays.asList(commentBody));
-        ArrayList<String> commentedOnList = new ArrayList<>(Arrays.asList(commentedOn));
-
-// Get a reference to your ListView
         ListView commentListView = findViewById(R.id.play_comment_listview);
 
 // Create an ArrayAdapter for the list items
-        BasicCommentArrayAdapter commentAdapter = new BasicCommentArrayAdapter(this, R.layout.comment_items, hoursAgoList, commentBodyList, commentedOnList);
         FirebaseConnect firebaseConnect = new FirebaseConnect();
         firebaseConnect.getPlayerProfile("testUser", new FirebaseConnect.OnPlayerProfileGetListener(){
             @Override
             public void onPlayerProfileGet(PlayerProfile playerProfile) {
                 if (playerProfile != null) {
                     // Do something with the player profile object
-                    Log.d("FirebaseConnect", "Retrieved player profile for " + playerProfile.getUsername());
-                    Log.d("FirebaseConnect", "Player profile has " + playerProfile.getContactPhone() + " as phone");
-                    Log.d("FirebaseConnect", "Player profile has " + playerProfile.getQrCodeBasicProfiles() + " as qr code basic profiles");
+
                     Log.d("FirebaseConnect", "Player profile has " + playerProfile.getComments() + " as comment profiles");
+                    Log.d("FirebaseConnect", "Player profile has " + playerProfile.getFirstName() + " as username");
 
                     TextView usernameTextView = findViewById(R.id.play_username);
                     usernameTextView.setText(playerProfile.getUsername());
@@ -108,6 +97,9 @@ public class PlayerActivity extends AppCompatActivity {
                     LinearLayout progressBar = findViewById(R.id.progressBar);
                     RelativeLayout playerProfileLayout = findViewById(R.id.player_profile);
 
+                    TextView playerName = findViewById(R.id.player_name);
+                    playerName.setText(playerProfile.getFirstName() + " " + playerProfile.getLastName());
+
                     progressBar.setVisibility(View.INVISIBLE);
                     playerProfileLayout.setVisibility(View.VISIBLE);
 
@@ -124,8 +116,7 @@ public class PlayerActivity extends AppCompatActivity {
                     Picasso.get().load("https://i.imgur.com/DvpvklR.png").transform(new CircleTransform()).into(imageView);
 
 
-                    // Set the adapter for the ListView
-
+                    // Set up the QR code list view
                     List<BasicQRCode> qrCodeList = playerProfile.getQrCodeBasicProfiles();
                     ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(qrCodeList);
                     // Limit the number of QR codes to 3 AND SORT IT IN ( not DONE DESCENDING ORDER)
@@ -144,9 +135,19 @@ public class PlayerActivity extends AppCompatActivity {
                         height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     }
                     listView.getLayoutParams().height = (int) height;
-                    Log.d("TAG", "onPlayerProfileGet: " + height);
 
-                    // Set the adapter for the ListView
+
+                    // Set up the comment list view
+                    List<Comment> commentList = (List<Comment>) playerProfile.getComments();
+                    ArrayList<Comment> commentArrayList = new ArrayList<>(commentList);
+                    // Limit the number of comments to 3
+                    if (commentArrayList.size() >= 3) {
+                        commentArrayList = new ArrayList<>(commentArrayList.subList(0, 3));
+                    }
+
+
+
+                    BasicCommentArrayAdapter commentAdapter = new BasicCommentArrayAdapter(PlayerActivity.this, R.layout.comment_items, commentArrayList);
                     commentListView.setAdapter(commentAdapter);
 
 
