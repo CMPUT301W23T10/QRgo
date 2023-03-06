@@ -14,7 +14,11 @@ import android.view.WindowManager;
 
 import android.widget.Button;
 
+import com.example.qrgo.models.PlayerProfile;
+import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -36,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Navigate to next page directly
-
-
         Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
         startActivity(intent);
 
