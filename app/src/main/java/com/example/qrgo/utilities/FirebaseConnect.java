@@ -418,6 +418,130 @@ public class FirebaseConnect {
                 .addOnFailureListener(e -> listener.onCommentLoadFailure(e));
     }
 
+
+    /**
+     A function that retrieves a list of players sorted by their highest score.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getPlayersSortedByHighestScore(OnPlayerListLoadedListener listener) {
+        db.collection("Profiles")
+                .orderBy("highestScore", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<BasicPlayerProfile> playerList = new ArrayList<BasicPlayerProfile>();
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        String username = documentSnapshot.getId();
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                        int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        playerList.add(basicPlayerProfile);
+                    }
+                    listener.onPlayerListLoaded(playerList);
+                })
+                .addOnFailureListener(e -> listener.onPlayerListLoadFailure(e));
+    }
+
+    /**
+
+     A function that retrieves a list of players sorted by their lowest score.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getPlayersSortedByLowestScore(OnPlayerListLoadedListener listener) {
+        db.collection("Profiles")
+                .orderBy("lowestScore", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<BasicPlayerProfile> playerList = new ArrayList<BasicPlayerProfile>();
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        String username = documentSnapshot.getId();
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                        int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        playerList.add(basicPlayerProfile);
+                    }
+                    listener.onPlayerListLoaded(playerList);
+                })
+                .addOnFailureListener(e -> listener.onPlayerListLoadFailure(e));
+    }
+
+    /**
+     A function that retrieves a list of players sorted by their total score.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getPlayersSortedByTotalScore(OnPlayerListLoadedListener listener) {
+        db.collection("Profiles")
+                .orderBy("totalScore", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<BasicPlayerProfile> playerList = new ArrayList<BasicPlayerProfile>();
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        String username = documentSnapshot.getId();
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                        int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        playerList.add(basicPlayerProfile);
+                    }
+                    listener.onPlayerListLoaded(playerList);
+                })
+                .addOnFailureListener(e -> listener.onPlayerListLoadFailure(e));
+    }
+
+    /**
+     A function that retrieves a list of players sorted by their total score.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getPlayersSortedByTotalScans(OnPlayerListLoadedListener listener) {
+        db.collection("Profiles")
+                .orderBy("totalScans", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<BasicPlayerProfile> playerList = new ArrayList<BasicPlayerProfile>();
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        String username = documentSnapshot.getId();
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                        int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        playerList.add(basicPlayerProfile);
+                    }
+                    listener.onPlayerListLoaded(playerList);
+                })
+                .addOnFailureListener(e -> listener.onPlayerListLoadFailure(e));
+    }
+
+
+
+    /**
+
+     An interface for listening to the result of the sorted Player functions
+     */
+    public interface OnPlayerListLoadedListener {
+        /**
+
+         Invoked when the function successfully retrieves a list of players sorted by their highest score.
+         @param playerList The list of sorted players.
+         */
+        void onPlayerListLoaded(List<BasicPlayerProfile> playerList);
+
+        /**
+         Invoked when the function fails to retrieve the list of sorted players.
+         @param e The exception that caused the failure.
+         */
+        void onPlayerListLoadFailure(Exception e);
+    }
+
+
     /**
      * Listener for when a BasicPlayerProfile object has been successfully loaded from Firebase Firestore.
      */
