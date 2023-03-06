@@ -2,6 +2,8 @@ package com.example.qrgo;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,6 +27,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // This is temprorary code for launching SearchFragment on startup
+        // Launch the SearchFragment on start up
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, new SearchFragment());
+        fragmentTransaction.commit();
+
+
+
+
+
+
+
+
+
         // Hide the action bar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -40,8 +58,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Navigate to next page directly
-        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+//        startActivity(intent);
+
+//        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+//        intent.putExtra("fragmentToLaunch", "SearchFragment"); // pass the fragment name as an extra
+//        startActivity(intent);
+
 
     }
     // When BACK BUTTON is pressed, the activity on the stack is restarted (REMOVE THIS)
