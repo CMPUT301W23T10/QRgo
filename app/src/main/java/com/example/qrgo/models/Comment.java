@@ -9,14 +9,27 @@ public class Comment {
     protected String qrCodeId;
     protected String playerUsername;
     protected String datetime;
-    protected PlayerProfile player;
+
+    protected String playerFirstName;
+    protected String playerLastName;
     protected Date date;
-    public Comment(String commentId, String commentString, String qrCodeId, String playerUsername,  Date date) {
+    public Comment(String commentId, String commentString, String qrCodeId, String playerUsername, String playerFirstName, String playerLastName,
+                   Date date) {
         this.commentId = commentId;
         this.commentString = commentString;
         this.qrCodeId = qrCodeId;
         this.playerUsername = playerUsername;
         this.date = date;
+        this.playerFirstName = playerFirstName;
+        this.playerLastName = playerLastName;
+    }
+
+    public String getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
     }
 
     public String getCommentString() {
@@ -35,12 +48,36 @@ public class Comment {
         this.qrCodeId = qrCodeId;
     }
 
-    public PlayerProfile getPlayer() {
-        return player;
+    public String getPlayerUsername() {
+        return playerUsername;
     }
 
-    public void setPlayer(PlayerProfile player) {
-        this.player = player;
+    public void setPlayerUsername(String playerUsername) {
+        this.playerUsername = playerUsername;
+    }
+
+    public String getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
+
+    public String getPlayerFirstName() {
+        return playerFirstName;
+    }
+
+    public void setPlayerFirstName(String playerFirstName) {
+        this.playerFirstName = playerFirstName;
+    }
+
+    public String getPlayerLastName() {
+        return playerLastName;
+    }
+
+    public void setPlayerLastName(String playerLastName) {
+        this.playerLastName = playerLastName;
     }
 
     public Date getDate() {
@@ -50,6 +87,4 @@ public class Comment {
     public void setDate(Date date) {
         this.date = date;
     }
-
-
 }

@@ -39,7 +39,7 @@ public class FirebaseConnect {
     /**
      * Constructor that initializes the Firebase Firestore database instance.
      */
-    FirebaseConnect() {
+    public FirebaseConnect() {
         db = FirebaseFirestore.getInstance();
     }
 
@@ -96,10 +96,12 @@ public class FirebaseConnect {
      * @param lowestScore The lowest score of the player. Pass in 0 initially.
      * @param listener The listener to handle the result of the operation.
      */
-    public void addNewPlayerProfile(String username, String contactPhone, String contactEmail,
+    public void addNewPlayerProfile(String username, String firstName, String lastName, String contactPhone, String contactEmail,
                                int totalScore, int highestScore, int lowestScore, OnUserProfileAddListener listener) {
         DocumentReference docRef = db.collection("Profiles").document(username);
         Map<String, Object> data = new HashMap<>();
+        data.put("firstName", firstName);
+        data.put("lastName", lastName);
         data.put("contactPhone", contactPhone);
         data.put("contactEmail", contactEmail);
         data.put("totalScore", totalScore);
@@ -132,6 +134,8 @@ public class FirebaseConnect {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
+                    String firstName = document.getString("firstName");
+                    String lastName = document.getString("lastName");
                     String contactPhone = document.getString("contactPhone");
                     String contactEmail = document.getString("contactEmail");
                     int totalScore = document.getLong("totalScore").intValue();
@@ -144,7 +148,7 @@ public class FirebaseConnect {
                             (List<String>) document.get("comments") : new ArrayList<>();
 
                     // Query the qrCodes collection for the qrScans IDs
-                    db.collection("qrCodes")
+                    db.collection("QRCodes")
                             .whereIn(FieldPath.documentId(), qrScans)
                             .get()
                             .addOnCompleteListener(qrCodesTask -> {
@@ -154,12 +158,12 @@ public class FirebaseConnect {
                                         String firebaseid = qrCodeDoc.getId();
                                         String humanReadableQR = qrCodeDoc.getString("humanReadableQR");
                                         String qrString = qrCodeDoc.getString("qrString");
-                                        String qrPoints = qrCodeDoc.getString("qrPoints");
-                                        BasicQRCode qrCode = new BasicQRCode(firebaseid,humanReadableQR, qrString, qrPoints);
+                                        int qrPoints = qrCodeDoc.getLong("qrPoints").intValue();
+                                        BasicQRCode qrCode = new BasicQRCode(firebaseid, qrString,humanReadableQR, qrPoints);
                                         qrCodes.add(qrCode);
                                     }
 
-                                    db.collection("comments")
+                                    db.collection("Comments")
                                             .whereIn(FieldPath.documentId(), comments)
                                             .get()
                                             .addOnCompleteListener(commentsTask -> {
@@ -170,15 +174,17 @@ public class FirebaseConnect {
                                                         String commentString = commentDoc.getString("commentText");
                                                         String qrCodeId = commentDoc.getString("commentQRCode");
                                                         String commentUser = commentDoc.getString("commentUser");
+                                                        String userFirstName = commentDoc.getString("userFirstName");
+                                                        String userLastName = commentDoc.getString("userLastName");
                                                         Date date = commentDoc.getDate("dateAndTime");
-                                                        Comment comment = new Comment(id, commentString,qrCodeId, commentUser, date);
+                                                        Comment comment = new Comment(id, commentString,qrCodeId, commentUser, userFirstName, userLastName, date);
 
                                                         commentList.add(comment);
                                                     }
 
                                                     // Create a PlayerProfile object with the retrieved data
-                                                    PlayerProfile playerProfile = new PlayerProfile(username, contactPhone, contactEmail,
-                                                            totalScore, highestScore, lowestScore, totalScans, qrScans, comments, qrCodes, commentList);
+                                                    PlayerProfile playerProfile = new PlayerProfile(username, firstName, lastName, contactPhone, contactEmail,
+                                                            totalScore, highestScore, lowestScore, totalScans, qrScans, qrCodes, commentList);
                                                     listener.onPlayerProfileGet(playerProfile);
                                                 } else {
                                                     listener.onPlayerProfileGet(null);
@@ -372,10 +378,12 @@ public class FirebaseConnect {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
                         int totalScore = documentSnapshot.getLong("totalScore").intValue();
                         int highestScore = documentSnapshot.getLong("highestScore").intValue();
                         int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, totalScore, highestScore, lowestScore);
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
                         listener.onBasicPlayerProfileLoaded(basicPlayerProfile);
                     } else {
                         listener.onBasicPlayerProfileLoadFailure(new Exception("Profile does not exist."));
@@ -398,8 +406,10 @@ public class FirebaseConnect {
                         String commentString = documentSnapshot.getString("commentText");
                         String qrCodeId = documentSnapshot.getString("commentQRCode");
                         String playerUsername = documentSnapshot.getString("commentUser");
+                        String userFirstName = documentSnapshot.getString("userFirstName");
+                        String userLastName = documentSnapshot.getString("userLastName");
                         Date datetime = documentSnapshot.getDate("dateAndTime");
-                        Comment comment = new Comment(commentId, commentString, qrCodeId, playerUsername, datetime);
+                        Comment comment = new Comment(commentId, commentString, qrCodeId, playerUsername, userFirstName, userLastName, datetime);
                         listener.onCommentLoaded(comment);
                     } else {
                         listener.onCommentLoadFailure(new Exception("Comment does not exist."));
