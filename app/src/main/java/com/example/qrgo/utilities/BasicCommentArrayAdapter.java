@@ -58,11 +58,9 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
             commentTimeTextView.setText(diffHours + " h ago");
             Log.d("Comment", "Time difference in hours: " + diffHours);
         }
-        if (comment.getPlayer() != null) {
-            commentNameTextView.setText(comment.getPlayer().getUsername());
-        } else {
-            commentNameTextView.setText("CAN'T FIND PLAYER");
-        }
+
+        commentNameTextView.setText(comment.getPlayerFirstName() + ' ' + comment.getPlayerLastName());
+
         commentBodyTimeTextView.setText(comment.getCommentString());
         commentedOnTextView.setText(comment.getQrCodeId());
 

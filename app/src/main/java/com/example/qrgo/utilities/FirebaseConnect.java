@@ -174,8 +174,10 @@ public class FirebaseConnect {
                                                         String commentString = commentDoc.getString("commentText");
                                                         String qrCodeId = commentDoc.getString("commentQRCode");
                                                         String commentUser = commentDoc.getString("commentUser");
+                                                        String userFirstName = commentDoc.getString("userFirstName");
+                                                        String userLastName = commentDoc.getString("userLastName");
                                                         Date date = commentDoc.getDate("dateAndTime");
-                                                        Comment comment = new Comment(id, commentString,qrCodeId, commentUser, date);
+                                                        Comment comment = new Comment(id, commentString,qrCodeId, commentUser, userFirstName, userLastName, date);
 
                                                         commentList.add(comment);
                                                     }
@@ -404,8 +406,10 @@ public class FirebaseConnect {
                         String commentString = documentSnapshot.getString("commentText");
                         String qrCodeId = documentSnapshot.getString("commentQRCode");
                         String playerUsername = documentSnapshot.getString("commentUser");
+                        String userFirstName = documentSnapshot.getString("userFirstName");
+                        String userLastName = documentSnapshot.getString("userLastName");
                         Date datetime = documentSnapshot.getDate("dateAndTime");
-                        Comment comment = new Comment(commentId, commentString, qrCodeId, playerUsername, datetime);
+                        Comment comment = new Comment(commentId, commentString, qrCodeId, playerUsername, userFirstName, userLastName, datetime);
                         listener.onCommentLoaded(comment);
                     } else {
                         listener.onCommentLoadFailure(new Exception("Comment does not exist."));
