@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }else{
                     // Navigate to player page directly
-                    Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
                 }
             }
