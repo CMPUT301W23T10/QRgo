@@ -54,6 +54,8 @@ dependencies {
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:31.2.2')
     implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-installations:17.0.0'
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     // Mockito
     testImplementation 'org.mockito:mockito-core:3.12.4'

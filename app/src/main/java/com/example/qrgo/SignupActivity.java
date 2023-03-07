@@ -1,9 +1,11 @@
 package com.example.qrgo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -16,6 +18,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.qrgo.R;
+import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -25,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * This class is where the user will sign up for some QRGO action!
@@ -57,66 +61,68 @@ public class SignupActivity extends AppCompatActivity {
         final EditText username;
         final EditText email;
         final EditText phone;
-        FirebaseFirestore db;
+
+        FirebaseConnect db = new FirebaseConnect();
 
         mRegister = findViewById(R.id.register);
+
+        // The users real name
         username = findViewById(R.id.username);
         email = findViewById(R.id.address);
         phone = findViewById(R.id.phone_number);
 
-        db = FirebaseFirestore.getInstance();
 
-        //Get to the choppa!!!!!
-        final CollectionReference collectionUsers = db.collection("Users");
+
+
 
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Retrieve sign up info
-                final String userName = username.getText().toString();
-                final String emailAddress = email.getText().toString();
-                final String phoneNum = phone.getText().toString();
+//                final String imei = getIntent().getStringExtra("imei");
 
-                HashMap<String, String> data = new HashMap<>();
+                final String realName = username.getText().toString();
 
-                if (userName.length()>0 && emailAddress.length()>0 && phoneNum.length()>0){
-                    data.put("Email Address", emailAddress);
-                    data.put("Phone Number", phoneNum);
-                }
-                collectionUsers
-                        .document(userName)
-                        .set(data)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+
+                // Traverse the string
+                for (int i = 0; i < realName.length(); i++) {
+                    if(realName.charAt(i) == ' '){
+                        final String firstName = realName.substring(0,i);
+                        final String lastName = realName.substring(i+1);
+                        final String userName = lastName.charAt(0)+firstName;
+                        final String contactEmail = email.getText().toString();
+                        final String contactPhone = phone.getText().toString();
+                        final String imei = getIntent().getStringExtra("imei");
+                        db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
                             @Override
-                            public void onSuccess(Void unused) {
-                                // These are a method which gets executed when the task is succeeded
-                                Log.d(TAG, "Data has been added successfully!");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "Data could not be added!" + e.toString());
+                            public void onUserAdd(boolean success) {
+
                             }
                         });
 
-                //Snapshot listener function potentially  needing implementation
-                collectionUsers.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                        //Prime programming real estate
+                        db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
+                            @Override
+                            public void onUserProfileAdd(boolean success) {
+
+                            }
+                        });
                     }
-                });
+                }
+
+                // Clear fields on signup page
                 username.setText("");
                 email.setText("");
                 phone.setText("");
 
-                // Navigate to Player Activity
-                Intent intent = new Intent(SignupActivity.this, PlayerActivity.class);
+                // Navigate to Home Activity
+                Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
                 startActivity(intent);
+
             } // end of onClick
         });
 
 
     } // end of onCreate
+
 } // end of class
