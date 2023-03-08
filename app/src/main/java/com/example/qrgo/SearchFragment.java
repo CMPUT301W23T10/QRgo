@@ -4,6 +4,9 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +15,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+
+import com.example.qrgo.models.BasicPlayerProfile;
+import com.example.qrgo.utilities.FirebaseConnect;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -80,11 +86,41 @@ public class SearchFragment extends Fragment {
         loadingScreen = rootView.findViewById(R.id.loading_screen);
         userList = rootView.findViewById(R.id.user_list);
 
+        // hide loadingScreen and userList initially
+        loadingScreen.setVisibility(View.GONE);
+        userList.setVisibility(View.GONE);
 
-        loadingScreen.setVisibility(View.INVISIBLE);
-        userList.setVisibility(View.INVISIBLE);
 
-        return inflater.inflate(R.layout.fragment_search, container, false);
+
+
+//
+//        // search firebase for name entered in searchUserEditText
+        FirebaseConnect.OnBasicPlayerProfileLoadedListener listener = new FirebaseConnect.OnBasicPlayerProfileLoadedListener() {
+            @Override
+            public void onBasicPlayerProfileLoaded(BasicPlayerProfile basicPlayerProfile) {
+                Log.d("TAG", "onBasicPlayerProfileLoaded: " + basicPlayerProfile.getUsername());
+            }
+
+            @Override
+            public void onBasicPlayerProfileLoadFailure(Exception e) {
+                Log.d("TAG", "onBasicPlayerProfileLoadFailure: " + e.getMessage());
+            }
+        };
+
+        FirebaseConnect fb = new FirebaseConnect();
+
+        // capture the text entered in the searchUserEditText and search firebase for that name
+        String username = searchUserEditText.getText().toString();
+
+        fb.getBasicPlayerProfile(username, listener);
+
+        // print the name of the user returned from firebase to the console
+        Log.d("TAG", "onCreateView: " + username);
+
+
+
+        return rootView;
+        //return inflater.inflate(R.layout.fragment_search, container, false);
 
 
 

@@ -26,21 +26,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.search_user_fragment);
 
         // This is temprorary code for launching SearchFragment on startup
         // Launch the SearchFragment on start up
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, new SearchFragment());
+        fragmentTransaction.replace(R.id.search_user_fragment_listview, new SearchFragment());
         fragmentTransaction.commit();
-
-
-
-
-
-
-
 
 
         // Hide the action bar
