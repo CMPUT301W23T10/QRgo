@@ -1,35 +1,24 @@
 package com.example.qrgo;
 
-import static java.security.AccessController.getContext;
 
-import androidx.annotation.NonNull;
+import android.*;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
-import android.util.Log;
-import android.view.View;
+
 import android.view.Window;
-import android.view.WindowManager;
 
-import android.widget.Button;
 
-import com.example.qrgo.models.PlayerProfile;
+
 import com.example.qrgo.utilities.FirebaseConnect;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.installations.FirebaseInstallations;
 
-import java.util.Stack;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
