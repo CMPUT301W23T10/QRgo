@@ -1,6 +1,8 @@
 package com.example.qrgo.utilities;
 
 
+import android.util.Log;
+
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.models.Comment;
@@ -320,7 +322,7 @@ public class FirebaseConnect {
                     if (scannedUsers != null) {
                         List<BasicPlayerProfile> scannedPlayer = new ArrayList<>();
                         for (String username : scannedUsers) {
-                            getBasicPlayerProfile(username, new OnBasicPlayerProfileLoadedListener() {
+                            getBasicPlayerProfile(username, new OnPlayerProfileLoadedListener() {
                                 @Override
                                 public void onBasicPlayerProfileLoaded(BasicPlayerProfile basicPlayerProfile) {
                                     scannedPlayer.add(basicPlayerProfile);
@@ -372,7 +374,7 @@ public class FirebaseConnect {
      @param username The username of the player.
      @param listener The listener to be called when the BasicPlayerProfile is loaded or load fails.
      */
-     public void getBasicPlayerProfile(String username, OnBasicPlayerProfileLoadedListener listener) {
+     public void getBasicPlayerProfile(String username, OnPlayerProfileLoadedListener listener) {
         db.collection("Profiles")
                 .document(username)
                 .get()
@@ -418,10 +420,41 @@ public class FirebaseConnect {
                 .addOnFailureListener(e -> listener.onCommentLoadFailure(e));
     }
 
+
+
+    /**
+     * Search for users based on their username, first name, and last name.
+     *
+     * @param searchQuery The search query to use.
+     * @param listener The listener to call when the search is complete.
+     */
+    public void searchUsers(String searchQuery, OnUserSearchListener listener) {
+        db.collection("Users")
+                .whereEqualTo("username", searchQuery)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<BasicPlayerProfile> users = new ArrayList<>();
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        String username = document.getId();
+                        String firstName = document.getString("firstName");
+                        String lastName = document.getString("lastName");
+                        int totalScore = document.getLong("totalScore").intValue();
+                        int highestScore = document.getLong("highestScore").intValue();
+                        int lowestScore = document.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                    }
+                    listener.onUserSearchComplete(users);
+                })
+                .addOnFailureListener(e -> listener.onUserSearchFailure(e));
+        Log.d(TAG, "searchUsers: ");
+    }
+
+
+
     /**
      * Listener for when a BasicPlayerProfile object has been successfully loaded from Firebase Firestore.
      */
-    public interface OnBasicPlayerProfileLoadedListener {
+    public interface OnPlayerProfileLoadedListener {
 
         /**
          * Called when a BasicPlayerProfile object has been successfully loaded from Firebase Firestore.
@@ -490,6 +523,24 @@ public class FirebaseConnect {
          @param success Indicates whether the scan was successful or not.
          */
         void onQRScanComplete(boolean success);
+    }
+
+
+    /**
+     * Interface definition for a callback to be invoked when a user search is complete.
+     */
+    public interface OnUserSearchListener {
+        /**
+         * Called when a user search is complete and at least one user is found.
+         *
+         * @param users The list of users that match the search criteria.
+         */
+        void onUserSearchComplete(List<BasicPlayerProfile> users);
+
+        /**
+         * Called when a user search is complete and no users are found.
+         */
+        void onUserSearchFailure(Exception e);
     }
 
 

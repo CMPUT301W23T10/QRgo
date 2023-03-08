@@ -1,23 +1,25 @@
 package com.example.qrgo;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.qrgo.models.BasicPlayerProfile;
+import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +42,13 @@ public class SearchFragment extends Fragment {
 
     private ListView userList;
 
+    private ArrayList<BasicPlayerProfile> users = new ArrayList<>();
+
+    private FirebaseConnect fb = new FirebaseConnect();
+
+    private BasicPlayerProfile testBasicPlayerProfile;
+
+    private UserSearchListAdapter userAdapter;
     public SearchFragment() {
         // Required empty public constructor
     }
@@ -72,7 +81,6 @@ public class SearchFragment extends Fragment {
         }
 
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,40 +91,49 @@ public class SearchFragment extends Fragment {
 
 
         searchUserEditText = rootView.findViewById(R.id.search_user_edit_text);
-        loadingScreen = rootView.findViewById(R.id.loading_screen);
+        //loadingScreen = rootView.findViewById(R.id.loading_screen);
         userList = rootView.findViewById(R.id.user_list);
 
+        userAdapter = new UserSearchListAdapter(getContext(), users);
+
         // hide loadingScreen and userList initially
-        loadingScreen.setVisibility(View.GONE);
-        userList.setVisibility(View.GONE);
+        //loadingScreen.setVisibility(View.GONE);
+       // userList.setVisibility(View.GONE);
 
-
-
-
-//
-//        // search firebase for name entered in searchUserEditText
-        FirebaseConnect.OnBasicPlayerProfileLoadedListener listener = new FirebaseConnect.OnBasicPlayerProfileLoadedListener() {
+        // search firebase for name entered in searchUserEditText using searchUsers method in FirebaseConnect
+        FirebaseConnect.OnUserSearchListener listener = new FirebaseConnect.OnUserSearchListener() {
             @Override
-            public void onBasicPlayerProfileLoaded(BasicPlayerProfile basicPlayerProfile) {
-                Log.d("TAG", "onBasicPlayerProfileLoaded: " + basicPlayerProfile.getUsername());
+            public void onUserSearchComplete(List<BasicPlayerProfile> users) {
+                // hide loadingScreen and show userList
+                //loadingScreen.setVisibility(View.GONE);
+                userList.setVisibility(View.VISIBLE);
+
             }
 
             @Override
-            public void onBasicPlayerProfileLoadFailure(Exception e) {
-                Log.d("TAG", "onBasicPlayerProfileLoadFailure: " + e.getMessage());
+            public void onUserSearchFailure(Exception e) {
             }
         };
 
-        FirebaseConnect fb = new FirebaseConnect();
+        searchUserEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = searchUserEditText.getText().toString();
+                fb.searchUsers(username, listener);
+                Log.d("lucas", username);
+                final ArrayAdapter<BasicPlayerProfile> arrayAdapter = new ArrayAdapter<BasicPlayerProfile>(getContext(), android.R.layout.simple_list_item_1, users);
+                userList.setAdapter(arrayAdapter);
+                userAdapter.notifyDataSetChanged();
+            }
+        });
 
         // capture the text entered in the searchUserEditText and search firebase for that name
         String username = searchUserEditText.getText().toString();
+        fb.searchUsers(username, listener);
+        Log.d("lucas", username);
 
-        fb.getBasicPlayerProfile(username, listener);
-
-        // print the name of the user returned from firebase to the console
-        Log.d("TAG", "onCreateView: " + username);
-
+        final ArrayAdapter<BasicPlayerProfile> arrayAdapter = new ArrayAdapter<BasicPlayerProfile>(getContext(), android.R.layout.simple_list_item_1, users);
+        userList.setAdapter(arrayAdapter);
 
 
         return rootView;
@@ -130,52 +147,3 @@ public class SearchFragment extends Fragment {
 
     }
 }
-
-
-//package com.example.qrgo;
-//
-//        import android.content.Intent;
-//        import android.os.Bundle;
-//        import android.view.View;
-//        import android.widget.EditText;
-//        import android.widget.LinearLayout;
-//        import android.widget.ListView;
-//
-//        import androidx.appcompat.app.AppCompatActivity;
-//
-//        import com.example.qrgo.utilities.FirebaseConnect;
-//
-//public class SearchFragment extends AppCompatActivity {
-
-
-
-
-//    public void searchUser(View v) {
-//        String username = searchUserEditText.getText().toString();
-//        if (username.isEmpty()) {
-//            return;
-//        }
-//        loadingScreen.setVisibility(View.VISIBLE);
-//        userList.setVisibility(View.INVISIBLE);
-//        FirebaseConnect.searchUser(username, userList, loadingScreen);
-//    }
-//
-//
-//
-//
-//
-//    protected void OnCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.search_user_fragment);
-//
-//
-//
-//
-//
-//
-//
-//    }
-//
-//
-//
-//}
