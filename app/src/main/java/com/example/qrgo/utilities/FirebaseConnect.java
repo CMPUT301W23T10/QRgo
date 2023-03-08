@@ -8,6 +8,8 @@ import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.models.QRCode;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
@@ -61,6 +63,29 @@ public class FirebaseConnect {
                 }
             } else {
                 listener.onImeiCheck(false);
+            }
+        });
+    }
+
+
+    /**
+     * Checks if a user with the given username exists in the database.
+     *
+     * @param username The username to check for.
+     * @param listener The listener to handle the result of the operation.
+     */
+    public void checkUsernameExists(String username, OnUsernameCheckListener listener) {
+        DocumentReference docRef = db.collection("Profiles").document(username);
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    listener.onUsernameCheck(true);
+                } else {
+                    listener.onUsernameCheck(false);
+                }
+            } else {
+                listener.onUsernameCheck(false);
             }
         });
     }
@@ -119,6 +144,23 @@ public class FirebaseConnect {
     }
 
     /**
+     * Splits a list of items into batches with a maximum size.
+     *
+     * @param items the list of items to split into batches
+     * @param batchSize the maximum number of items per batch
+     * @return a list of batches, where each batch is a list of items with at most batchSize elements
+     */
+    private List<List<String>> batchList(List<String> items, int batchSize) {
+        List<List<String>> batches = new ArrayList<>();
+        for (int i = 0; i < items.size(); i += batchSize) {
+            int end = Math.min(i + batchSize, items.size());
+            List<String> batch = items.subList(i, end);
+            batches.add(batch);
+        }
+        return batches;
+    }
+
+    /**
      * Retrieves the player profile for the specified username from the Firestore database and constructs a
      * {@link PlayerProfile} object containing the profile data along with associated QR codes and comments.
      * Calls the {@link OnPlayerProfileGetListener#onPlayerProfileGet(PlayerProfile)} callback method with the
@@ -147,53 +189,71 @@ public class FirebaseConnect {
                     List<String> comments = document.contains("comments") ?
                             (List<String>) document.get("comments") : new ArrayList<>();
 
-                    // Query the qrCodes collection for the qrScans IDs
-                    db.collection("QRCodes")
-                            .whereIn(FieldPath.documentId(), qrScans)
-                            .get()
-                            .addOnCompleteListener(qrCodesTask -> {
-                                if (qrCodesTask.isSuccessful()) {
-                                    List<BasicQRCode> qrCodes = new ArrayList<BasicQRCode>();
-                                    for (QueryDocumentSnapshot qrCodeDoc : qrCodesTask.getResult()) {
-                                        String firebaseid = qrCodeDoc.getId();
-                                        String humanReadableQR = qrCodeDoc.getString("humanReadableQR");
-                                        String qrString = qrCodeDoc.getString("qrString");
-                                        int qrPoints = qrCodeDoc.getLong("qrPoints").intValue();
-                                        BasicQRCode qrCode = new BasicQRCode(firebaseid, qrString,humanReadableQR, qrPoints);
-                                        qrCodes.add(qrCode);
+                    // Split qrScans and comments into smaller lists with a maximum of 10 elements each
+                    List<List<String>> qrScanBatches = batchList(qrScans, 10);
+                    List<List<String>> commentBatches = batchList(comments, 10);
+
+                    // Query the qrCodes collection for the qrScans IDs in batches
+                    List<BasicQRCode> qrCodes = new ArrayList<BasicQRCode>();
+                    List<Task<QuerySnapshot>> qrCodeTasks = new ArrayList<>();
+                    for (List<String> qrScanBatch : qrScanBatches) {
+                        qrCodeTasks.add(db.collection("QRCodes")
+                                .whereIn(FieldPath.documentId(), qrScanBatch)
+                                .get());
+                    }
+
+                    Tasks.whenAllComplete(qrCodeTasks).addOnCompleteListener(qrCodesTask -> {
+                        if (qrCodesTask.isSuccessful()) {
+                            for (Task<QuerySnapshot> qtask : qrCodeTasks) {
+                                QuerySnapshot qrCodeBatch = qtask.getResult();
+                                for (QueryDocumentSnapshot qrCodeDoc : qrCodeBatch) {
+                                    String firebaseid = qrCodeDoc.getId();
+                                    String humanReadableQR = qrCodeDoc.getString("humanReadableQR");
+                                    String qrString = qrCodeDoc.getString("qrString");
+                                    int qrPoints = qrCodeDoc.getLong("qrPoints").intValue();
+                                    BasicQRCode qrCode = new BasicQRCode(firebaseid, qrString, humanReadableQR, qrPoints);
+                                    qrCodes.add(qrCode);
+                                }
+                            }
+
+                            // Query the Comments collection for the comments IDs in batches
+                            List<Comment> commentList = new ArrayList<>();
+                            List<Task<QuerySnapshot>> commentTasks = new ArrayList<>();
+                            for (List<String> commentBatch : commentBatches) {
+                                commentTasks.add(db.collection("Comments")
+                                        .whereIn(FieldPath.documentId(), commentBatch)
+                                        .get());
+                            }
+
+                            Tasks.whenAllComplete(commentTasks).addOnCompleteListener(commentsTask -> {
+                                if (commentsTask.isSuccessful()) {
+                                    for (Task<QuerySnapshot> ctask : commentTasks) {
+                                        QuerySnapshot commentBatch = ctask.getResult();
+                                        for (QueryDocumentSnapshot commentDoc : commentBatch) {
+                                            String id = commentDoc.getId();
+                                            String commentString = commentDoc.getString("commentText");
+                                            String qrCodeId = commentDoc.getString("commentQRCode");
+                                            String commentUser = commentDoc.getString("commentUser");
+                                            String userFirstName = commentDoc.getString("userFirstName");
+                                            String userLastName = commentDoc.getString("userLastName");
+                                            Date date = commentDoc.getDate("dateAndTime");
+                                            Comment comment = new Comment(id, commentString, qrCodeId, commentUser, userFirstName, userLastName, date);
+                                            commentList.add(comment);
+                                        }
                                     }
 
-                                    db.collection("Comments")
-                                            .whereIn(FieldPath.documentId(), comments)
-                                            .get()
-                                            .addOnCompleteListener(commentsTask -> {
-                                                if (commentsTask.isSuccessful()) {
-                                                    List<Comment> commentList = new ArrayList<>();
-                                                    for (QueryDocumentSnapshot commentDoc : commentsTask.getResult()) {
-                                                        String id = commentDoc.getId();
-                                                        String commentString = commentDoc.getString("commentText");
-                                                        String qrCodeId = commentDoc.getString("commentQRCode");
-                                                        String commentUser = commentDoc.getString("commentUser");
-                                                        String userFirstName = commentDoc.getString("userFirstName");
-                                                        String userLastName = commentDoc.getString("userLastName");
-                                                        Date date = commentDoc.getDate("dateAndTime");
-                                                        Comment comment = new Comment(id, commentString,qrCodeId, commentUser, userFirstName, userLastName, date);
-
-                                                        commentList.add(comment);
-                                                    }
-
-                                                    // Create a PlayerProfile object with the retrieved data
-                                                    PlayerProfile playerProfile = new PlayerProfile(username, firstName, lastName, contactPhone, contactEmail,
-                                                            totalScore, highestScore, lowestScore, totalScans, qrScans, qrCodes, commentList);
-                                                    listener.onPlayerProfileGet(playerProfile);
-                                                } else {
-                                                    listener.onPlayerProfileGet(null);
-                                                }
-                                            });
+                                    // Create a PlayerProfile object with the retrieved data
+                                    PlayerProfile playerProfile = new PlayerProfile(username, firstName, lastName, contactPhone, contactEmail,
+                                            totalScore, highestScore, lowestScore, totalScans, qrScans, qrCodes, commentList);
+                                    listener.onPlayerProfileGet(playerProfile);
                                 } else {
                                     listener.onPlayerProfileGet(null);
                                 }
                             });
+                        } else {
+                            listener.onPlayerProfileGet(null);
+                        }
+                    });
                 } else {
                     listener.onPlayerProfileGet(null);
                 }
@@ -202,6 +262,9 @@ public class FirebaseConnect {
             }
         });
     }
+
+
+
 
     /**
      Scans a QR code and updates the user's profile and the QR code document in the database accordingly.
@@ -418,6 +481,173 @@ public class FirebaseConnect {
                 .addOnFailureListener(e -> listener.onCommentLoadFailure(e));
     }
 
+
+    /**
+     * Search for users based on their username, first name, and last name.
+     *
+     * @param searchQuery The search query to use.
+     * @param listener The listener to call when the search is complete.
+     */
+    public void searchUsers(String searchQuery, OnUserSearchListener listener) {
+        db.collection("Users")
+                .whereEqualTo("username", searchQuery)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<BasicPlayerProfile> users = new ArrayList<>();
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        String username = document.getId();
+                        String firstName = document.getString("firstName");
+                        String lastName = document.getString("lastName");
+                        int totalScore = document.getLong("totalScore").intValue();
+                        int highestScore = document.getLong("highestScore").intValue();
+                        int lowestScore = document.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                    }
+                    listener.onUserSearchComplete(users);
+                })
+                .addOnFailureListener(e -> listener.onUserSearchFailure(e));
+    }
+
+    /**
+     A function that retrieves a list of players sorted by their highest score.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getPlayersSortedByHighestScore(OnPlayerListLoadedListener listener) {
+        db.collection("Profiles")
+                .orderBy("highestScore", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<BasicPlayerProfile> playerList = new ArrayList<BasicPlayerProfile>();
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        String username = documentSnapshot.getId();
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                        int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        playerList.add(basicPlayerProfile);
+                    }
+                    listener.onPlayerListLoaded(playerList);
+                })
+                .addOnFailureListener(e -> listener.onPlayerListLoadFailure(e));
+    }
+
+    /**
+
+     A function that retrieves a list of players sorted by their lowest score.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getPlayersSortedByLowestScore(OnPlayerListLoadedListener listener) {
+        db.collection("Profiles")
+                .orderBy("lowestScore", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<BasicPlayerProfile> playerList = new ArrayList<BasicPlayerProfile>();
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        String username = documentSnapshot.getId();
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                        int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        playerList.add(basicPlayerProfile);
+                    }
+                    listener.onPlayerListLoaded(playerList);
+                })
+                .addOnFailureListener(e -> listener.onPlayerListLoadFailure(e));
+    }
+
+    /**
+     A function that retrieves a list of players sorted by their total score.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getPlayersSortedByTotalScore(OnPlayerListLoadedListener listener) {
+        db.collection("Profiles")
+                .orderBy("totalScore", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<BasicPlayerProfile> playerList = new ArrayList<BasicPlayerProfile>();
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        String username = documentSnapshot.getId();
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                        int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        playerList.add(basicPlayerProfile);
+                    }
+                    listener.onPlayerListLoaded(playerList);
+                })
+                .addOnFailureListener(e -> listener.onPlayerListLoadFailure(e));
+    }
+
+    /**
+     A function that retrieves a list of players sorted by their total score.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getPlayersSortedByTotalScans(OnPlayerListLoadedListener listener) {
+        db.collection("Profiles")
+                .orderBy("totalScans", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<BasicPlayerProfile> playerList = new ArrayList<BasicPlayerProfile>();
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        String username = documentSnapshot.getId();
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                        int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        playerList.add(basicPlayerProfile);
+                    }
+                    listener.onPlayerListLoaded(playerList);
+                })
+                .addOnFailureListener(e -> listener.onPlayerListLoadFailure(e));
+    }
+
+
+
+    /**
+
+     An interface for listening to the result of the sorted Player functions
+     */
+    public interface OnPlayerListLoadedListener {
+        /**
+
+         Invoked when the function successfully retrieves a list of players sorted by their highest score.
+         @param playerList The list of sorted players.
+         */
+        void onPlayerListLoaded(List<BasicPlayerProfile> playerList);
+
+        /**
+         Invoked when the function fails to retrieve the list of sorted players.
+         @param e The exception that caused the failure.
+         */
+        void onPlayerListLoadFailure(Exception e);
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when a user search is complete.
+     */
+    public interface OnUserSearchListener {
+        /**
+         * Called when a user search is complete and at least one user is found.
+         *
+         * @param users The list of users that match the search criteria.
+         */
+        void onUserSearchComplete(List<BasicPlayerProfile> users);
+
+        /**
+         * Called when a user search is complete and no users are found.
+         */
+        void onUserSearchFailure(Exception e);
+    }
+
+
     /**
      * Listener for when a BasicPlayerProfile object has been successfully loaded from Firebase Firestore.
      */
@@ -539,6 +769,18 @@ public class FirebaseConnect {
          * @param imeiExists whether the IMEI exists or not
          */
         void onImeiCheck(boolean imeiExists);
+    }
+
+    /**
+     * Interface for callbacks when a username check is performed.
+     */
+    public interface OnUsernameCheckListener {
+        /**
+         * Called when a username check is performed.
+         *
+         * @param usernameExists whether the IMEI exists or not
+         */
+        void onUsernameCheck(boolean usernameExists);
     }
 
 
