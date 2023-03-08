@@ -70,9 +70,6 @@ public class PlayerActivity extends AppCompatActivity {
                 if (playerProfile != null) {
                     // Do something with the player profile object
 
-                    Log.d("FirebaseConnect", "Player profile has " + playerProfile.getComments() + " as comment profiles");
-                    Log.d("FirebaseConnect", "Player profile has " + playerProfile.getFirstName() + " as username");
-
                     TextView usernameTextView = findViewById(R.id.play_username);
                     usernameTextView.setText(playerProfile.getUsername());
 
