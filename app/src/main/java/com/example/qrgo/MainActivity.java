@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Navigate to next page directly
-        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+        Intent intent = new Intent(MainActivity.this, GeoLocationActivity.class);
         startActivity(intent);
 
     }
