@@ -78,6 +78,8 @@ public class SignupActivity extends AppCompatActivity {
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Disable button
+                mRegister.setClickable(false);
                 //Retrieve sign up info
 //                final String imei = getIntent().getStringExtra("imei");
 
@@ -88,36 +90,39 @@ public class SignupActivity extends AppCompatActivity {
                 // Traverse the string
                 for (int i = 0; i < realName.length(); i++) {
                     if(realName.charAt(i) == ' '){
+                        //DO NOT FORGET TO ENSURE UNIQUE USERNAME HERE
                         final String firstName = realName.substring(0,i);
                         final String lastName = realName.substring(i+1);
                         final String userName = lastName.charAt(0)+firstName;
                         final String contactEmail = email.getText().toString();
                         final String contactPhone = phone.getText().toString();
                         final String imei = getIntent().getStringExtra("imei");
+
+                        //Add User
                         db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
                             @Override
                             public void onUserAdd(boolean success) {
+                                //Add Profile
+                                db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
+                                    @Override
+                                    public void onUserProfileAdd(boolean success) {
+                                        // Clear fields on signup page
+                                        username.setText("");
+                                        email.setText("");
+                                        phone.setText("");
 
+                                        // Navigate to Home Activity
+                                        Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
+                                        startActivity(intent);
+                                    }
+                                });
                             }
                         });
 
-                        db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
-                            @Override
-                            public void onUserProfileAdd(boolean success) {
-
-                            }
-                        });
                     }
                 }
 
-                // Clear fields on signup page
-                username.setText("");
-                email.setText("");
-                phone.setText("");
 
-                // Navigate to Home Activity
-                Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
-                startActivity(intent);
 
             } // end of onClick
         });
