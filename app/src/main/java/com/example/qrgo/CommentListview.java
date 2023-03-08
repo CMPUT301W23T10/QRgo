@@ -90,6 +90,7 @@ public class CommentListview extends Fragment {
 
 
 
+
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
