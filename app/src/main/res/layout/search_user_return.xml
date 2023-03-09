@@ -16,6 +16,7 @@
 
     <TextView
         android:id="@+id/player_name"
+        android:text="Test Tex view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="15dp">

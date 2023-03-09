@@ -28,12 +28,12 @@ public class UserSearchListAdapter extends ArrayAdapter<BasicPlayerProfile> {
         }
 
         // Get the user at the current position
-        BasicPlayerProfile user = getItem(position);
+//        BasicPlayerProfile user = getItem(position);
 
         // Set the user's name to the TextView in the list item layout
         TextView nameTextView = convertView.findViewById(R.id.player_name);
 
-        nameTextView.setText(user.getFirstName() + " " + user.getLastName());
+//        nameTextView.setText(user.getFirstName() + " " + user.getLastName());
 
         return convertView;
     }

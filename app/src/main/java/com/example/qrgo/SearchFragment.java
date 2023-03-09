@@ -1,24 +1,21 @@
 package com.example.qrgo;
 
-import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.qrgo.models.BasicPlayerProfile;
-import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,13 +39,6 @@ public class SearchFragment extends Fragment {
 
     private ListView userList;
 
-    private ArrayList<BasicPlayerProfile> users = new ArrayList<>();
-
-    private FirebaseConnect fb = new FirebaseConnect();
-
-    private BasicPlayerProfile testBasicPlayerProfile;
-
-    private UserSearchListAdapter userAdapter;
     public SearchFragment() {
         // Required empty public constructor
     }
@@ -81,6 +71,10 @@ public class SearchFragment extends Fragment {
         }
 
     }
+
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,61 +83,105 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.search_user_fragment, container, false);
 
-
         searchUserEditText = rootView.findViewById(R.id.search_user_edit_text);
-        //loadingScreen = rootView.findViewById(R.id.loading_screen);
+        loadingScreen = rootView.findViewById(R.id.loading_screen);
         userList = rootView.findViewById(R.id.user_list);
 
-        userAdapter = new UserSearchListAdapter(getContext(), users);
-
-        // hide loadingScreen and userList initially
-        //loadingScreen.setVisibility(View.GONE);
-       // userList.setVisibility(View.GONE);
-
-        // search firebase for name entered in searchUserEditText using searchUsers method in FirebaseConnect
-        FirebaseConnect.OnUserSearchListener listener = new FirebaseConnect.OnUserSearchListener() {
-            @Override
-            public void onUserSearchComplete(List<BasicPlayerProfile> users) {
-                // hide loadingScreen and show userList
-                //loadingScreen.setVisibility(View.GONE);
-                userList.setVisibility(View.VISIBLE);
-
-            }
-
-            @Override
-            public void onUserSearchFailure(Exception e) {
-            }
-        };
-
-        searchUserEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = searchUserEditText.getText().toString();
-                fb.searchUsers(username, listener);
-                Log.d("lucas", username);
-                final ArrayAdapter<BasicPlayerProfile> arrayAdapter = new ArrayAdapter<BasicPlayerProfile>(getContext(), android.R.layout.simple_list_item_1, users);
-                userList.setAdapter(arrayAdapter);
-                userAdapter.notifyDataSetChanged();
-            }
-        });
-
-        // capture the text entered in the searchUserEditText and search firebase for that name
-        String username = searchUserEditText.getText().toString();
-        fb.searchUsers(username, listener);
-        Log.d("lucas", username);
-
-        final ArrayAdapter<BasicPlayerProfile> arrayAdapter = new ArrayAdapter<BasicPlayerProfile>(getContext(), android.R.layout.simple_list_item_1, users);
-        userList.setAdapter(arrayAdapter);
+        loadingScreen.setVisibility(View.GONE);
+        userList.setVisibility(View.GONE);
 
 
+
+
+
+
+
+
+
+
+
+        // Both instances of the code are the same up to this point
+
+//        FirebaseConnect fb = new FirebaseConnect();
+//
+//        // search firebase for name entered in searchUserEditText using searchUsers method in FirebaseConnect
+//        FirebaseConnect.OnUserSearchListener listener = new FirebaseConnect.OnUserSearchListener() {
+//            @Override
+//            public void onUserSearchComplete(List<BasicPlayerProfile> users) {
+//                // hide loadingScreen and show userList
+//                loadingScreen.setVisibility(View.GONE);
+//                userList.setVisibility(View.VISIBLE);
+//
+//            }
+//
+//            @Override
+//            public void onUserSearchFailure(Exception e) {
+//                // hide loadingScreen and show userList
+//                loadingScreen.setVisibility(View.GONE);
+//                userList.setVisibility(View.VISIBLE);
+//            }
+//        };
+//
+//        fb.searchUsers(searchUserEditText.getText().toString(), listener);
+//
+//        return rootView;
         return rootView;
-        //return inflater.inflate(R.layout.fragment_search, container, false);
-
-
-
-
-
-
-
     }
+
+
+
 }
+
+
+
+
+// For whatever reason, the code above splits the screen in two??
+// OnCreateView and below
+// The code below, while not implementing the search functionality, does not split the screen in two.
+
+
+// 1. Why does the code above split the screen in two?
+// 2. How do I implement the search functionality?
+// 3. How to verify search functionality is working?
+
+
+
+
+
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                             Bundle savedInstanceState) {
+//
+//        Log.d("TAG", "onCreateView: activated");
+//        // Inflate the layout for this fragment
+//        View rootView = inflater.inflate(R.layout.search_user_fragment, container, false);
+//
+//
+//        searchUserEditText = rootView.findViewById(R.id.search_user_edit_text);
+//        loadingScreen = rootView.findViewById(R.id.loading_screen);
+//        userList = rootView.findViewById(R.id.user_list);
+//
+//
+//        loadingScreen.setVisibility(View.INVISIBLE);
+//        userList.setVisibility(View.INVISIBLE);
+//
+//        return inflater.inflate(R.layout.fragment_search, container, false);
+//
+//
+//
+//
+//
+//
+//
+//    }
+//}
+
+
+
+
+
+
+
+
+
+

@@ -446,7 +446,6 @@ public class FirebaseConnect {
                     listener.onUserSearchComplete(users);
                 })
                 .addOnFailureListener(e -> listener.onUserSearchFailure(e));
-        Log.d(TAG, "searchUsers: ");
     }
 
 
