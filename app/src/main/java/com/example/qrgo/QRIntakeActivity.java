@@ -29,7 +29,7 @@ public class QRIntakeActivity extends AppCompatActivity {
     private String hash;
     private QRCode currentQR;
     private PlayerProfile currentPlayer;
-    private FirebaseConnect db = new FirebaseConnect();
+    //private FirebaseConnect db = new FirebaseConnect();
 
 
     private final ActivityResultLauncher<ScanOptions> QRScanLauncher = registerForActivityResult(new ScanContract(),
@@ -46,14 +46,9 @@ public class QRIntakeActivity extends AppCompatActivity {
                 } else {
                     Log.d("QRIntakeActivity", "Scanned");
                     hash = QRIntakeController.generateHash(result.getContents());
-                    db.scanQRCode(hash, "testUser", "testQR", 43.2, 43.2, "www.google.com", 10, new FirebaseConnect.OnQRCodeScannedListener() {
-                        @Override
-                        public void onQRScanComplete(boolean success) {
-                            Log.d("QRIntakeActivity", "woohoo");
-                        }
-                    });
-                    //checkHash(hash);
-                    //checkOwnership();
+                    currentQR = new QRCode(hash);
+                    QRIntakeController.calculateFields(currentQR);
+                    Log.d("QRIntakeActivity", currentQR.getHumanReadableQR());
                     Log.d("QRIntakeActivity",  hash);
                 }
             });

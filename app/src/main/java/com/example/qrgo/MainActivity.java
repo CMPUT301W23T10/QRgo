@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         // When BACK BUTTON is pressed, the activity on the stack is restarted
         // Do what you want on the refresh procedure here
-        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+        Intent intent = new Intent(MainActivity.this, QRIntakeActivity.class);
         startActivity(intent);
     }
 }
