@@ -445,6 +445,13 @@ public class FirebaseConnect {
                         users.add(basicPlayerProfile);
                     }
                     listener.onUserSearchComplete(users);
+
+
+
+
+
+
+
                 })
                 .addOnFailureListener(e -> listener.onUserSearchFailure(e));
     }

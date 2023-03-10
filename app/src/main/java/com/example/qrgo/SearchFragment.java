@@ -97,13 +97,11 @@ public class SearchFragment extends Fragment {
         userList = rootView.findViewById(R.id.user_list);
 
         loadingScreen.setVisibility(View.GONE);
-        userList.setVisibility(View.GONE);
+//        userList.setVisibility(View.GONE);
 
         dataList = new ArrayList<>();
 
 
-
-        // 2.Retrieve data from firebase, how to know it was done succesfully?
         // 3. Display data in listview
 
 
@@ -127,6 +125,7 @@ public class SearchFragment extends Fragment {
                 }
 
                 userSearchListAdapter = new UserSearchListAdapter(getActivity(), dataList);
+                userList.setAdapter(userSearchListAdapter);
             }
 
             @Override
@@ -158,8 +157,11 @@ public class SearchFragment extends Fragment {
                     dataList.clear();
                     UserSearchListAdapter adapter = new UserSearchListAdapter(getActivity(), dataList);
                     userList.setAdapter(adapter);
-                    userList.setVisibility(View.GONE);
+                    userList.setVisibility(View.VISIBLE);
                     loadingScreen.setVisibility(View.GONE);
+
+                    // update ListView with new data
+                    userSearchListAdapter.notifyDataSetChanged();
                 }
             }
         });
@@ -172,9 +174,6 @@ public class SearchFragment extends Fragment {
         return rootView;
 
     }
-
-
-
 
 
 }
