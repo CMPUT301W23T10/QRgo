@@ -9,6 +9,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
 
+import android.view.WindowManager;
+
+import android.widget.Button;
+
+import com.example.qrgo.models.PlayerProfile;
+import com.example.qrgo.utilities.FirebaseConnect;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+
+import java.util.Stack;
+
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +42,21 @@ public class MainActivity extends AppCompatActivity {
         // Navigate to next page directly
 
 
-        Intent intent = new Intent(MainActivity.this, QRIntakeActivity.class);
+
+
+
+        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+
         startActivity(intent);
 
+    }
+    // When BACK BUTTON is pressed, the activity on the stack is restarted (REMOVE THIS)
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        // When BACK BUTTON is pressed, the activity on the stack is restarted
+        // Do what you want on the refresh procedure here
+        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+        startActivity(intent);
     }
 }

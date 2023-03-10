@@ -4,10 +4,10 @@ public class BasicQRCode {
     protected String firebaseId;
     protected String QRString;
     protected String humanReadableQR;
-    protected String QrCodePoints;
+    protected int QrCodePoints;
 
 
-    public BasicQRCode(String firebaseId, String QRString, String humanReadableQR, String qrCodePoints) {
+    public BasicQRCode(String firebaseId, String QRString, String humanReadableQR, int qrCodePoints) {
         this.QRString = QRString;
         this.humanReadableQR = humanReadableQR;
         QrCodePoints = qrCodePoints;
@@ -30,11 +30,11 @@ public class BasicQRCode {
         this.humanReadableQR = humanReadableQR;
     }
 
-    public String getQrCodePoints() {
+    public int getQrCodePoints() {
         return QrCodePoints;
     }
 
-    public void setQrCodePoints(String qrCodePoints) {
+    public void setQrCodePoints(int qrCodePoints) {
         QrCodePoints = qrCodePoints;
     }
 
