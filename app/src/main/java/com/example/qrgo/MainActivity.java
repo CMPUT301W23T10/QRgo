@@ -65,13 +65,13 @@ public class MainActivity extends AppCompatActivity {
                 if(!imeiExists){
                     // Navigate to Signup Page if not signed up
                     // Need to implement if statement for if they are not signed up
-                    Intent intent_signup = new Intent(MainActivity.this, SignupActivity.class);
-                    intent_signup.putExtra("imei", imei);
-                    startActivity(intent_signup);
+                    //Intent intent_signup = new Intent(MainActivity.this, SignupActivity.class);
+                    //intent_signup.putExtra("imei", imei);
+                    //startActivity(intent_signup);
 
                 }else{
                     // Navigate to player page directly
-                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
                     startActivity(intent);
                 }
             }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         // When BACK BUTTON is pressed, the activity on the stack is restarted
         // Do what you want on the refresh procedure here
-        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+        Intent intent = new Intent(MainActivity.this, QRIntakeActivity.class);
         startActivity(intent);
     }
 
