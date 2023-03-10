@@ -46,7 +46,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                 } else {
                     Log.d("QRIntakeActivity", "Scanned");
                     hash = QRIntakeController.generateHash(result.getContents());
-                    currentQR = new QRCode(hash);
+
                     QRIntakeController.calculateFields(currentQR);
                     Log.d("QRIntakeActivity", currentQR.getHumanReadableQR());
                     Log.d("QRIntakeActivity",  hash);
