@@ -26,6 +26,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+
     <!--This is the loading screen-->
         <LinearLayout
             android:id="@+id/loading_screen"

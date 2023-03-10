@@ -429,8 +429,8 @@ public class FirebaseConnect {
      * @param listener The listener to call when the search is complete.
      */
     public void searchUsers(String searchQuery, OnUserSearchListener listener) {
-        db.collection("Users")
-                .whereEqualTo("username", searchQuery)
+        db.collection("Profiles")
+                .whereEqualTo("firstName", searchQuery)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<BasicPlayerProfile> users = new ArrayList<>();
@@ -442,6 +442,7 @@ public class FirebaseConnect {
                         int highestScore = document.getLong("highestScore").intValue();
                         int lowestScore = document.getLong("lowestScore").intValue();
                         BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        users.add(basicPlayerProfile);
                     }
                     listener.onUserSearchComplete(users);
                 })

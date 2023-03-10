@@ -4,7 +4,10 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +15,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,6 +43,10 @@ public class SearchFragment extends Fragment {
     private LinearLayout loadingScreen;
 
     private ListView userList;
+
+    private ArrayList<BasicPlayerProfile> dataList;
+
+    private UserSearchListAdapter userSearchListAdapter;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -90,11 +99,12 @@ public class SearchFragment extends Fragment {
         loadingScreen.setVisibility(View.GONE);
         userList.setVisibility(View.GONE);
 
+        dataList = new ArrayList<>();
 
 
 
-
-
+        // 2.Retrieve data from firebase, how to know it was done succesfully?
+        // 3. Display data in listview
 
 
 
@@ -102,86 +112,69 @@ public class SearchFragment extends Fragment {
 
         // Both instances of the code are the same up to this point
 
-//        FirebaseConnect fb = new FirebaseConnect();
-//
-//        // search firebase for name entered in searchUserEditText using searchUsers method in FirebaseConnect
-//        FirebaseConnect.OnUserSearchListener listener = new FirebaseConnect.OnUserSearchListener() {
-//            @Override
-//            public void onUserSearchComplete(List<BasicPlayerProfile> users) {
-//                // hide loadingScreen and show userList
-//                loadingScreen.setVisibility(View.GONE);
-//                userList.setVisibility(View.VISIBLE);
-//
-//            }
-//
-//            @Override
-//            public void onUserSearchFailure(Exception e) {
-//                // hide loadingScreen and show userList
-//                loadingScreen.setVisibility(View.GONE);
-//                userList.setVisibility(View.VISIBLE);
-//            }
-//        };
-//
-//        fb.searchUsers(searchUserEditText.getText().toString(), listener);
-//
-//        return rootView;
+        FirebaseConnect fb = new FirebaseConnect();
+
+        // search firebase for name entered in searchUserEditText using searchUsers method in FirebaseConnect
+        FirebaseConnect.OnUserSearchListener listener = new FirebaseConnect.OnUserSearchListener() {
+            @Override
+            public void onUserSearchComplete(List<BasicPlayerProfile> users) {
+                // Do something with the search results
+                for (BasicPlayerProfile user : users) {
+                    //System.out.println(user.getUsername());
+                    Log.d("lucas", user.getUsername());
+                    Log.d("lucas", Integer.toString(user.getHigehstScore()));
+                    dataList.add(user);
+                }
+
+                userSearchListAdapter = new UserSearchListAdapter(getActivity(), dataList);
+            }
+
+            @Override
+            public void onUserSearchFailure(Exception e) {
+                // Handle the search failure
+                e.printStackTrace();
+            }
+        };
+
+        searchUserEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // no application at the moment
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String searchQuery = s.toString();
+                if (searchQuery.length() > 0) {
+                    loadingScreen.setVisibility(View.VISIBLE);
+                    fb.searchUsers(searchQuery, listener);
+                } else {
+                    // clear the dataList and hide the userList and loadingScreen
+                    dataList.clear();
+                    UserSearchListAdapter adapter = new UserSearchListAdapter(getActivity(), dataList);
+                    userList.setAdapter(adapter);
+                    userList.setVisibility(View.GONE);
+                    loadingScreen.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+
+
+
+
         return rootView;
+
     }
 
 
 
+
+
 }
-
-
-
-
-// For whatever reason, the code above splits the screen in two??
-// OnCreateView and below
-// The code below, while not implementing the search functionality, does not split the screen in two.
-
-
-// 1. Why does the code above split the screen in two?
-// 2. How do I implement the search functionality?
-// 3. How to verify search functionality is working?
-
-
-
-
-
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//
-//        Log.d("TAG", "onCreateView: activated");
-//        // Inflate the layout for this fragment
-//        View rootView = inflater.inflate(R.layout.search_user_fragment, container, false);
-//
-//
-//        searchUserEditText = rootView.findViewById(R.id.search_user_edit_text);
-//        loadingScreen = rootView.findViewById(R.id.loading_screen);
-//        userList = rootView.findViewById(R.id.user_list);
-//
-//
-//        loadingScreen.setVisibility(View.INVISIBLE);
-//        userList.setVisibility(View.INVISIBLE);
-//
-//        return inflater.inflate(R.layout.fragment_search, container, false);
-//
-//
-//
-//
-//
-//
-//
-//    }
-//}
-
-
-
-
-
-
-
-
-
-
