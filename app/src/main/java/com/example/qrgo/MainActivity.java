@@ -4,17 +4,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-
-import android.widget.Button;
-
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -38,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         // Navigate to next page directly
 
 
-        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+        Intent intent = new Intent(MainActivity.this, QRIntakeActivity.class);
         startActivity(intent);
 
     }

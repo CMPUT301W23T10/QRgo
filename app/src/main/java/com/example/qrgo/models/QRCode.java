@@ -2,6 +2,7 @@ package com.example.qrgo.models;
 
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,6 +30,11 @@ public class QRCode {
         this.photoIds = photoIds;
         this.scannedPlayerIds = scannedPlayerIds;
         this.commentIds = commentIds;
+    }
+
+    public QRCode(String hash) {
+        this.qrString = hash;
+        this.scannedPlayerIds = new ArrayList<String>();
     }
 
     public List<String> getPhotoIds() {
@@ -129,5 +135,9 @@ public class QRCode {
 
     public interface QRSearching{
         public Collection<QRCode> searchByGeo();
+    }
+
+    public void addScannedPlayer(String username) {
+        this.scannedPlayerIds.add(username);
     }
 }
