@@ -20,7 +20,9 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="15dp"
         android:textSize="30dp"
-        android:text="Test Tex view"></TextView>
+        android:text="Test Tex view"
+        android:textColor="@color/white">
+    </TextView>
 
 
 </LinearLayout>
