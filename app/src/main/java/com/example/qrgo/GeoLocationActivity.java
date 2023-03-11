@@ -1,6 +1,7 @@
 package com.example.qrgo;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -48,6 +49,8 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
 
     private GeoPoint startPoint;
     List<List<Double>> coordinates = new ArrayList<>();
+
+    LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +102,8 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         } else {
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location = getLastKnownLocation();
             if (location != null) {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
@@ -289,6 +293,23 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
             }
         }
         map.invalidate();
+    }
+
+    private Location getLastKnownLocation() {
+        mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            @SuppressLint("MissingPermission") Location l = mLocationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
+        }
+        return bestLocation;
     }
 
 }

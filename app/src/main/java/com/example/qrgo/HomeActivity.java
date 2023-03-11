@@ -76,8 +76,8 @@ public class HomeActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Handle click event here
-//                Intent intent = new Intent(HomeActivity.this, GeolocationActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(HomeActivity.this, GeoLocationActivity.class);
+                startActivity(intent);
             }
 
         });
