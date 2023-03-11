@@ -65,13 +65,13 @@ public class MainActivity extends AppCompatActivity {
                 if(!imeiExists){
                     // Navigate to Signup Page if not signed up
                     // Need to implement if statement for if they are not signed up
-                    //Intent intent_signup = new Intent(MainActivity.this, SignupActivity.class);
-                    //intent_signup.putExtra("imei", imei);
-                    //startActivity(intent_signup);
+                    Intent intent_signup = new Intent(MainActivity.this, SignupActivity.class);
+                    intent_signup.putExtra("imei", imei);
+                    startActivity(intent_signup);
 
                 }else{
                     // Navigate to player page directly
-                    Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(intent);
                 }
             }
