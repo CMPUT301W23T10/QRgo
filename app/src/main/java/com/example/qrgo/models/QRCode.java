@@ -242,5 +242,5 @@ public class QRCode {
     public void setScannedPlayer(List<BasicPlayerProfile> scannedPlayer) {
         this.scannedPlayer = scannedPlayer;
     }
-
 }
+
