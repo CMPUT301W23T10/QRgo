@@ -98,20 +98,11 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         IMapController mapController = map.getController();
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        } else {
-            //Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            Location location = getLastKnownLocation();
-            if (location != null) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                startPoint = new GeoPoint(latitude, longitude);
-            } else {
-                Toast.makeText(this, "Unable to get your location", Toast.LENGTH_SHORT).show();
-            }
-        }
+        Location location = getLastKnownLocation();
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        startPoint = new GeoPoint(latitude, longitude);
+
 
         //Log.d("hazarika", "latitude: " + startPoint.getLatitude() + "longitude" + startPoint.getLongitude());
         mapController.setCenter(startPoint);
@@ -190,6 +181,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
+
 
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
