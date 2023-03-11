@@ -95,7 +95,7 @@
                 </TableLayout>
                 <LinearLayout
                     android:layout_margin="20dp"
-                    android:layout_width="match_parent"
+                    android:layout_width='match_parent'
                     android:orientation="vertical"
                     android:layout_height="wrap_content">
                     <TextView
@@ -139,41 +139,61 @@
 <TableLayout
     android:layout_width="match_parent"
     android:stretchColumns="1"
+    android:layout_marginTop="10dp"
     android:layout_height="wrap_content">
     <TableRow>
         <ImageView
+            android:id="@+id/left_arrow_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/left_arrow_24"
+            android:src="@drawable/baseline_arrow_back_ios_24"
             />
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="210dp" />
+            android:layout_height="190dp" />
         <ImageView
+            android:id="@+id/right_arrow_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-
-            android:src="@drawable/right_arrow_24"
+            android:src="@drawable/baseline_arrow_forward_ios_24"
             />
     </TableRow>
 </TableLayout>
-                </LinearLayout>
-
-<!--                temporary -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content">
-                    <Button
-                        android:id="@+id/geolocation_button"
-                        android:layout_width="wrap_content"
-                        android:layout_gravity="center"
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:stretchColumns="0"
+                        android:layout_marginTop="10dp"
                         android:layout_height="wrap_content"
-                        android:text="GO TO GEOLOCATION"/>
+                        >
+                        <TableRow>
+                            <TextView
+                                android:textColor="#fff"
+                                android:text="Users"
+                                android:textSize="20sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                            <TextView
+                                android:textColor="#A2A0A0"
+                                android:textStyle="bold"
+                                android:text="View all"
+                                android:textSize="16sp"
+                                android:layout_marginBottom="5sp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </TableRow>
+                    </TableLayout>
+                            <com.example.qrgo.utilities.NonSwipeableViewPager
+                                android:layout_marginTop="10dp"
+                                android:id="@+id/user_view_pager"
+                                android:overScrollMode="never"
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="150dp" />
+
+
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
