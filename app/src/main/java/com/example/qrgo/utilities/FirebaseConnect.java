@@ -510,6 +510,9 @@ public class FirebaseConnect {
                 .addOnFailureListener(e -> listener.onUserSearchFailure(e));
     }
 
+
+
+
     /**
      A function that retrieves a list of players sorted by their highest score.
      @param listener The listener to be notified of the result of the function.
