@@ -41,7 +41,7 @@ public class FirebaseConnect {
     /**
      * Constructor that initializes the Firebase Firestore database instance.
      */
-     public FirebaseConnect() {
+    public FirebaseConnect() {
         db = FirebaseFirestore.getInstance();
     }
 
