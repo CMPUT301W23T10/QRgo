@@ -24,16 +24,16 @@
             android:layout_marginRight="10sp"
             android:layout_height="match_parent">
             <LinearLayout
-                android:layout_width="130dp"
-                android:layout_height="130dp"
+                android:layout_width="115dp"
+                android:layout_height="115dp"
                 android:background="@drawable/home_card_rounded_corners"
                 android:orientation="vertical"
                 android:gravity="center">
 
                 <ImageView
                     android:id="@+id/qr_code_image"
-                    android:layout_width="115dp"
-                    android:layout_height="115dp" />
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
 
             </LinearLayout>
 
