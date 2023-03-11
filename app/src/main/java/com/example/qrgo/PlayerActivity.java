@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.utilities.BasicQrArrayAdapter;
@@ -63,15 +64,16 @@ public class PlayerActivity extends AppCompatActivity {
 
 // Create an ArrayAdapter for the list items
         FirebaseConnect firebaseConnect = new FirebaseConnect();
+
+        // READ THE INTENT
+        Intent intent = getIntent();
+        String username = intent.getStringExtra("username");
         // GETTING THE PLAYER PROFILE FOR THE USER
-        firebaseConnect.getPlayerProfile("testUser", new FirebaseConnect.OnPlayerProfileGetListener(){
+        firebaseConnect.getPlayerProfile(username, new FirebaseConnect.OnPlayerProfileGetListener(){
             @Override
             public void onPlayerProfileGet(PlayerProfile playerProfile) {
                 if (playerProfile != null) {
                     // Do something with the player profile object
-
-                    Log.d("FirebaseConnect", "Player profile has " + playerProfile.getComments() + " as comment profiles");
-                    Log.d("FirebaseConnect", "Player profile has " + playerProfile.getFirstName() + " as username");
 
                     TextView usernameTextView = findViewById(R.id.play_username);
                     usernameTextView.setText(playerProfile.getUsername());
