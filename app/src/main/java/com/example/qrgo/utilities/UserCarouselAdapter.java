@@ -15,16 +15,17 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.example.qrgo.HomeActivity;
 import com.example.qrgo.PlayerActivity;
 import com.example.qrgo.R;
+import com.example.qrgo.models.BasicPlayerProfile;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class UserCarouselAdapter extends PagerAdapter {
 
-    private List<UserCarouselitem> carouselItems;
+    private List<BasicPlayerProfile> carouselItems;
     private LayoutInflater layoutInflater;
 
-    public UserCarouselAdapter(Context context, List<UserCarouselitem> carouselItems) {
+    public UserCarouselAdapter(Context context, List<BasicPlayerProfile> carouselItems) {
         this.carouselItems = carouselItems;
         this.layoutInflater = LayoutInflater.from(context);
     }
@@ -44,12 +45,11 @@ public class UserCarouselAdapter extends PagerAdapter {
         // Get the users that will be displayed together
         int startIndex = position;
         int endIndex = Math.min(startIndex + 3, carouselItems.size());
-        Log.d("TAG", "instantiateItem: " + startIndex + " " + endIndex);
-        List<UserCarouselitem> users = carouselItems.subList(startIndex, endIndex);
+        List<BasicPlayerProfile> users = carouselItems.subList(startIndex, endIndex);
 
         // Set up each user within the layout
         for (int i = 0; i < users.size(); i++) {
-            UserCarouselitem user = users.get(i);
+            BasicPlayerProfile user = users.get(i);
             View userView = layoutInflater.inflate(R.layout.users_card, container, false);
 
             userView.setOnClickListener(new View.OnClickListener() {
@@ -69,12 +69,17 @@ public class UserCarouselAdapter extends PagerAdapter {
 
             // Set rounded square image using Picasso and RoundedSquareTransform
             Picasso.get()
-                    .load(user.getUserImage())
+                    .load(R.drawable.demo_picture)
                     .transform(new RoundedSquareTransform(1000))
                     .into(userImage);
-            userName.setText(user.getName());
-            userScore.setText(user.getUserScore());
-            collectedQrCodes.setText(user.getCollectedQrCodes());
+            String name = user.getFirstName();
+            if (name.length() > 4) {
+                name = name.substring(0, 4) + "...";
+            }
+            userName.setText(name);
+            String scoreString = Integer.toString(user.getTotalScore());
+            userScore.setText(scoreString);
+            collectedQrCodes.setText("NaN");
 
             // Add the user view to the layout
             ViewGroup userContainer;

@@ -127,7 +127,7 @@ public class PlayerActivity extends AppCompatActivity {
                         qrCodeArrayList = new ArrayList<>(qrCodeArrayList.subList(0, 3));
                     }
 
-                    BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter( PlayerActivity.this, qrCodeArrayList);
+                    BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter( PlayerActivity.this, qrCodeArrayList, "player");
                     listView.setAdapter(qrAdapter);
                     int height = 0;
                     if (qrCodeArrayList.size() == 3) {
@@ -170,6 +170,7 @@ public class PlayerActivity extends AppCompatActivity {
                             ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(qrCodeList);
                             // Pass qrCodeList as a parameter to the fragment
                             qrFragment.setQrCodeList(qrCodeArrayList);
+                            qrFragment.setComeFrom("player");
 
                             getSupportFragmentManager().beginTransaction()
                                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -198,9 +199,6 @@ public class PlayerActivity extends AppCompatActivity {
                                     .commit();
                         }
                     });
-
-
-
                 } else {
                     // Handle the case where the username is not found in the database
                     Log.d("FirebaseConnect", "Player profile not found for testUser");
@@ -208,7 +206,7 @@ public class PlayerActivity extends AppCompatActivity {
             }
         });
 //          code to add new user
-//        firebaseConnect.scanQRCode("782", "testUser", "boba", 22.5, 24.5, "yahoo.cad",
+//        firebaseConnect.scanQRCode("102", "testUser", "cobra", 22.5, 24.5, "yahoo.cad",
 //                500, new FirebaseConnect.OnQRCodeScannedListener(){
 //            @Override
 //            public void onQRScanComplete(boolean success) {

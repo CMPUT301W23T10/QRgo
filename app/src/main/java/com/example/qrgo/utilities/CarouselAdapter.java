@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.example.qrgo.R;
+import com.example.qrgo.models.BasicQRCode;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -17,10 +18,10 @@ import java.util.List;
 
 public class CarouselAdapter extends PagerAdapter {
 
-    private List<CustomCarouselItem> carouselItems;
+    private List<BasicQRCode> carouselItems;
     private LayoutInflater layoutInflater;
 
-    public CarouselAdapter(Context context, List<CustomCarouselItem> carouselItems) {
+    public CarouselAdapter(Context context, List<BasicQRCode> carouselItems) {
         this.carouselItems = carouselItems;
         this.layoutInflater = LayoutInflater.from(context);
     }
@@ -39,7 +40,7 @@ public class CarouselAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View view = layoutInflater.inflate(R.layout.caraousel_card, container, false);
 
-        CustomCarouselItem carouselItem = carouselItems.get(position);
+        BasicQRCode carouselItem = carouselItems.get(position);
 
         ImageView qrCodeImage = view.findViewById(R.id.qr_code_image);
         TextView qrCodeRank = view.findViewById(R.id.qr_code_rank);
@@ -48,12 +49,21 @@ public class CarouselAdapter extends PagerAdapter {
 
         // Set rounded square image using Picasso and RoundedSquareTransform
         Picasso.get()
-                .load(carouselItem.getQrCodeImage())
+                // CHANGE THIS TO THE ACTUAL IMAGE URL
+                .load(R.drawable.demo_qr_image)
                 .transform(new RoundedSquareTransform(500))
                 .into(qrCodeImage);
-        qrCodeRank.setText(carouselItem.getQrCodeRank());
-        qrCodeName.setText(carouselItem.getQrCodeName());
-        qrCodePoints.setText(carouselItem.getQrCodePoints());
+        String positionString = Integer.toString(position + 1);
+        qrCodeRank.setText("#"+positionString);
+        // Truncate the qrname if it is too long
+        if (carouselItem.getHumanReadableQR().length() > 6) {
+            String truncatedName = carouselItem.getHumanReadableQR().substring(0, 6) + "...";
+            qrCodeName.setText(truncatedName);
+        } else {
+            qrCodeName.setText(carouselItem.getHumanReadableQR());
+        }
+        String pointsString = Integer.toString(carouselItem.getQrCodePoints());
+        qrCodePoints.setText(pointsString);
 
         container.addView(view);
 
