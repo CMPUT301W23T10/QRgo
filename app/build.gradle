@@ -9,11 +9,12 @@ android {
 
     defaultConfig {
         applicationId "com.example.qrgo"
-        minSdk 19
-        multiDexEnabled true
+        minSdk 23
         targetSdk 33
         versionCode 1
         versionName "1.0"
+
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -42,7 +43,10 @@ task wrapper(type: Wrapper){
 task prepareKotlinBuildScriptModel {
 
 }
-
+repositories {
+    //Zxing embedded
+    mavenCentral()
+}
 
 dependencies {
 
@@ -67,14 +71,22 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.2'
     implementation 'com.android.support:multidex:1.0.3'
 
+    //Zxing embedded
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+
+    //Google play services
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     // osmdroid
     implementation 'org.osmdroid:osmdroid-android:6.1.14'
     implementation 'org.osmdroid:osmdroid-geopackage:6.1.14'
     implementation 'org.osmdroid:osmdroid-wms:6.1.14'
     implementation 'org.osmdroid:osmdroid-mapsforge:6.1.14'
-
 
 }

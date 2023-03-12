@@ -2,9 +2,13 @@ package com.example.qrgo;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,6 +36,8 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
     ImageView imageView;
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +108,13 @@ public class HomeActivity extends AppCompatActivity {
                         .add(R.id.search_fragment_container, new SearchFragment(), "searchFragment")
                         .addToBackStack(null)
                         .commit();
+                // Handle click event here
+                if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    startGeoLocationActivity();
+                } else {
+                    ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                }
+
             }
 
         });
@@ -155,5 +168,23 @@ public class HomeActivity extends AppCompatActivity {
                 });
 
 
+    }
+
+    private void startGeoLocationActivity() {
+        Intent intent = new Intent(HomeActivity.this, GeoLocationActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startGeoLocationActivity();
+            } else {
+                Toast.makeText(this, "Unable to get your location", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
