@@ -93,8 +93,6 @@ public class QRScanActivity extends Activity{
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         capture.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-//    public interface LocationSetListener {
-//        void onLocationSet(boolean b);
-//    }
+
 
 }

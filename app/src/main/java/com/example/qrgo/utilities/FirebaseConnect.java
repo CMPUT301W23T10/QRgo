@@ -38,6 +38,9 @@ public class FirebaseConnect {
      */
     FirebaseFirestore db;
 
+    public FirebaseConnect(FirebaseFirestore firebase) {
+        this.db = firebase.getInstance();
+    }
     /**
      * Constructor that initializes the Firebase Firestore database instance.
      */
@@ -376,60 +379,93 @@ public class FirebaseConnect {
                             (int) documentSnapshot.getLong("qrPoints").intValue(),
                             (List<GeoPoint>) documentSnapshot.get("locations"),
                             (List<String>) documentSnapshot.get("locationObjectPhoto"),
-                            (List<String>) documentSnapshot.get("scannedUsers"),
-                            (List<String>) documentSnapshot.get("comments")
+                            null,
+                            null
                     );
 
-                    // Scanned Users
-                    List<String> scannedUsers = (List<String>) documentSnapshot.get("scannedUsers");
-                    if (scannedUsers != null) {
-                        List<BasicPlayerProfile> scannedPlayer = new ArrayList<>();
-                        for (String username : scannedUsers) {
-                            getBasicPlayerProfile(username, new OnBasicPlayerProfileLoadedListener() {
+                    // Get scanned users
+                    getScannedUsers(documentSnapshot, new OnScannedUsersLoadedListener() {
+                        @Override
+                        public void onScannedUsersLoaded(List<BasicPlayerProfile> scannedPlayers) {
+                            qrCode.setScannedPlayer(scannedPlayers);
+
+                            // Get comments
+                            getComments(documentSnapshot, new OnCommentsLoadedListener() {
                                 @Override
-                                public void onBasicPlayerProfileLoaded(BasicPlayerProfile basicPlayerProfile) {
-                                    scannedPlayer.add(basicPlayerProfile);
-                                    if (scannedPlayer.size() == scannedUsers.size()) {
-                                        qrCode.setScannedPlayer(scannedPlayer);
-                                    }
+                                public void onCommentsLoaded(List<Comment> comments) {
+                                    qrCode.setComments(comments);
+                                    listener.onQRCodeRetrieved(qrCode);
                                 }
 
                                 @Override
-                                public void onBasicPlayerProfileLoadFailure(Exception e) {
-
-                                }
-
-                            });
-                        }
-                    }
-
-                    // Comments
-                    List<String> comments = (List<String>) documentSnapshot.get("comments");
-                    if (comments != null) {
-                        List<Comment> commentList = new ArrayList<>();
-                        for (String commentId : comments) {
-                            getComment(commentId, new OnCommentLoadedListener() {
-                                @Override
-                                public void onCommentLoaded(Comment comment) {
-                                    commentList.add(comment);
-                                    if (commentList.size() == comments.size()) {
-                                        qrCode.setComments(commentList);
-                                        listener.onQRCodeRetrieved(qrCode);
-                                    }
-                                }
-
-                                @Override
-                                public void onCommentLoadFailure(Exception e) {
-
+                                public void onCommentsLoadFailure(Exception e) {
+                                    listener.onQRCodeRetrievalFailure(e);
                                 }
                             });
                         }
-                    } else {
-                        listener.onQRCodeRetrieved(qrCode);
-                    }
+
+                        @Override
+                        public void onScannedUsersLoadFailure(Exception e) {
+                            listener.onQRCodeRetrievalFailure(e);
+                        }
+                    });
                 }
             }
         });
+    }
+
+    public void getScannedUsers(DocumentSnapshot documentSnapshot, OnScannedUsersLoadedListener listener) {
+        List<String> scannedUsers = (List<String>) documentSnapshot.get("scannedUsers");
+        if (scannedUsers == null) {
+            listener.onScannedUsersLoaded(new ArrayList<>());
+            return;
+        }
+
+        List<BasicPlayerProfile> scannedPlayers = new ArrayList<BasicPlayerProfile>();
+        int numScannedUsers = scannedUsers.size();
+        for (String username : scannedUsers) {
+            getBasicPlayerProfile(username, new OnBasicPlayerProfileLoadedListener() {
+                @Override
+                public void onBasicPlayerProfileLoaded(BasicPlayerProfile basicPlayerProfile) {
+                    scannedPlayers.add(basicPlayerProfile);
+                    if (scannedPlayers.size() == numScannedUsers) {
+                        listener.onScannedUsersLoaded(scannedPlayers);
+                    }
+                }
+
+                @Override
+                public void onBasicPlayerProfileLoadFailure(Exception e) {
+                    listener.onScannedUsersLoadFailure(e);
+                }
+            });
+        }
+    }
+
+    public void getComments(DocumentSnapshot documentSnapshot, OnCommentsLoadedListener listener) {
+        List<String> comments = (List<String>) documentSnapshot.get("comments");
+        if (comments == null) {
+            listener.onCommentsLoaded(new ArrayList<>());
+            return;
+        }
+
+        List<Comment> commentList = new ArrayList<>();
+        int numComments = comments.size();
+        for (String commentId : comments) {
+            getComment(commentId, new OnCommentLoadedListener() {
+                @Override
+                public void onCommentLoaded(Comment comment) {
+                    commentList.add(comment);
+                    if (commentList.size() == numComments) {
+                        listener.onCommentsLoaded(commentList);
+                    }
+                }
+
+                @Override
+                public void onCommentLoadFailure(Exception e) {
+                    // Handle error
+                }
+            });
+        }
     }
 
     /**
@@ -667,6 +703,19 @@ public class FirebaseConnect {
     }
 
 
+
+
+    public interface OnScannedUsersLoadedListener {
+        void onScannedUsersLoaded(List<BasicPlayerProfile> scannedUsers);
+        void onScannedUsersLoadFailure(Exception e);
+    }
+
+
+    public interface OnCommentsLoadedListener {
+        void onCommentsLoaded(List<Comment> comments);
+        void onCommentsLoadFailure(Exception e);
+    }
+
     /**
 
      An interface for listening to the result of the coordinate list functions
@@ -798,6 +847,8 @@ public class FirebaseConnect {
          * Called when a QRCode object could not be found in Firebase Firestore.
          */
         void onQRCodeNotFound();
+
+        void onQRCodeRetrievalFailure(Exception e);
     }
 
 

@@ -116,6 +116,11 @@ public class QrProfileActivity extends AppCompatActivity {
             public void onQRCodeNotFound() {
                 Toast.makeText(QrProfileActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void onQRCodeRetrievalFailure(Exception e) {
+
+            }
         });
     }
 }
