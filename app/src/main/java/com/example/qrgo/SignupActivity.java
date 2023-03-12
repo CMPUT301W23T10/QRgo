@@ -111,8 +111,8 @@ public class SignupActivity extends AppCompatActivity {
                 final String firstName = username.getText().toString();
                 final String lastName = email.getText().toString();
                 final String userName = lastName.charAt(0) + firstName + "#" + userID;
-                final String contactEmail = phone.getText().toString();
-                final String contactPhone = phone_num.getText().toString();
+                final String contactEmail = phone_num.getText().toString();
+                final String contactPhone = phone.getText().toString();
                 final String imei = getIntent().getStringExtra("imei");
                 //Add User
                 db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
