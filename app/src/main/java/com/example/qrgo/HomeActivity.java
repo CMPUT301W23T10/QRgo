@@ -45,6 +45,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_home);
         // Hide the action bar
         ActionBar actionBar = getSupportActionBar();
@@ -75,10 +76,31 @@ public class HomeActivity extends AppCompatActivity {
 
                 // Define the carousel items
                 List<BasicQRCode> carouselItems = userProfile.getQrCodeBasicProfiles();
-                if (carouselItems.size() > 3) {
-                    carouselItems = carouselItems.subList(0, 3);
+                List<BasicQRCode> temp = carouselItems;
+                if (temp.size() > 3) {
+                    temp = temp.subList(0, 3);
                 }
-                CarouselAdapter carouselAdapter = new CarouselAdapter(HomeActivity.this, carouselItems);
+                CarouselAdapter carouselAdapter = new CarouselAdapter(HomeActivity.this, temp);
+
+                // Set up the view all button for QR CODES
+                TextView user_qr_view_all = findViewById(R.id.user_qr_view_all);
+                user_qr_view_all.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Call your fragment here
+                        QrListview  qrFragment = new QrListview();
+                        ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(carouselItems);
+                        // Pass qrCodeList as a parameter to the fragment
+                        qrFragment.setQrCodeList(qrCodeArrayList);
+                        qrFragment.setComeFrom("home");
+                        getSupportFragmentManager().beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                .add(R.id.fragment_container, qrFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                });
+
                 viewPager.setAdapter(carouselAdapter);
             }
         });
@@ -125,7 +147,7 @@ public class HomeActivity extends AppCompatActivity {
                         TextView play_qr_head = findViewById(R.id.qr_title);
                         play_qr_head.setText("QR Desk (" + qrcodes.size() + ")");
 
-                        BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter( HomeActivity.this, qrCodeArrayList);
+                        BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter( HomeActivity.this, qrCodeArrayList, "player");
                         listView.setAdapter(qrAdapter);
                         int height = 0;
                         if (qrCodeArrayList.size() == 3) {
@@ -136,6 +158,24 @@ public class HomeActivity extends AppCompatActivity {
                             height = LinearLayout.LayoutParams.WRAP_CONTENT;
                         }
                         listView.getLayoutParams().height = (int) height;
+
+                        TextView qr_view_all = findViewById(R.id.qr_view_all);
+                        qr_view_all.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Call your fragment here
+                                QrListview  qrFragment = new QrListview();
+                                ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(qrcodes);
+                                // Pass qrCodeList as a parameter to the fragment
+                                qrFragment.setQrCodeList(qrCodeArrayList);
+                                qrFragment.setComeFrom("homeAll");
+                                getSupportFragmentManager().beginTransaction()
+                                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                        .add(R.id.fragment_container, qrFragment)
+                                        .addToBackStack(null)
+                                        .commit();
+                            }
+                        });
 
                     }
                     @Override
@@ -213,10 +253,7 @@ public class HomeActivity extends AppCompatActivity {
 
                     }
                 });
-
-
     }
-
     private void startGeoLocationActivity() {
         Intent intent = new Intent(HomeActivity.this, GeoLocationActivity.class);
         startActivity(intent);

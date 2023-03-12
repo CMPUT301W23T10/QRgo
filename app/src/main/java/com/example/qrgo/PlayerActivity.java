@@ -70,7 +70,7 @@ public class PlayerActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String username = intent.getStringExtra("username");
         // GETTING THE PLAYER PROFILE FOR THE USER
-        firebaseConnect.getPlayerProfile(username, new FirebaseConnect.OnPlayerProfileGetListener(){
+        firebaseConnect.getPlayerProfile("testUser", new FirebaseConnect.OnPlayerProfileGetListener(){
             @Override
             public void onPlayerProfileGet(PlayerProfile playerProfile) {
                 if (playerProfile != null) {
@@ -127,7 +127,7 @@ public class PlayerActivity extends AppCompatActivity {
                         qrCodeArrayList = new ArrayList<>(qrCodeArrayList.subList(0, 3));
                     }
 
-                    BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter( PlayerActivity.this, qrCodeArrayList);
+                    BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter( PlayerActivity.this, qrCodeArrayList, "player");
                     listView.setAdapter(qrAdapter);
                     int height = 0;
                     if (qrCodeArrayList.size() == 3) {
@@ -170,6 +170,7 @@ public class PlayerActivity extends AppCompatActivity {
                             ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(qrCodeList);
                             // Pass qrCodeList as a parameter to the fragment
                             qrFragment.setQrCodeList(qrCodeArrayList);
+                            qrFragment.setComeFrom("player");
 
                             getSupportFragmentManager().beginTransaction()
                                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -198,9 +199,6 @@ public class PlayerActivity extends AppCompatActivity {
                                     .commit();
                         }
                     });
-
-
-
                 } else {
                     // Handle the case where the username is not found in the database
                     Log.d("FirebaseConnect", "Player profile not found for testUser");
