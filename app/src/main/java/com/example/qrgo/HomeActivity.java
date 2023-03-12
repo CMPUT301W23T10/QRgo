@@ -8,15 +8,20 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
+import com.example.qrgo.models.BasicQRCode;
+import com.example.qrgo.models.PlayerProfile;
+import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.example.qrgo.utilities.CarouselAdapter;
 import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.CustomCarouselItem;
+import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.UserCarouselAdapter;
 import com.example.qrgo.utilities.UserCarouselitem;
 import com.squareup.picasso.Picasso;
@@ -62,9 +67,9 @@ public class HomeActivity extends AppCompatActivity {
         // Define the user carousel items
         List<UserCarouselitem> userCarouselItems = new ArrayList<>();
         // Add some sample data
-        userCarouselItems.add(new UserCarouselitem(R.drawable.demo_picture, "Tim", "1000", "collected 10"));
-        userCarouselItems.add(new UserCarouselitem(R.drawable.demo_picture, "Tim", "900", "collected 9"));
-        userCarouselItems.add(new UserCarouselitem(R.drawable.demo_picture, "Tim", "800", "collected 8"));
+        userCarouselItems.add(new UserCarouselitem(R.drawable.demo_picture, "Tim", "testUser","1000", "collected 10"));
+        userCarouselItems.add(new UserCarouselitem(R.drawable.demo_picture, "Tim", "testUser", "900","collected 9"));
+        userCarouselItems.add(new UserCarouselitem(R.drawable.demo_picture, "Tim", "testUser3", "800","collected 8"));
         ViewPager userViewPager = findViewById(R.id.user_view_pager);
 
         UserCarouselAdapter userCarouselAdapter = new UserCarouselAdapter(this, userCarouselItems);
@@ -83,6 +88,18 @@ public class HomeActivity extends AppCompatActivity {
                 // Put the username in the intent
                 intent.putExtra("username", "testUser");
                 startActivity(intent);
+            }
+
+        });
+        LinearLayout searchLayout = findViewById(R.id.call_search_fragment);
+        searchLayout.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .add(R.id.search_fragment_container, new SearchFragment(), "searchFragment")
+                        .addToBackStack(null)
+                        .commit();
             }
 
         });
@@ -106,5 +123,32 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }
         );
+        FirebaseConnect firebaseConnect = new FirebaseConnect();
+        firebaseConnect.getPlayerProfile("testUser", new FirebaseConnect.OnPlayerProfileGetListener(){
+                    @Override
+                    public void onPlayerProfileGet(PlayerProfile userProfile) {
+                        ListView listView = findViewById(R.id.home_qr_listview);
+                        // Set up the QR code list view
+                        List<BasicQRCode> qrCodeList = userProfile.getQrCodeBasicProfiles();
+                        ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(qrCodeList);
+                        // Limit the number of QR codes to 3 AND SORT IT IN ( not DONE DESCENDING ORDER)
+                        if (qrCodeArrayList.size() >= 3) {
+                            qrCodeArrayList = new ArrayList<>(qrCodeArrayList.subList(0, 3));
+                        }
+                        BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter( HomeActivity.this, qrCodeArrayList);
+                        listView.setAdapter(qrAdapter);
+                        int height = 0;
+                        if (qrCodeArrayList.size() == 3) {
+                            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 324, getResources().getDisplayMetrics());
+                        } else if (qrCodeArrayList.size() == 2) {
+                            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 224, getResources().getDisplayMetrics());
+                        } else {
+                            height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                        }
+                        listView.getLayoutParams().height = (int) height;
+                    }
+                });
+
+
     }
 }

@@ -120,7 +120,7 @@ public class SearchFragment extends Fragment {
                 for (BasicPlayerProfile user : users) {
                     //System.out.println(user.getUsername());
                     Log.d("lucas", user.getUsername());
-                    Log.d("lucas", Integer.toString(user.getHigehstScore()));
+                    Log.d("lucas", Integer.toString(user.getHighestScore()));
                     dataList.add(user);
                 }
 

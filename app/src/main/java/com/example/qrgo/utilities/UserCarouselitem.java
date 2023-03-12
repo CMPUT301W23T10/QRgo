@@ -1,16 +1,27 @@
 package com.example.qrgo.utilities;
 
 public class UserCarouselitem {
+
     private int userImage;
-    private String userName;
+
+    private String username;
+    private String name;
     private String userScore;
     private String collectedQrCodes;
 
-public UserCarouselitem(int userImage, String userName, String userScore, String collectedQrCodes) {
+public UserCarouselitem(int userImage, String name, String username, String userScore, String collectedQrCodes) {
         this.userImage = userImage;
-        this.userName = userName;
+        this.name = name;
+        this.username = username;
         this.userScore = userScore;
+
         this.collectedQrCodes = collectedQrCodes;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
     }
     public int getUserImage() {
         return userImage;
@@ -18,11 +29,11 @@ public UserCarouselitem(int userImage, String userName, String userScore, String
     public void setUserImage(int userImage) {
         this.userImage = userImage;
     }
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String name) {
+        this.name = name;
     }
     public String getUserScore() {
         return userScore;

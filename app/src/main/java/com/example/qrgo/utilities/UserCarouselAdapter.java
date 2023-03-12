@@ -1,17 +1,19 @@
 package com.example.qrgo.utilities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.example.qrgo.HomeActivity;
+import com.example.qrgo.PlayerActivity;
 import com.example.qrgo.R;
 import com.squareup.picasso.Picasso;
 
@@ -50,6 +52,16 @@ public class UserCarouselAdapter extends PagerAdapter {
             UserCarouselitem user = users.get(i);
             View userView = layoutInflater.inflate(R.layout.users_card, container, false);
 
+            userView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(), PlayerActivity.class);
+                    // Put the username in the intent
+                    intent.putExtra("username", user.getUsername());
+                    view.getContext().startActivity(intent);
+                }
+
+            });
             ImageView userImage = userView.findViewById(R.id.player_image);
             TextView userName = userView.findViewById(R.id.player_name);
             TextView userScore = userView.findViewById(R.id.player_score);
@@ -60,7 +72,7 @@ public class UserCarouselAdapter extends PagerAdapter {
                     .load(user.getUserImage())
                     .transform(new RoundedSquareTransform(1000))
                     .into(userImage);
-            userName.setText(user.getUserName());
+            userName.setText(user.getName());
             userScore.setText(user.getUserScore());
             collectedQrCodes.setText(user.getCollectedQrCodes());
 

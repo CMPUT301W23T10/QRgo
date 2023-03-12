@@ -29,6 +29,7 @@ import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.FirebaseConnect;
 
+import com.example.qrgo.utilities.RoundedSquareTransform;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
@@ -115,7 +116,7 @@ public class PlayerActivity extends AppCompatActivity {
                         }
                     });
                     ImageView imageView = findViewById(R.id.play_image_view);
-                    Picasso.get().load("https://i.imgur.com/DvpvklR.png").transform(new CircleTransform()).into(imageView);
+                    Picasso.get().load("https://i.imgur.com/DvpvklR.png").transform(new RoundedSquareTransform(100)).into(imageView);
 
 
                     // Set up the QR code list view
@@ -158,11 +159,6 @@ public class PlayerActivity extends AppCompatActivity {
                         comment_height = LinearLayout.LayoutParams.WRAP_CONTENT;
                     }
                     commentListView.getLayoutParams().height = (int) comment_height;
-
-
-
-
-
 
                     // Set up the view all button for QR CODES
                     TextView play_qr_view_all = findViewById(R.id.play_qr_view_all);
@@ -212,7 +208,7 @@ public class PlayerActivity extends AppCompatActivity {
             }
         });
 //          code to add new user
-//        firebaseConnect.scanQRCode("7822", "testUser", "HUHAE", 22.5, 24.5, "yahoo.cad",
+//        firebaseConnect.scanQRCode("782", "testUser", "boba", 22.5, 24.5, "yahoo.cad",
 //                500, new FirebaseConnect.OnQRCodeScannedListener(){
 //            @Override
 //            public void onQRScanComplete(boolean success) {
