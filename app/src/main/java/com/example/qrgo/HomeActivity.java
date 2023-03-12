@@ -76,9 +76,11 @@ public class HomeActivity extends AppCompatActivity {
         }
         ViewPager viewPager = findViewById(R.id.view_pager);
 
+
         // Firebase Connect
         FirebaseConnect firebaseConnect = new FirebaseConnect();
         firebaseConnect.getPlayerProfile("testUser", new  FirebaseConnect.OnPlayerProfileGetListener(){
+
 
 
             @Override

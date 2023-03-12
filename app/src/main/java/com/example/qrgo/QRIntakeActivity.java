@@ -112,16 +112,18 @@ public class QRIntakeActivity extends AppCompatActivity {
                         playerLocation[1] = 181;
                     }
 
+                    db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+                        @Override
+                        public void onQRScanComplete(boolean success) {
+                            Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
+                            intent.putExtra("hash", generator.getHash());
+                            startActivity(intent);
+                        }
+
                 } else {
                     ActivityCompat.requestPermissions(QRIntakeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
                 }
 
-                db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
-                    @Override
-                    public void onQRScanComplete(boolean success) {
-                        Log.d("QRIntakeActivity", "scanned QR to database");
-                    }
-                });
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -133,7 +135,6 @@ public class QRIntakeActivity extends AppCompatActivity {
                 db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
                     @Override
                     public void onQRScanComplete(boolean success) {
-                        Log.d("QRIntakeActivity", "scanned QR to database");
                         Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
                         intent.putExtra("hash", generator.getHash());
                         startActivity(intent);
@@ -162,7 +163,27 @@ public class QRIntakeActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // We have permission, so get the user's location
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                playerLocation[0] = location.getLatitude();
+                playerLocation[1] = location.getLongitude();
+            } else {
+                playerLocation[0] = 181;
+                playerLocation[1] = 181;
+            }
+            db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+                @Override
+                public void onQRScanComplete(boolean success) {
+                    Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
+                    intent.putExtra("hash", generator.getHash());
+                    startActivity(intent);
+                }
+            });
+        } else {
+            Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+        }
     }
-
-
 }
