@@ -103,11 +103,11 @@ public class HomeActivity extends AppCompatActivity {
         geolocationButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Handle click event here
-//                if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//                    startGeoLocationActivity();
-//                } else {
-//                    ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-//                }
+                if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    startGeoLocationActivity();
+                } else {
+                    ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                }
             }
 
         });
