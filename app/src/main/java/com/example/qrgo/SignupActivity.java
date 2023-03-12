@@ -1,5 +1,7 @@
 package com.example.qrgo;
 
+import static com.example.qrgo.MainActivity.imei;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -34,6 +36,8 @@ import java.util.UUID;
  * This class is where the user will sign up for some QRGO action!
  */
 public class SignupActivity extends AppCompatActivity {
+
+    static String userID = imei.substring(0,3);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +97,7 @@ public class SignupActivity extends AppCompatActivity {
                         //DO NOT FORGET TO ENSURE UNIQUE USERNAME HERE
                         final String firstName = realName.substring(0,i);
                         final String lastName = realName.substring(i+1);
-                        final String userName = lastName.charAt(0)+firstName;
+                        final String userName = lastName.charAt(0)+firstName+"#"+userID;
                         final String contactEmail = email.getText().toString();
                         final String contactPhone = phone.getText().toString();
                         final String imei = getIntent().getStringExtra("imei");
@@ -122,7 +126,7 @@ public class SignupActivity extends AppCompatActivity {
                     }else{
                         final String firstName = realName.substring(0, realName.length()-1);
                         final String lastName = "";
-                        final String userName = realName;
+                        final String userName = realName.substring((realName.length()-1), realName.charAt(0))+"#"+userID;
                         final String contactEmail = email.getText().toString();
                         final String contactPhone = phone.getText().toString();
                         final String imei = getIntent().getStringExtra("imei");
