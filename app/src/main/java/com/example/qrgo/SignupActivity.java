@@ -67,18 +67,27 @@ public class SignupActivity extends AppCompatActivity {
         //Set up variables
         final String TAG = "Sample";
         Button mRegister;
+        //First name
         final EditText username;
+        //Last name
         final EditText email;
+        //Email
         final EditText phone;
+        //Phone
+        final EditText phone_num;
 
         FirebaseConnect db = new FirebaseConnect();
 
         mRegister = findViewById(R.id.register);
 
-        // The users real name
+        // The users first name
         username = findViewById(R.id.username);
+        //last name
         email = findViewById(R.id.address);
+        //email
         phone = findViewById(R.id.phone_number);
+        //phone
+        phone_num = findViewById(R.id.phone_number2);
 
 
 
@@ -94,74 +103,70 @@ public class SignupActivity extends AppCompatActivity {
 
 
 
-                index = checkSpace();
-                System.out.println(index+"?????*******!!!!!!@@@@@@@@@@########");
 
-                    if(index != 0) {
+
+//                    if(index != 0) {
                         //DO NOT FORGET TO ENSURE UNIQUE USERNAME HERE
 
-                        final String firstName = enteredName.substring(0, index);
-                        final String lastName = enteredName.substring(index + 1);
-
-                        final String userName = lastName.charAt(0) + firstName + "#" + userID;
-                        final String contactEmail = email.getText().toString();
-                        final String contactPhone = phone.getText().toString();
-                        final String imei = getIntent().getStringExtra("imei");
-
-                        //Add User
-                        db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
+                final String firstName = username.getText().toString();
+                final String lastName = email.getText().toString();
+                final String userName = lastName.charAt(0) + firstName + "#" + userID;
+                final String contactEmail = phone.getText().toString();
+                final String contactPhone = phone_num.getText().toString();
+                final String imei = getIntent().getStringExtra("imei");
+                //Add User
+                db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
+                    @Override
+                    public void onUserAdd(boolean success) {
+                        //Add Profile
+                        db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
                             @Override
-                            public void onUserAdd(boolean success) {
-                                //Add Profile
-                                db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
-                                    @Override
-                                    public void onUserProfileAdd(boolean success) {
-                                        // Clear fields on signup page
-                                        username.setText("");
-                                        email.setText("");
-                                        phone.setText("");
-
-                                        // Navigate to Home Activity
-                                        Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
-                                        startActivity(intent);
-                                    }
-                                });
+                            public void onUserProfileAdd(boolean success) {
+                                // Clear fields on signup page
+                                username.setText("");
+                                email.setText("");
+                                phone.setText("");
+                                // Navigate to Home Activity
+                                Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
+                                startActivity(intent);
                             }
                         });
+                    }
+                });
 
-                    }//end of if statment
-                    else {
-
-                        final String firstName = enteredName;
-                        System.out.println(enteredName+"?????*******!!!!!!@@@@@@@@@@########");
-                        final String lastName = " ";
-                        final String userName = enteredName.toString() + "#" + userID;
-
-                        final String contactEmail = email.getText().toString();
-                        final String contactPhone = phone.getText().toString();
-                        final String imei = getIntent().getStringExtra("imei");
-
-                        //Add User
-                        db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
-                            @Override
-                            public void onUserAdd(boolean success) {
-                                //Add Profile
-                                db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
-                                    @Override
-                                    public void onUserProfileAdd(boolean success) {
-                                        // Clear fields on signup page
-                                        username.setText("");
-                                        email.setText("");
-                                        phone.setText("");
-
-                                        // Navigate to Home Activity
-                                        Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
-                                        startActivity(intent);
-                                    }
-                                });
-                            }
-                        });
-                    }// end of else
+//                    }//end of if statment
+//                    else {
+//
+//                        final String firstName = enteredName;
+//                        System.out.println(enteredName+"?????*******!!!!!!@@@@@@@@@@########");
+//                        final String lastName = " ";
+//                        final String userName = enteredName.toString() + "#" + userID;
+//
+//                        final String contactEmail = email.getText().toString();
+//                        final String contactPhone = phone.getText().toString();
+//                        final String imei = getIntent().getStringExtra("imei");
+//
+//                        //Add User
+//                        db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
+//                            @Override
+//                            public void onUserAdd(boolean success) {
+//                                //Add Profile
+//                                db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
+//                                    @Override
+//                                    public void onUserProfileAdd(boolean success) {
+//                                        // Clear fields on signup page
+//                                        username.setText("");
+//                                        email.setText("");
+//                                        phone.setText("");
+//
+//                                        // Navigate to Home Activity
+//                                        Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
+//                                        startActivity(intent);
+//                                    }
+//                                });
+//                            }
+//                        });
+//                    }// end of else
 
 
 
