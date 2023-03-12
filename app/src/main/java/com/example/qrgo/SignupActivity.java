@@ -1,5 +1,7 @@
 package com.example.qrgo;
 
+import static com.example.qrgo.MainActivity.imei;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -35,10 +37,15 @@ import java.util.UUID;
  */
 public class SignupActivity extends AppCompatActivity {
 
+    static String userID;
+    static String enteredName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        userID = imei.substring(0, 4);
 
         // Hide the action bar
         ActionBar actionBar = getSupportActionBar();
@@ -58,20 +65,27 @@ public class SignupActivity extends AppCompatActivity {
         //Set up variables
         final String TAG = "Sample";
         Button mRegister;
+        //First name
         final EditText username;
+        //Last name
         final EditText email;
+        //Email
         final EditText phone;
+        //Phone
+        final EditText phone_num;
 
         FirebaseConnect db = new FirebaseConnect();
 
         mRegister = findViewById(R.id.register);
 
-        // The users real name
+        // The users first name
         username = findViewById(R.id.username);
+        //last name
         email = findViewById(R.id.address);
+        //email
         phone = findViewById(R.id.phone_number);
-
-
+        //phone
+        phone_num = findViewById(R.id.phone_number2);
 
 
 
@@ -83,44 +97,44 @@ public class SignupActivity extends AppCompatActivity {
                 //Retrieve sign up info
 //                final String imei = getIntent().getStringExtra("imei");
 
-                final String realName = username.getText().toString();
+                enteredName = username.getText().toString();
 
 
 
-                // Traverse the string
-                for (int i = 0; i < realName.length(); i++) {
-                    if(realName.charAt(i) == ' '){
+
+
+//                    if(index != 0) {
                         //DO NOT FORGET TO ENSURE UNIQUE USERNAME HERE
-                        final String firstName = realName.substring(0,i);
-                        final String lastName = realName.substring(i+1);
-                        final String userName = lastName.charAt(0)+firstName;
-                        final String contactEmail = email.getText().toString();
-                        final String contactPhone = phone.getText().toString();
-                        final String imei = getIntent().getStringExtra("imei");
 
-                        //Add User
-                        db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
+                final String firstName = username.getText().toString();
+                final String lastName = email.getText().toString();
+                final String userName = lastName.charAt(0) + firstName + "#" + userID;
+                final String contactEmail = phone_num.getText().toString();
+                final String contactPhone = phone.getText().toString();
+                final String imei = getIntent().getStringExtra("imei");
+                //Add User
+                db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
+                    @Override
+                    public void onUserAdd(boolean success) {
+                        //Add Profile
+                        db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
                             @Override
-                            public void onUserAdd(boolean success) {
-                                //Add Profile
-                                db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0,0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
-                                    @Override
-                                    public void onUserProfileAdd(boolean success) {
-                                        // Clear fields on signup page
-                                        username.setText("");
-                                        email.setText("");
-                                        phone.setText("");
 
-                                        // Navigate to Home Activity
-                                        Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
-                                        startActivity(intent);
-                                    }
-                                });
+                            public void onUserProfileAdd(boolean success) {
+                                // Clear fields on signup page
+                                username.setText("");
+                                email.setText("");
+                                phone.setText("");
+                                // Navigate to Home Activity
+                                Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
+                                startActivity(intent);
+
                             }
                         });
-
                     }
-                }
+                });
+
+
 
 
 

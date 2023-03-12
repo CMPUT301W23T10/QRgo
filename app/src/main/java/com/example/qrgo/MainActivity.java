@@ -81,10 +81,48 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRestart() {
         super.onRestart();
-        // When BACK BUTTON is pressed, the activity on the stack is restarted
-        // Do what you want on the refresh procedure here
-        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
-        startActivity(intent);
+        // Hide the action bar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.hide();
+        }
+        // Hide the status bar
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.setStatusBarColor(getResources().getColor(R.color.transparent));
+            window.setNavigationBarColor(getResources().getColor(R.color.transparent));
+            window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
+        }
+
+
+
+//        System.out.println();
+
+        // Begin Firebase CONNECTION
+        FirebaseConnect db = new FirebaseConnect();
+
+        // Get IMEI: note that this is not an actual IMEI, but rather a unique identifier of an app instance.
+        imei = getUniqueID(this);
+
+        // Check if IMEI is already in Firebase
+        db.checkImeiExists(imei, new FirebaseConnect.OnImeiCheckListener() {
+            @Override
+            public void onImeiCheck(boolean imeiExists) {
+                if(!imeiExists){
+                    // Navigate to Signup Page if not signed up
+                    // Need to implement if statement for if they are not signed up
+                    Intent intent_signup = new Intent(MainActivity.this, SignupActivity.class);
+                    intent_signup.putExtra("imei", imei);
+                    startActivity(intent_signup);
+
+                }else{
+                    // Navigate to player page directly
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     /**
