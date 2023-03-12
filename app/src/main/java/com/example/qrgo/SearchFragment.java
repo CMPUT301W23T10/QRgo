@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +77,7 @@ public class SearchFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.search_user_fragment, container, false);
 
         searchUserEditText = rootView.findViewById(R.id.search_user_edit_text);
+        searchUserEditText.requestFocus();
         loadingScreen = rootView.findViewById(R.id.loading_screen);
         userList = rootView.findViewById(R.id.user_list);
         loadingScreen.setVisibility(View.GONE);
@@ -103,6 +105,15 @@ public class SearchFragment extends Fragment {
                 e.printStackTrace();
             }
         };
+
+        FloatingActionButton cross = rootView.findViewById(R.id.back_button);
+        cross.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // GO back
+                getActivity().onBackPressed();
+            }
+        });
         searchUserEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
