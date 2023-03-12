@@ -119,6 +119,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                             intent.putExtra("hash", generator.getHash());
                             startActivity(intent);
                         }
+                    });
 
                 } else {
                     ActivityCompat.requestPermissions(QRIntakeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
