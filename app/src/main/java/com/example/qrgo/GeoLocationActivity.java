@@ -40,12 +40,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ *
+ */
 public class GeoLocationActivity extends AppCompatActivity implements LocationListener {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
+
+    private double latitude;
+    private double longitude;
 
     private GeoPoint startPoint;
     List<List<Double>> coordinates = new ArrayList<>();
@@ -56,21 +63,22 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        coordinates.add(Arrays.asList(53.5574, -113.4978));
-        coordinates.add(Arrays.asList(53.5427, -113.4944));
-        coordinates.add(Arrays.asList(53.5627, -113.4714));
-        coordinates.add(Arrays.asList(53.5477, -113.5124));
-        coordinates.add(Arrays.asList(53.5317, -113.5254));
-        coordinates.add(Arrays.asList(53.6574, -113.5978));
-        coordinates.add(Arrays.asList(53.6427, -113.5944));
-        coordinates.add(Arrays.asList(53.6627, -113.5714));
-        coordinates.add(Arrays.asList(53.6477, -113.6124));
-        coordinates.add(Arrays.asList(53.6517, -113.6254));
-        coordinates.add(Arrays.asList(53.7574, -113.5978));
-        coordinates.add(Arrays.asList(53.7427, -113.5944));
-        coordinates.add(Arrays.asList(53.7627, -113.5714));
-        coordinates.add(Arrays.asList(53.7477, -113.6124));
-        coordinates.add(Arrays.asList(53.7517, -113.6254));
+        FirebaseConnect database = new FirebaseConnect();
+        database.getAllQrCoordinates(new FirebaseConnect.OnCoordinatesListLoadedListener() {
+            @Override
+            public void onCoordinatesListLoaded(Map<String, List<List<Double>>> mapped_coordinates) {
+                for (List<List<Double>> coordinateList : mapped_coordinates.values()) {
+                    for (List<Double> coordinate : coordinateList) {
+                        coordinates.add(coordinate);
+                    }
+                }
+            }
+
+            @Override
+            public void onCoordinatesListLoadFailure(Exception e) {
+
+            }
+        });
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -99,8 +107,14 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = getLastKnownLocation();
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
+
+        if (getLastKnownLocation() == null) {
+            latitude = 53.5232;
+            longitude = -113.5263;
+        } else {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
         startPoint = new GeoPoint(latitude, longitude);
 
 
@@ -182,7 +196,11 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         }
     }
 
-
+    /**
+     * This functions asks the user for the permissions.
+     * The prime permission asked is the user location to get a user location marker.
+     * @param permissions an array of string of permissions
+     */
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (String permission : permissions) {
@@ -200,8 +218,14 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         }
     }
 
+    /**
+     * Adds a marker to the map provided the longitude and latitude values
+     * The marker is a tear drop shaped icon with a pointing finger image
+     * @param latitude double value representing the latitude
+     * @param longitude double value representing the longitude
+     */
     private void addMarker(double latitude, double longitude) {
-        Log.d("hazarika123", "latitude: " + latitude + "longitude" + longitude);
+        //Log.d("hazarika123", "latitude: " + latitude + "longitude" + longitude);
         Marker marker = new Marker(map);
         marker.setPosition(new GeoPoint(latitude, longitude));
         marker.setTitle("Latitude: " + Double.toString(latitude) + " Longitude: " + Double.toString(longitude));
@@ -209,6 +233,15 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         map.invalidate();
     }
 
+    /**
+     * Creates a draggable marker that allows the user to pin it in any location the user wants.
+     * All the markers nearby the draggable markers are displayed.
+     * @param map the map object which represents the osmdroid map
+     * @param position A GeoPoint of where the draggable marker will spawn
+     * @param title A text which will be displayed when the marker is clicked
+     * @param markerPositions A nested list of doubles containing the latitude and longitude values of all the markers fetched from the firebase
+     * @return
+     */
     private Marker createDraggableMarker(MapView map, GeoPoint position, String title, List<List<Double>> markerPositions) {
         Marker marker = new Marker(map);
         marker.setIcon(getResources().getDrawable(R.drawable.baseline_accessibility_24));
@@ -244,6 +277,11 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         return marker;
     }
 
+    /**
+     * Removes the markers that are outside the set range from the reach of the draggable marker
+     * @param markerPositions A nested list of doubles containing the latitude and longitude values of all the markers fetched from the firebase
+     * @param center the GeoPoint of the draggable marker
+     */
     private void removeMarkersOutOfRange(List<List<Double>> markerPositions, GeoPoint center) {
         double range = 0.05;
         List<Overlay> overlaysToKeep = new ArrayList<>();
@@ -270,7 +308,12 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         map.invalidate();
     }
 
-
+    /**
+     * Adds the markers that are within the set range from the reach of the draggable marker
+     * @param map the map object which represents the osmdroid map
+     * @param markerPositions A nested list of doubles containing the latitude and longitude values of all the markers fetched from the firebase
+     * @param center the GeoPoint of the draggable marker
+     */
     private void addMarkersInRange(MapView map, List<List<Double>> markerPositions, GeoPoint center) {
         double range = 0.05;
         for (List<Double> markerPosition : markerPositions) {
@@ -287,6 +330,10 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         map.invalidate();
     }
 
+    /**
+     * Gets the current location of the user.
+     * @return the current location of the user given the location permission is granted
+     */
     private Location getLastKnownLocation() {
         mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
         List<String> providers = mLocationManager.getProviders(true);

@@ -65,12 +65,30 @@
             android:textSize="20sp"
             android:textStyle="normal" />
     </LinearLayout>
-
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_margin="10dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:orientation="vertical">
+<!--        IN NON CURRENT USER LISTVIEW REMOVE delete icon, make arrow icon parent high -->
+<!--        remove margin top and right from arrow icon and add margin 10 and -->
+    <ImageView
+        android:id="@+id/qr_arrow_icon"
+        android:layout_width="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:visibility="visible"
+        android:layout_height="30dp"
         android:background="@drawable/baseline_arrow_forward_ios_24"
         />
+        <ImageView
+            android:id="@+id/qr_delete_icon"
+            android:layout_width="30dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="visible"
+            android:layout_height="30dp"
+            android:background="@drawable/baseline_delete_24"
+            />
+    </LinearLayout>
 </LinearLayout>
 </LinearLayout>

@@ -21,6 +21,7 @@
         app:backgroundTint="@color/play_close_button"
         app:tint="@color/white" />
         <TextView
+            android:id="@+id/qr_list_title"
             android:layout_width="wrap_content"
             android:text="All QR Codes"
             android:textSize="36sp"
@@ -30,12 +31,12 @@
             android:layout_height="wrap_content"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/back_button"
+        android:id="@+id/sort_button"
         android:layout_marginEnd="0dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_sort_24"
-        app:backgroundTint="@color/play_close_button"
+        app:backgroundTint="#FF282626"
         app:tint="@color/white" />
     </TableRow>
     <ListView

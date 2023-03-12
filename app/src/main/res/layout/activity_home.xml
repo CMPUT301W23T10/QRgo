@@ -82,7 +82,7 @@
                         </LinearLayout>
 
                         <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:id="@+id/back_button"
+                            android:id="@+id/add_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/baseline_add_24"
@@ -109,7 +109,7 @@
                         android:id="@+id/main_total_score"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
-                        android:text="12,002"
+                        android:text="00,000"
                         android:textSize="32sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -120,13 +120,15 @@
                         >
                         <TableRow>
                             <TextView
+                                android:id="@+id/collected"
                                 android:textColor="#007C14"
-                                android:text="Collected 15"
+                                android:text="Collected 0"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <TextView
+                                android:id="@+id/user_qr_view_all"
                                 android:textColor="#A2A0A0"
                                 android:textStyle="bold"
                                 android:text="View all"
@@ -171,6 +173,7 @@
                         >
                         <TableRow>
                             <TextView
+                                android:id="@+id/users_head"
                                 android:textColor="#fff"
                                 android:text="Users"
                                 android:textSize="20sp"
@@ -192,7 +195,7 @@
                                 android:overScrollMode="never"
                                 android:orientation="horizontal"
                                 android:layout_width="match_parent"
-                                android:layout_height="150dp" />
+                                android:layout_height="200dp" />
 
                     <TableLayout
                         android:layout_width="match_parent"
@@ -210,6 +213,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
                             <TextView
+                                android:id="@+id/qr_view_all"
                                 android:textColor="#A2A0A0"
                                 android:textStyle="bold"
                                 android:text="View all"
