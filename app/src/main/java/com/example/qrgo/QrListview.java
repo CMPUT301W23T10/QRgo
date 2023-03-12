@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class QrListview extends Fragment {
     private ArrayList<BasicQRCode> qrCodeList;
     private String comeFrom;
-
+    private String userIntent;
     private boolean toggle = false;
     ListView listView;
     public QrListview() {
@@ -45,6 +45,9 @@ public class QrListview extends Fragment {
 
     public void setComeFrom(String comeFrom) {
         this.comeFrom = comeFrom;
+    }
+    public void setUserIntent(String userIntent) {
+        this.userIntent = userIntent;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,6 +111,8 @@ public class QrListview extends Fragment {
                     Intent intent = new Intent(getActivity(), PlayerActivity.class);
                     // Clear the activity stack so that becomes the new root activity
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    // put the userIntent in the intent
+                    intent.putExtra("username", userIntent);
                     // Start the HomeActivity and finish the current activity
                     startActivity(intent);
                 }
