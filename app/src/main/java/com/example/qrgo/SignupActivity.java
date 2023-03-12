@@ -39,8 +39,6 @@ public class SignupActivity extends AppCompatActivity {
 
     static String userID;
     static String enteredName;
-    //This is an important index
-    static int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,24 +141,5 @@ public class SignupActivity extends AppCompatActivity {
 
 
     } // end of onCreate
-
-    /**
-     * check if there is a space in the name entered
-     * @return
-     */
-    public static int checkSpace() {
-        System.out.println(enteredName+"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-
-        for (int i = 0; i < enteredName.length(); i++) {
-            if (enteredName.charAt(i) == ' ') {
-                index = i;
-            } else {
-                index = 0;
-            }
-
-
-        }
-        return index;
-    }//end of checkspace
 
 } // end of class
