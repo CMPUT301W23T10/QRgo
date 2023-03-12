@@ -1,5 +1,7 @@
 package com.example.qrgo;
 
+import static com.example.qrgo.SignupActivity.user;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -112,7 +114,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                         playerLocation[1] = 181;
                     }
 
-                    db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+                    db.scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
                         @Override
                         public void onQRScanComplete(boolean success) {
                             Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
@@ -133,7 +135,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                 playerLocation[0] = 181;
                 playerLocation[1] = 181;
 
-                db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+                db.scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
                     @Override
                     public void onQRScanComplete(boolean success) {
                         Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
@@ -175,7 +177,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                 playerLocation[0] = 181;
                 playerLocation[1] = 181;
             }
-            db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+            db.scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
                 @Override
                 public void onQRScanComplete(boolean success) {
                     Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);

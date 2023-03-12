@@ -1,5 +1,7 @@
 package com.example.qrgo;
 
+import static com.example.qrgo.SignupActivity.user;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -50,13 +52,12 @@ public class HomeActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_home);
 
-
         FloatingActionButton addBtn = findViewById(R.id.add_button);
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, QRIntakeActivity.class);
-                intent.putExtra("username", "testUser");
+                intent.putExtra("username", user);
                 startActivity(intent);
             }
         });
@@ -78,7 +79,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Firebase Connect
         FirebaseConnect firebaseConnect = new FirebaseConnect();
-        firebaseConnect.getPlayerProfile("testUser", new  FirebaseConnect.OnPlayerProfileGetListener(){
+        firebaseConnect.getPlayerProfile(user, new  FirebaseConnect.OnPlayerProfileGetListener(){
 
 
             @Override
@@ -219,7 +220,7 @@ public class HomeActivity extends AppCompatActivity {
                 // Handle click event here
                 Intent intent = new Intent(HomeActivity.this, PlayerActivity.class);
                 // Put the username in the intent
-                intent.putExtra("username", "testUser");
+                intent.putExtra("username", user);
                 startActivity(intent);
             }
         });
@@ -269,7 +270,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }
         );
-        firebaseConnect.getPlayerProfile("testUser", new FirebaseConnect.OnPlayerProfileGetListener(){
+        firebaseConnect.getPlayerProfile(user, new FirebaseConnect.OnPlayerProfileGetListener(){
                     @Override
                     public void onPlayerProfileGet(PlayerProfile userProfile) {
 

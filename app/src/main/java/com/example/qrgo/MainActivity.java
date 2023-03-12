@@ -1,6 +1,8 @@
 package com.example.qrgo;
 
 
+import static com.example.qrgo.SignupActivity.user;
+
 import android.*;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(sharedPrefdb, Context.MODE_PRIVATE);
+        user = sharedPreferences.getString("user", "");
 
 
         // Hide the action bar
@@ -96,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
-//        System.out.println();
 
         // Begin Firebase CONNECTION
         FirebaseConnect db = new FirebaseConnect();
