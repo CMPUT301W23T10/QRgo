@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -30,6 +31,7 @@ import com.example.qrgo.utilities.CustomCarouselItem;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.UserCarouselAdapter;
 import com.example.qrgo.utilities.UserCarouselitem;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -58,6 +60,15 @@ public class HomeActivity extends AppCompatActivity {
             window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
         }
 
+        FloatingActionButton addBtn = findViewById(R.id.back_button);
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, QRIntakeActivity.class);
+                intent.putExtra("username", "testUser");
+                startActivity(intent);
+            }
+        });
 
         // Define the carousel items
         List<CustomCarouselItem> carouselItems = new ArrayList<>();

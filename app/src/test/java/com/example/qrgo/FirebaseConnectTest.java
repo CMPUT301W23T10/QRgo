@@ -21,6 +21,5 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 public class FirebaseConnectTest {
-//TODO Tests
 
 }
