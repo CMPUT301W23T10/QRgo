@@ -122,7 +122,7 @@ public class FirebaseConnect {
      * @param listener The listener to handle the result of the operation.
      */
     public void addNewPlayerProfile(String username, String firstName, String lastName, String contactPhone, String contactEmail,
-                               int totalScore, int highestScore, int lowestScore, OnUserProfileAddListener listener) {
+                               int totalScore, int totalScans, int highestScore, int lowestScore, OnUserProfileAddListener listener) {
         DocumentReference docRef = db.collection("Profiles").document(username);
         Map<String, Object> data = new HashMap<>();
         data.put("firstName", firstName);
@@ -130,6 +130,8 @@ public class FirebaseConnect {
         data.put("contactPhone", contactPhone);
         data.put("contactEmail", contactEmail);
         data.put("totalScore", totalScore);
+        data.put("totalScore", totalScans);
+
         data.put("highestScore", highestScore);
         data.put("lowestScore", lowestScore);
         data.put("qrScans", new ArrayList<String>());
