@@ -49,6 +49,18 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home);
+
+
+        FloatingActionButton addBtn = findViewById(R.id.add_button);
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, QRIntakeActivity.class);
+                intent.putExtra("username", "testUser");
+                startActivity(intent);
+            }
+        });
+
         // Hide the action bar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -67,15 +79,6 @@ public class HomeActivity extends AppCompatActivity {
         // Firebase Connect
         FirebaseConnect firebaseConnect = new FirebaseConnect();
         firebaseConnect.getPlayerProfile("testUser", new  FirebaseConnect.OnPlayerProfileGetListener(){
-        FloatingActionButton addBtn = findViewById(R.id.back_button);
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, QRIntakeActivity.class);
-                intent.putExtra("username", "testUser");
-                startActivity(intent);
-            }
-        });
 
 
             @Override
