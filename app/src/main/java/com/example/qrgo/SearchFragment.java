@@ -42,17 +42,12 @@ public class SearchFragment extends Fragment {
 
     private EditText searchUserEditText;
     private LinearLayout loadingScreen;
-
     private ListView userList;
-
     private ArrayList<BasicPlayerProfile> dataList;
-
     private UserSearchListAdapter userSearchListAdapter;
-
     public SearchFragment() {
         // Required empty public constructor
     }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -143,8 +138,5 @@ public class SearchFragment extends Fragment {
             }
         });
         return rootView;
-
     }
-
-
 }
