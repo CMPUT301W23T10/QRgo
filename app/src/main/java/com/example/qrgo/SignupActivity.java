@@ -134,39 +134,7 @@ public class SignupActivity extends AppCompatActivity {
                     }
                 });
 
-//                    }//end of if statment
-//                    else {
-//
-//                        final String firstName = enteredName;
-//                        System.out.println(enteredName+"?????*******!!!!!!@@@@@@@@@@########");
-//                        final String lastName = " ";
-//                        final String userName = enteredName.toString() + "#" + userID;
-//
-//                        final String contactEmail = email.getText().toString();
-//                        final String contactPhone = phone.getText().toString();
-//                        final String imei = getIntent().getStringExtra("imei");
-//
-//                        //Add User
-//                        db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
-//                            @Override
-//                            public void onUserAdd(boolean success) {
-//                                //Add Profile
-//                                db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
-//                                    @Override
-//                                    public void onUserProfileAdd(boolean success) {
-//                                        // Clear fields on signup page
-//                                        username.setText("");
-//                                        email.setText("");
-//                                        phone.setText("");
-//
-//                                        // Navigate to Home Activity
-//                                        Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
-//                                        startActivity(intent);
-//                                    }
-//                                });
-//                            }
-//                        });
-//                    }// end of else
+
 
 
 
