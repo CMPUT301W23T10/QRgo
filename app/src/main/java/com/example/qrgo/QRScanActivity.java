@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 
@@ -15,17 +16,27 @@ import com.journeyapps.barcodescanner.ViewfinderView;
 
 import java.util.Random;
 
-public class QRScanActivity extends Activity {
+public class QRScanActivity extends Activity{
 
     private CaptureManager capture;
     private DecoratedBarcodeView barcodeScannerView;
     private ViewfinderView viewfinderView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scan);
 
+//        Switch locationSwitch = findViewById(R.id.location_switch);
+//        locationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            if (isChecked) {
+//                locationSetListener.onLocationSet(true);
+//            } else {
+//                locationSetListener.onLocationSet(false);
+//            }
+//        });
         barcodeScannerView = findViewById(R.id.zxing_barcode_scanner);
 
         viewfinderView = findViewById(R.id.zxing_viewfinder_view);
@@ -82,4 +93,8 @@ public class QRScanActivity extends Activity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         capture.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
+//    public interface LocationSetListener {
+//        void onLocationSet(boolean b);
+//    }
+
 }

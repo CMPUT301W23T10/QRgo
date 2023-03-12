@@ -1,21 +1,30 @@
 package com.example.qrgo;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.location.LocationManager;
 import android.location.LocationRequest;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.QRGenerationController;
@@ -27,9 +36,7 @@ import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-/**
- * 
- */
+
 public class QRIntakeActivity extends AppCompatActivity {
 
     private String hash;
@@ -37,6 +44,7 @@ public class QRIntakeActivity extends AppCompatActivity {
     private FirebaseConnect db = new FirebaseConnect();
     private FusedLocationProviderClient fusedLocationClient;
     private QRGenerationController generator;
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
 
 
     private final ActivityResultLauncher<ScanOptions> QRScanLauncher = registerForActivityResult(new ScanContract(),
@@ -44,19 +52,13 @@ public class QRIntakeActivity extends AppCompatActivity {
                 if (result.getContents() == null) {
                     Intent originalIntent = result.getOriginalIntent();
                     if (originalIntent == null) {
-                        Log.d("QRIntakeActivity", "Cancelled scan");
                         Toast.makeText(QRIntakeActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
                     } else if (originalIntent.hasExtra(Intents.Scan.MISSING_CAMERA_PERMISSION)) {
-                        Log.d("MainActivity", "Cancelled scan due to missing camera permission");
                         Toast.makeText(QRIntakeActivity.this, "Cancelled due to missing camera permission", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Log.d("QRIntakeActivity", "Scanned");
                     generator = new QRGenerationController(result.getContents());
-                    Log.d("QRIntakeActivity", generator.getHash());
-                    //Log.d("QRIntakeActivity", (String) generator.getScore());
-                    Log.d("QRIntakeActivity", generator.getHumanReadableName());
-
+                    submitQR();
                 }
             });
 
@@ -65,40 +67,23 @@ public class QRIntakeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_intake);
-
-        Switch locationSwitch = findViewById(R.id.switch1);
-        String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
-        requestPermissions(permissions, 1);
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-        locationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (ActivityCompat.checkSelfPermission(QRIntakeActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(QRIntakeActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    playerLocation[0] = 181;
-                    playerLocation[1] = 181;
-                    locationSwitch.setChecked(false);
-                    locationSwitch.setClickable(false);
-                }
-                if (locationSwitch.isChecked()) {
-                    fusedLocationClient.getCurrentLocation(LocationRequest.QUALITY_HIGH_ACCURACY, cancellationTokenSource.getToken())
-                            .addOnSuccessListener(QRIntakeActivity.this, new OnSuccessListener<Location>() {
-                                @Override
-                                public void onSuccess(Location location) {
-                                    playerLocation[0] = location.getLatitude();
-                                    playerLocation[1] = location.getLongitude();
-                                    Log.d("QRIntakeActivity", "onSuccess: " + playerLocation[0]);
-                                }
-                            });
-
-                }
-            }
-        });
+        // Hide the action bar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.hide();
+        }
+        // Hide the status bar
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.setStatusBarColor(getResources().getColor(R.color.transparent));
+            window.setNavigationBarColor(getResources().getColor(R.color.transparent));
+            window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
+        }
+        scanQRCode();
     }
 
-    public void scanQRCode(View view) {
+    public void scanQRCode() {
         ScanOptions options = new ScanOptions();
         options.setCaptureActivity(QRScanActivity.class);
         options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
@@ -108,17 +93,76 @@ public class QRIntakeActivity extends AppCompatActivity {
         QRScanLauncher.launch(options);
     }
 
-    public void submitQR(View view) {
-        db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+    public void submitQR() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Record location?");
+        builder.setMessage("Do you want to record your location?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
-            public void onQRScanComplete(boolean success) {
-                Log.d("QRIntakeActivity", "scanned QR to database");
+            public void onClick(DialogInterface dialog, int which) {
+                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    // We have permission, so get the user's location
+                    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location != null) {
+                        playerLocation[0] = location.getLatitude();
+                        playerLocation[1] = location.getLongitude();
+                    } else {
+                        playerLocation[0] = 181;
+                        playerLocation[1] = 181;
+                    }
+
+                } else {
+                    ActivityCompat.requestPermissions(QRIntakeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+                }
+
+                db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+                    @Override
+                    public void onQRScanComplete(boolean success) {
+                        Log.d("QRIntakeActivity", "scanned QR to database");
+                    }
+                });
             }
         });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                playerLocation[0] = 181;
+                playerLocation[1] = 181;
+
+                db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+                    @Override
+                    public void onQRScanComplete(boolean success) {
+                        Log.d("QRIntakeActivity", "scanned QR to database");
+                        Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
+                        intent.putExtra("hash", generator.getHash());
+                        startActivity(intent);
+                    }
+                });
+
+            }
+        });
+        builder.create().show();
     }
+
+    public void checkPermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,}, 1);
+            }
+        }
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
     }
+
+
 }
