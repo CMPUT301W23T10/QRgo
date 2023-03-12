@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <!--        CHANGE THIS TO INVIS    IBLE AT THE END-->
+        <!--        CHANGE THIS TO INVISIBLE AT THE END-->
         <LinearLayout
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
@@ -71,10 +71,7 @@
                             android:background="@drawable/search_box"
                             android:layout_weight="2"
                             android:gravity="center_vertical">
-                            <FrameLayout
-                                android:id="@+id/search_fragment_container"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -260,5 +257,9 @@
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
+        <FrameLayout
+            android:id="@+id/search_fragment_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </FrameLayout>
 </RelativeLayout>

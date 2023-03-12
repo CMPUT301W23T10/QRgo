@@ -69,45 +69,18 @@ public class SearchFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-    }
-
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        Log.d("TAG", "onCreateView: activated");
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.search_user_fragment, container, false);
 
         searchUserEditText = rootView.findViewById(R.id.search_user_edit_text);
         loadingScreen = rootView.findViewById(R.id.loading_screen);
         userList = rootView.findViewById(R.id.user_list);
-
         loadingScreen.setVisibility(View.GONE);
-//        userList.setVisibility(View.GONE);
-
         dataList = new ArrayList<>();
-
-
         // 3. Display data in listview
-
-
-
-
-
         // Both instances of the code are the same up to this point
 
         FirebaseConnect fb = new FirebaseConnect();
@@ -118,34 +91,27 @@ public class SearchFragment extends Fragment {
             public void onUserSearchComplete(List<BasicPlayerProfile> users) {
                 // Do something with the search results
                 for (BasicPlayerProfile user : users) {
-                    //System.out.println(user.getUsername());
-                    Log.d("lucas", user.getUsername());
-                    Log.d("lucas", Integer.toString(user.getHighestScore()));
                     dataList.add(user);
                 }
-
                 userSearchListAdapter = new UserSearchListAdapter(getActivity(), dataList);
                 userList.setAdapter(userSearchListAdapter);
+                loadingScreen.setVisibility(View.GONE);
             }
-
             @Override
             public void onUserSearchFailure(Exception e) {
                 // Handle the search failure
                 e.printStackTrace();
             }
         };
-
         searchUserEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 //
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // no application at the moment
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 String searchQuery = s.toString();
@@ -165,12 +131,6 @@ public class SearchFragment extends Fragment {
                 }
             }
         });
-
-
-
-
-
-
         return rootView;
 
     }

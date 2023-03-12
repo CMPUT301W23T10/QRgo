@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.models.PlayerProfile;
@@ -98,6 +99,19 @@ public class HomeActivity extends AppCompatActivity {
             }
 
         });
+        ImageView geolocationButton = findViewById(R.id.map_image);
+        geolocationButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Handle click event here
+//                if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//                    startGeoLocationActivity();
+//                } else {
+//                    ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+//                }
+            }
+
+        });
+
 
         LinearLayout searchLayout = findViewById(R.id.call_search_fragment);
         searchLayout.setOnClickListener(new View.OnClickListener() {
@@ -108,13 +122,6 @@ public class HomeActivity extends AppCompatActivity {
                         .add(R.id.search_fragment_container, new SearchFragment(), "searchFragment")
                         .addToBackStack(null)
                         .commit();
-                // Handle click event here
-                if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    startGeoLocationActivity();
-                } else {
-                    ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-                }
-
             }
 
         });
