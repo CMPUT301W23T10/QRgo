@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_rect_border">
+    <LinearLayout
+        android:layout_marginTop="10sp"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/player_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textSize="26sp"
+            android:textColor="#FFFFFF"
+            android:gravity="center_vertical"/>
+
+        <ImageView
+            android:layout_marginLeft="10sp"
+            android:id="@+id/player_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/demo_picture"/>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10sp"
+        android:textColor="#939393"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
+        android:text="Score:"/>
+    <TextView
+        android:id="@+id/player_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
+        android:textSize="22sp"
+        android:text="NaN"/>
+
+    <TextView
+        android:id="@+id/player_collected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15sp"
+
+        android:textColor="#007C14"
+        android:textStyle="bold"
+        android:layout_marginLeft="10sp"
+        android:layout_marginRight="10sp"
+        android:textSize="12sp"
+        android:layout_marginBottom="10sp"
+        android:text="Collected : 9"/>
+    <!-- Add your content here -->
+</LinearLayout>

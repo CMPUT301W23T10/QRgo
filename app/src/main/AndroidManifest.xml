@@ -43,6 +43,10 @@
         <activity
             android:name=".PlayerActivity"
             android:label="Player Activity" />
+        <activity
+            android:name=".QRIntakeActivity"/>
+        <activity
+            android:name=".QRScanActivity"/>
     </application>
 
 </manifest>

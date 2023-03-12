@@ -119,6 +119,7 @@ public class SignupActivity extends AppCompatActivity {
                         //Add Profile
                         db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
                             @Override
+
                             public void onUserProfileAdd(boolean success) {
                                 // Clear fields on signup page
                                 username.setText("");
@@ -127,6 +128,7 @@ public class SignupActivity extends AppCompatActivity {
                                 // Navigate to Home Activity
                                 Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
                                 startActivity(intent);
+
                             }
                         });
                     }

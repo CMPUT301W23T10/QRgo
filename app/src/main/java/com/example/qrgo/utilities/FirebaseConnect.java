@@ -122,7 +122,7 @@ public class FirebaseConnect {
      * @param listener The listener to handle the result of the operation.
      */
     public void addNewPlayerProfile(String username, String firstName, String lastName, String contactPhone, String contactEmail,
-                               int totalScore, int highestScore, int lowestScore, OnUserProfileAddListener listener) {
+                               int totalScore, int totalScans, int highestScore, int lowestScore, OnUserProfileAddListener listener) {
         DocumentReference docRef = db.collection("Profiles").document(username);
         Map<String, Object> data = new HashMap<>();
         data.put("firstName", firstName);
@@ -130,6 +130,8 @@ public class FirebaseConnect {
         data.put("contactPhone", contactPhone);
         data.put("contactEmail", contactEmail);
         data.put("totalScore", totalScore);
+        data.put("totalScore", totalScans);
+
         data.put("highestScore", highestScore);
         data.put("lowestScore", lowestScore);
         data.put("qrScans", new ArrayList<String>());
@@ -346,8 +348,8 @@ public class FirebaseConnect {
                 }
                 // Update the user's points and totalScans
                 db.collection("Profiles").document(username)
-                    .update("totalScore", FieldValue.increment(points),
-                            "totalScans", FieldValue.increment(1));
+                        .update("totalScore", FieldValue.increment(points),
+                                "totalScans", FieldValue.increment(1));
                 listener.onQRScanComplete(true);
             });
         });
@@ -435,7 +437,7 @@ public class FirebaseConnect {
      @param username The username of the player.
      @param listener The listener to be called when the BasicPlayerProfile is loaded or load fails.
      */
-     public void getBasicPlayerProfile(String username, OnBasicPlayerProfileLoadedListener listener) {
+    public void getBasicPlayerProfile(String username, OnBasicPlayerProfileLoadedListener listener) {
         db.collection("Profiles")
                 .document(username)
                 .get()
@@ -460,7 +462,7 @@ public class FirebaseConnect {
      @param commentId The id of the comment.
      @param listener The listener to be called when the Comment is loaded or load fails.
      */
-     public void getComment(String commentId, OnCommentLoadedListener listener) {
+    public void getComment(String commentId, OnCommentLoadedListener listener) {
         db.collection("Comments")
                 .document(commentId)
                 .get()
@@ -502,11 +504,16 @@ public class FirebaseConnect {
                         int highestScore = document.getLong("highestScore").intValue();
                         int lowestScore = document.getLong("lowestScore").intValue();
                         BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        users.add(basicPlayerProfile);
                     }
                     listener.onUserSearchComplete(users);
+
                 })
                 .addOnFailureListener(e -> listener.onUserSearchFailure(e));
     }
+
+
+
 
     /**
      A function that retrieves a list of players sorted by their highest score.
@@ -610,7 +617,92 @@ public class FirebaseConnect {
     }
 
 
+    /**
+     A function that retrieves a list of qr codes sorted by its points.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getQrCodesSortedByPoints(OnQrListLoadedListener listener) {
+        db.collection("QRCodes")
+                .orderBy("qrPoints", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<BasicQRCode> qrCodes = new ArrayList<BasicQRCode>();
+                    for (DocumentSnapshot qrCodeDoc : querySnapshot.getDocuments()) {
+                        String firebaseid = qrCodeDoc.getId();
+                        String humanReadableQR = qrCodeDoc.getString("humanReadableQR");
+                        String qrString = qrCodeDoc.getString("qrString");
+                        int qrPoints = qrCodeDoc.getLong("qrPoints").intValue();
+                        BasicQRCode qrCode = new BasicQRCode(firebaseid, qrString, humanReadableQR, qrPoints);
+                        qrCodes.add(qrCode);
+                    }
+                    listener.onQrListLoaded(qrCodes);
+                })
+                .addOnFailureListener(e -> listener.onQrListLoadFailure(e));
+    }
 
+    /**
+     A function that retrieves a list of all qr coordinates.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getAllQrCoordinates(OnCoordinatesListLoadedListener listener) {
+        db.collection("QRCodes")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    Map<String, List<List<Double>>> mapped_coordinates = new HashMap<String, List<List<Double>>>();
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        List<GeoPoint> locations = (List<GeoPoint>) documentSnapshot.get("locations");
+                        List<List<Double>> coordinates = new ArrayList<List<Double>>();
+                        for(GeoPoint location: locations) {
+                            List<Double> coordinate = new ArrayList<Double>();
+                            coordinate.add(location.getLatitude());
+                            coordinate.add(location.getLongitude());
+                            coordinates.add(coordinate);
+                        }
+                        mapped_coordinates.put((String) documentSnapshot.get("qrString").toString(), coordinates);
+
+                    }
+                    listener.onCoordinatesListLoaded(mapped_coordinates);
+                })
+                .addOnFailureListener(e -> listener.onCoordinatesListLoadFailure(e));
+    }
+
+
+    /**
+
+     An interface for listening to the result of the coordinate list functions
+     */
+    public interface OnCoordinatesListLoadedListener {
+        /**
+
+         Invoked when the function successfully retrieves a list of coordinates.
+         @param mapped_coordinates A map of qr string to a list of its coordinates.
+         */
+        void onCoordinatesListLoaded(Map<String, List<List<Double>>> mapped_coordinates);
+
+        /**
+         Invoked when the function fails to retrieve the list of coordinates.
+         @param e The exception that caused the failure.
+         */
+        void onCoordinatesListLoadFailure(Exception e);
+    }
+    /**
+
+     An interface for listening to the result of the sorted QR functions
+     */
+    public interface OnQrListLoadedListener {
+        /**
+
+         Invoked when the function successfully retrieves a list of QR sorted by its points.
+         @param qrcodes The list of sorted qrcodes.
+         */
+        void onQrListLoaded(List<BasicQRCode> qrcodes);
+
+        /**
+         Invoked when the function fails to retrieve the list of sorted QR.
+         @param e The exception that caused the failure.
+         */
+        void onQrListLoadFailure(Exception e);
+    }
     /**
 
      An interface for listening to the result of the sorted Player functions
@@ -785,4 +877,3 @@ public class FirebaseConnect {
 
 
 }
-
