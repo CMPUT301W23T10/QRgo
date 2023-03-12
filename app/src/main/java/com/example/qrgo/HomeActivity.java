@@ -1,5 +1,6 @@
 package com.example.qrgo;
 
+import static com.example.qrgo.MainActivity.sharedPrefdb;
 import static com.example.qrgo.SignupActivity.user;
 
 import androidx.appcompat.app.ActionBar;
@@ -9,7 +10,9 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -49,6 +52,9 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(sharedPrefdb, Context.MODE_PRIVATE);
+        user = sharedPreferences.getString("user", "");
 
         setContentView(R.layout.activity_home);
 
