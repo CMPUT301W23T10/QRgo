@@ -117,7 +117,7 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onUserAdd(boolean success) {
                         //Add Profile
-                        db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
+                        db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
                             @Override
 
                             public void onUserProfileAdd(boolean success) {
