@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/baseline_sort_24"
-        app:backgroundTint="@color/play_close_button"
+        app:backgroundTint="#FF282626"
         app:tint="@color/white" />
     </TableRow>
     <ListView

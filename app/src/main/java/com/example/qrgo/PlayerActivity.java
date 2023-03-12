@@ -70,7 +70,7 @@ public class PlayerActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String username = intent.getStringExtra("username");
         // GETTING THE PLAYER PROFILE FOR THE USER
-        firebaseConnect.getPlayerProfile("testUser", new FirebaseConnect.OnPlayerProfileGetListener(){
+        firebaseConnect.getPlayerProfile(username, new FirebaseConnect.OnPlayerProfileGetListener(){
             @Override
             public void onPlayerProfileGet(PlayerProfile playerProfile) {
                 if (playerProfile != null) {

@@ -1,6 +1,8 @@
 package com.example.qrgo;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -23,12 +26,14 @@ import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link QrListview#newInstance} factory method to
+ * Use the {@link QrListview} factory method to
  * create an instance of this fragment.
  */
 public class QrListview extends Fragment {
     private ArrayList<BasicQRCode> qrCodeList;
     private String comeFrom;
+
+    private boolean toggle = false;
     ListView listView;
     public QrListview() {
         // Required empty public constructor
@@ -52,6 +57,29 @@ public class QrListview extends Fragment {
         listView = rootView.findViewById(R.id.fragment_qr_listview);
         FloatingActionButton closeButton = rootView.findViewById(R.id.back_button);
         BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter(requireActivity(), qrCodeList, comeFrom);
+        FloatingActionButton sort_button = rootView.findViewById(R.id.sort_button);
+        sort_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // reverse the qrCodeList list it is already sorted in descending order
+                ArrayList<BasicQRCode> reversedList = new ArrayList<>();
+                for (int i = qrCodeList.size() - 1; i >= 0; i--) {
+                    reversedList.add(qrCodeList.get(i));
+                }
+                if (toggle) {
+                    sort_button.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+                    sort_button.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FF28262C")));
+                } else {
+                    sort_button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF28262C")));
+                    sort_button.setImageTintList(ColorStateList.valueOf(Color.WHITE));
+                }
+                toggle = !toggle;
+                qrCodeList = reversedList;
+                BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter(requireActivity(), qrCodeList, comeFrom);
+                listView.setAdapter(qrAdapter);
+            }
+        });
+
 
         TextView title = rootView.findViewById(R.id.qr_list_title);
         if (comeFrom.equals("home")) {

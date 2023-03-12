@@ -80,6 +80,14 @@ public class HomeActivity extends AppCompatActivity {
                 if (temp.size() > 3) {
                     temp = temp.subList(0, 3);
                 }
+                if (temp.size() == 0) {
+                    temp.add(new BasicQRCode(
+                            "NaN",
+                            "NaN",
+                            "#No QR",
+                            00
+                    ));
+                }
                 CarouselAdapter carouselAdapter = new CarouselAdapter(HomeActivity.this, temp);
 
                 // Set up the view all button for QR CODES
@@ -213,7 +221,6 @@ public class HomeActivity extends AppCompatActivity {
             }
 
         });
-
 
         LinearLayout searchLayout = findViewById(R.id.call_search_fragment);
         searchLayout.setOnClickListener(new View.OnClickListener() {
