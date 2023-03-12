@@ -6,52 +6,37 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationRequest;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.qrgo.models.PlayerProfile;
-import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.FirebaseConnect;
-import com.example.qrgo.utilities.QRIntakeController;
+import com.example.qrgo.utilities.QRGenerationController;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.Granularity;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 /**
- *This class serves as the activity that allows a user to scan a QR code and add it to their
- * collection. Scanning of a QR code begins a process in which a user is able to add relevant metadata
- * for either creating or updating a {@link com.example.qrgo.models.QRCode} in the database. Logic
- * is handled by {@link QRIntakeController} which creates, validates, and
- * updates associated database entries with correct fields.
+ * 
  */
 public class QRIntakeActivity extends AppCompatActivity {
 
     private String hash;
     private double[] playerLocation = {181, 181};
-    private PlayerProfile currentPlayer;
     private FirebaseConnect db = new FirebaseConnect();
     private FusedLocationProviderClient fusedLocationClient;
+    private QRGenerationController generator;
 
 
     private final ActivityResultLauncher<ScanOptions> QRScanLauncher = registerForActivityResult(new ScanContract(),
@@ -67,7 +52,11 @@ public class QRIntakeActivity extends AppCompatActivity {
                     }
                 } else {
                     Log.d("QRIntakeActivity", "Scanned");
-                    hash = QRIntakeController.generateHash(result.getContents());
+                    generator = new QRGenerationController(result.getContents());
+                    Log.d("QRIntakeActivity", generator.getHash());
+                    //Log.d("QRIntakeActivity", (String) generator.getScore());
+                    Log.d("QRIntakeActivity", generator.getHumanReadableName());
+
                 }
             });
 
@@ -117,6 +106,15 @@ public class QRIntakeActivity extends AppCompatActivity {
         options.setOrientationLocked(true);
         options.setBeepEnabled(false);
         QRScanLauncher.launch(options);
+    }
+
+    public void submitQR(View view) {
+        db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+            @Override
+            public void onQRScanComplete(boolean success) {
+                Log.d("QRIntakeActivity", "scanned QR to database");
+            }
+        });
     }
 
     @Override
