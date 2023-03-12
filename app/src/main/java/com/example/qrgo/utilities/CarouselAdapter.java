@@ -1,6 +1,7 @@
 package com.example.qrgo.utilities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.example.qrgo.HomeActivity;
+import com.example.qrgo.QrProfileActivity;
 import com.example.qrgo.R;
 import com.example.qrgo.models.BasicQRCode;
 import com.squareup.picasso.Picasso;
@@ -39,8 +42,16 @@ public class CarouselAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         View view = layoutInflater.inflate(R.layout.caraousel_card, container, false);
-
         BasicQRCode carouselItem = carouselItems.get(position);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), QrProfileActivity.class);
+                intent.putExtra("qr_code", carouselItem.getQRString());
+                view.getContext().startActivity(intent);
+            }
+        });
 
         ImageView qrCodeImage = view.findViewById(R.id.qr_code_image);
         TextView qrCodeRank = view.findViewById(R.id.qr_code_rank);

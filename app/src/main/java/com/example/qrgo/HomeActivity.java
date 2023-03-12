@@ -137,7 +137,6 @@ public class HomeActivity extends AppCompatActivity {
                         if (playerList.size() > 3) {
                             playerList = playerList.subList(0, 3);
                         }
-                        Log.d("HomeActivity", "Player List: " + playerList);
                         // Define the user carousel items
                         ViewPager userViewPager = findViewById(R.id.user_view_pager);
 
@@ -157,8 +156,6 @@ public class HomeActivity extends AppCompatActivity {
 
                     @Override
                     public void onQrListLoaded(List<BasicQRCode> qrcodes) {
-                        Log.d("HomeActivity", "GLOBAL QR CODES: " + qrcodes);
-
                         ListView listView = findViewById(R.id.home_qr_listview);
                         // Set up the QR code list view
                         List<BasicQRCode> qrCodeList = qrcodes;
