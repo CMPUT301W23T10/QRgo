@@ -1,6 +1,7 @@
 package com.example.qrgo;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -49,6 +50,8 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
     private GeoPoint startPoint;
     List<List<Double>> coordinates = new ArrayList<>();
 
+    LocationManager mLocationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,19 +98,11 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         IMapController mapController = map.getController();
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-        } else {
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location != null) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                startPoint = new GeoPoint(latitude, longitude);
-            } else {
-                Toast.makeText(this, "Unable to get your location", Toast.LENGTH_SHORT).show();
-            }
-        }
+        Location location = getLastKnownLocation();
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        startPoint = new GeoPoint(latitude, longitude);
+
 
         //Log.d("hazarika", "latitude: " + startPoint.getLatitude() + "longitude" + startPoint.getLongitude());
         mapController.setCenter(startPoint);
@@ -186,6 +181,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
+
 
     private void requestPermissionsIfNecessary(String[] permissions) {
         ArrayList<String> permissionsToRequest = new ArrayList<>();
@@ -289,6 +285,23 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
             }
         }
         map.invalidate();
+    }
+
+    private Location getLastKnownLocation() {
+        mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            @SuppressLint("MissingPermission") Location l = mLocationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                // Found best last known location: %s", l);
+                bestLocation = l;
+            }
+        }
+        return bestLocation;
     }
 
 }
