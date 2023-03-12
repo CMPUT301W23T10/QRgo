@@ -206,6 +206,7 @@
                         >
                         <TableRow>
                             <TextView
+                                android:id="@+id/qr_title"
                                 android:textColor="#fff"
                                 android:text="QR Desk"
                                 android:textSize="20sp"

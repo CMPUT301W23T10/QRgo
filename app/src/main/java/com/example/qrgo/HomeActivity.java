@@ -14,6 +14,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.models.PlayerProfile;
@@ -91,6 +92,7 @@ public class HomeActivity extends AppCompatActivity {
             }
 
         });
+
         LinearLayout searchLayout = findViewById(R.id.call_search_fragment);
         searchLayout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -135,6 +137,9 @@ public class HomeActivity extends AppCompatActivity {
                         if (qrCodeArrayList.size() >= 3) {
                             qrCodeArrayList = new ArrayList<>(qrCodeArrayList.subList(0, 3));
                         }
+                        TextView play_qr_head = findViewById(R.id.qr_title);
+                        play_qr_head.setText("QR Desk (" + userProfile.getQrCodeBasicProfiles().size() + ")");
+
                         BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter( HomeActivity.this, qrCodeArrayList);
                         listView.setAdapter(qrAdapter);
                         int height = 0;
