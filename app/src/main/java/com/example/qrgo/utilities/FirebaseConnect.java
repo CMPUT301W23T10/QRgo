@@ -348,8 +348,8 @@ public class FirebaseConnect {
                 }
                 // Update the user's points and totalScans
                 db.collection("Profiles").document(username)
-                    .update("totalScore", FieldValue.increment(points),
-                            "totalScans", FieldValue.increment(1));
+                        .update("totalScore", FieldValue.increment(points),
+                                "totalScans", FieldValue.increment(1));
                 listener.onQRScanComplete(true);
             });
         });
@@ -437,7 +437,7 @@ public class FirebaseConnect {
      @param username The username of the player.
      @param listener The listener to be called when the BasicPlayerProfile is loaded or load fails.
      */
-     public void getBasicPlayerProfile(String username, OnBasicPlayerProfileLoadedListener listener) {
+    public void getBasicPlayerProfile(String username, OnBasicPlayerProfileLoadedListener listener) {
         db.collection("Profiles")
                 .document(username)
                 .get()
@@ -462,7 +462,7 @@ public class FirebaseConnect {
      @param commentId The id of the comment.
      @param listener The listener to be called when the Comment is loaded or load fails.
      */
-     public void getComment(String commentId, OnCommentLoadedListener listener) {
+    public void getComment(String commentId, OnCommentLoadedListener listener) {
         db.collection("Comments")
                 .document(commentId)
                 .get()
@@ -504,11 +504,16 @@ public class FirebaseConnect {
                         int highestScore = document.getLong("highestScore").intValue();
                         int lowestScore = document.getLong("lowestScore").intValue();
                         BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        users.add(basicPlayerProfile);
                     }
                     listener.onUserSearchComplete(users);
+
                 })
                 .addOnFailureListener(e -> listener.onUserSearchFailure(e));
     }
+
+
+
 
     /**
      A function that retrieves a list of players sorted by their highest score.
@@ -872,4 +877,3 @@ public class FirebaseConnect {
 
 
 }
-
