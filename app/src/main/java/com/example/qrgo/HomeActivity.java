@@ -152,6 +152,24 @@ public class HomeActivity extends AppCompatActivity {
                 }
         );
 
+
+        // launch LeaderboardFragment when user_view_all_to_leaderboard is clicked
+        TextView user_view_all_to_leaderboard = findViewById(R.id.user_view_all_to_leaderboard);
+        user_view_all_to_leaderboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Call your fragment here
+                LeaderbaordFragment leaderboardFragment = new LeaderbaordFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .add(R.id.fragment_container, leaderboardFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+
+
         firebaseConnect.getQrCodesSortedByPoints(
                 new FirebaseConnect.OnQrListLoadedListener() {
 

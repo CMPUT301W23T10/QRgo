@@ -83,7 +83,6 @@
 
 
     <!--This is the list of users-->
-    <!-- OG CODEEE -->
     <FrameLayout
         android:id="@+id/user_list_fragment_container"
         android:layout_width="match_parent"

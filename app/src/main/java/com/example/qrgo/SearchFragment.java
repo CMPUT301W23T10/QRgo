@@ -77,8 +77,7 @@ public class SearchFragment extends Fragment {
         userList = rootView.findViewById(R.id.user_list);
         loadingScreen.setVisibility(View.GONE);
         dataList = new ArrayList<>();
-        // 3. Display data in listview
-        // Both instances of the code are the same up to this point
+
 
         FirebaseConnect fb = new FirebaseConnect();
 
