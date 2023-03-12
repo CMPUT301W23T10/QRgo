@@ -38,7 +38,11 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
         TextView rankTextView = convertView.findViewById(R.id.qr_rank);
 
         // Set the text for the views
-        nameTextView.setText(currentQRCode.getHumanReadableQR());
+        String name = currentQRCode.getHumanReadableQR();
+        if (name.length() > 8) {
+            name = name.substring(0, 8) + "..";
+        }
+        nameTextView.setText(name);
         scoreTextView.setText(currentQRCode.getQrCodePoints() + " pts");
         rankTextView.setText("#" + (position + 1));
 

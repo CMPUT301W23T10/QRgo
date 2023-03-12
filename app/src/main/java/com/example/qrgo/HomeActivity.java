@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
@@ -21,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.BasicQrArrayAdapter;
@@ -57,31 +59,91 @@ public class HomeActivity extends AppCompatActivity {
             window.setNavigationBarColor(getResources().getColor(R.color.transparent));
             window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
         }
-
-
-        // Define the carousel items
-        List<CustomCarouselItem> carouselItems = new ArrayList<>();
-
-        // Add some sample data
-        carouselItems.add(new CustomCarouselItem(R.drawable.demo_qr_image, "#1", "My Code 1", "200 PTS"));
-        carouselItems.add(new CustomCarouselItem(R.drawable.demo_qr_image, "#2", "My Code 2", "150 PTS"));
-        carouselItems.add(new CustomCarouselItem(R.drawable.demo_qr_image, "#3", "My Code 3", "100 PTS"));
-
         ViewPager viewPager = findViewById(R.id.view_pager);
 
-        CarouselAdapter carouselAdapter = new CarouselAdapter(this, carouselItems);
-        viewPager.setAdapter(carouselAdapter);
+        // Firebase Connect
+        FirebaseConnect firebaseConnect = new FirebaseConnect();
+        firebaseConnect.getPlayerProfile("testUser", new  FirebaseConnect.OnPlayerProfileGetListener(){
 
-        // Define the user carousel items
-        List<UserCarouselitem> userCarouselItems = new ArrayList<>();
-        // Add some sample data
-        userCarouselItems.add(new UserCarouselitem(R.drawable.demo_picture, "Tim", "testUser","1000", "collected 10"));
-        userCarouselItems.add(new UserCarouselitem(R.drawable.demo_picture, "Tim", "testUser", "900","collected 9"));
-        userCarouselItems.add(new UserCarouselitem(R.drawable.demo_picture, "Tim", "testUser3", "800","collected 8"));
-        ViewPager userViewPager = findViewById(R.id.user_view_pager);
+            @Override
+            public void onPlayerProfileGet(PlayerProfile userProfile) {
+                TextView scans = findViewById(R.id.collected);
+                scans.setText("Collected "+userProfile.getTotalScans());
 
-        UserCarouselAdapter userCarouselAdapter = new UserCarouselAdapter(this, userCarouselItems);
-        userViewPager.setAdapter(userCarouselAdapter);
+                TextView main_total_score = findViewById(R.id.main_total_score);
+                main_total_score.setText(userProfile.getTotalScore()+"");
+
+                // Define the carousel items
+                List<BasicQRCode> carouselItems = userProfile.getQrCodeBasicProfiles();
+                if (carouselItems.size() > 3) {
+                    carouselItems = carouselItems.subList(0, 3);
+                }
+                CarouselAdapter carouselAdapter = new CarouselAdapter(HomeActivity.this, carouselItems);
+                viewPager.setAdapter(carouselAdapter);
+            }
+        });
+
+        firebaseConnect.getPlayersSortedByTotalScore(
+                new FirebaseConnect.OnPlayerListLoadedListener () {
+                    @Override
+                    public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
+                        TextView play_user_head = findViewById(R.id.users_head);
+                        play_user_head.setText("Users (" + playerList.size() + ")");
+                        if (playerList.size() > 3) {
+                            playerList = playerList.subList(0, 3);
+                        }
+                        Log.d("HomeActivity", "Player List: " + playerList);
+                        // Define the user carousel items
+                        ViewPager userViewPager = findViewById(R.id.user_view_pager);
+
+                        UserCarouselAdapter userCarouselAdapter = new UserCarouselAdapter(HomeActivity.this, playerList);
+                        userViewPager.setAdapter(userCarouselAdapter);
+
+                    }
+                    @Override
+                    public void onPlayerListLoadFailure(Exception e) {
+                        Toast.makeText(HomeActivity.this, "No internet", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        firebaseConnect.getQrCodesSortedByPoints(
+                new FirebaseConnect.OnQrListLoadedListener() {
+
+                    @Override
+                    public void onQrListLoaded(List<BasicQRCode> qrcodes) {
+                        Log.d("HomeActivity", "GLOBAL QR CODES: " + qrcodes);
+
+                        ListView listView = findViewById(R.id.home_qr_listview);
+                        // Set up the QR code list view
+                        List<BasicQRCode> qrCodeList = qrcodes;
+                        ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(qrCodeList);
+                        // Limit the number of QR codes to 3 AND SORT IT IN ( not DONE DESCENDING ORDER)
+                        if (qrCodeArrayList.size() >= 3) {
+                            qrCodeArrayList = new ArrayList<>(qrCodeArrayList.subList(0, 3));
+                        }
+                        TextView play_qr_head = findViewById(R.id.qr_title);
+                        play_qr_head.setText("QR Desk (" + qrcodes.size() + ")");
+
+                        BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter( HomeActivity.this, qrCodeArrayList);
+                        listView.setAdapter(qrAdapter);
+                        int height = 0;
+                        if (qrCodeArrayList.size() == 3) {
+                            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 324, getResources().getDisplayMetrics());
+                        } else if (qrCodeArrayList.size() == 2) {
+                            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 224, getResources().getDisplayMetrics());
+                        } else {
+                            height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                        }
+                        listView.getLayoutParams().height = (int) height;
+
+                    }
+                    @Override
+                    public void onQrListLoadFailure(Exception e) {
+                        Toast.makeText(HomeActivity.this, "No internet", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
 
         // Handle click event on the profile picture and also set the profile picture
         imageView = findViewById(R.id.main_profile_picture);
@@ -97,8 +159,8 @@ public class HomeActivity extends AppCompatActivity {
                 intent.putExtra("username", "testUser");
                 startActivity(intent);
             }
-
         });
+
         ImageView geolocationButton = findViewById(R.id.map_image);
         geolocationButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -145,32 +207,10 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }
         );
-        FirebaseConnect firebaseConnect = new FirebaseConnect();
         firebaseConnect.getPlayerProfile("testUser", new FirebaseConnect.OnPlayerProfileGetListener(){
                     @Override
                     public void onPlayerProfileGet(PlayerProfile userProfile) {
-                        ListView listView = findViewById(R.id.home_qr_listview);
-                        // Set up the QR code list view
-                        List<BasicQRCode> qrCodeList = userProfile.getQrCodeBasicProfiles();
-                        ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(qrCodeList);
-                        // Limit the number of QR codes to 3 AND SORT IT IN ( not DONE DESCENDING ORDER)
-                        if (qrCodeArrayList.size() >= 3) {
-                            qrCodeArrayList = new ArrayList<>(qrCodeArrayList.subList(0, 3));
-                        }
-                        TextView play_qr_head = findViewById(R.id.qr_title);
-                        play_qr_head.setText("QR Desk (" + userProfile.getQrCodeBasicProfiles().size() + ")");
 
-                        BasicQrArrayAdapter qrAdapter = new BasicQrArrayAdapter( HomeActivity.this, qrCodeArrayList);
-                        listView.setAdapter(qrAdapter);
-                        int height = 0;
-                        if (qrCodeArrayList.size() == 3) {
-                            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 324, getResources().getDisplayMetrics());
-                        } else if (qrCodeArrayList.size() == 2) {
-                            height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 224, getResources().getDisplayMetrics());
-                        } else {
-                            height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                        }
-                        listView.getLayoutParams().height = (int) height;
                     }
                 });
 

@@ -9,7 +9,7 @@
         android:layout_marginTop="10sp"
         android:layout_marginLeft="10sp"
         android:layout_marginRight="10sp"
-        android:layout_width="wrap_content"
+        android:layout_width="150sp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical">
@@ -22,14 +22,21 @@
             android:textSize="26sp"
             android:textColor="#FFFFFF"
             android:gravity="center_vertical"/>
-
-        <ImageView
-            android:layout_marginLeft="10sp"
-            android:id="@+id/player_image"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/demo_picture"/>
+<!--        ACTUAL IMPLEMENTATION-->
+<!--        <ImageView-->
+<!--            android:layout_marginLeft="10sp"-->
+<!--            android:id="@+id/player_image"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:src="@drawable/demo_picture"/>-->
     </LinearLayout>
+<!--    ROUGH IMPLEMENTATION-->
+    <ImageView
+        android:layout_marginLeft="10sp"
+        android:id="@+id/player_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/demo_picture"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

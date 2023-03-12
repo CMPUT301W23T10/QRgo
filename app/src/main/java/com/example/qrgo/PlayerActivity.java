@@ -208,7 +208,7 @@ public class PlayerActivity extends AppCompatActivity {
             }
         });
 //          code to add new user
-//        firebaseConnect.scanQRCode("782", "testUser", "boba", 22.5, 24.5, "yahoo.cad",
+//        firebaseConnect.scanQRCode("102", "testUser", "cobra", 22.5, 24.5, "yahoo.cad",
 //                500, new FirebaseConnect.OnQRCodeScannedListener(){
 //            @Override
 //            public void onQRScanComplete(boolean success) {
