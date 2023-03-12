@@ -16,6 +16,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -32,6 +33,7 @@ import com.example.qrgo.utilities.CustomCarouselItem;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.UserCarouselAdapter;
 import com.example.qrgo.utilities.UserCarouselitem;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -65,6 +67,16 @@ public class HomeActivity extends AppCompatActivity {
         // Firebase Connect
         FirebaseConnect firebaseConnect = new FirebaseConnect();
         firebaseConnect.getPlayerProfile("testUser", new  FirebaseConnect.OnPlayerProfileGetListener(){
+        FloatingActionButton addBtn = findViewById(R.id.back_button);
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, QRIntakeActivity.class);
+                intent.putExtra("username", "testUser");
+                startActivity(intent);
+            }
+        });
+
 
             @Override
             public void onPlayerProfileGet(PlayerProfile userProfile) {
@@ -274,6 +286,7 @@ public class HomeActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startGeoLocationActivity();
             } else {
+                startGeoLocationActivity();
                 Toast.makeText(this, "Unable to get your location", Toast.LENGTH_SHORT).show();
             }
         }

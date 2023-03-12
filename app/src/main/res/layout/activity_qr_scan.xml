@@ -6,12 +6,23 @@
     android:layout_height="match_parent"
     tools:context="com.example.qrgo.QRScanActivity">
 
+    <Switch
+        android:id="@+id/location_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Use Location"
+        android:checked="false"/>
+
     <com.journeyapps.barcodescanner.DecoratedBarcodeView
         android:id="@+id/zxing_barcode_scanner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/location_switch"
         app:zxing_scanner_layout="@layout/custom_qr_scanner">
     </com.journeyapps.barcodescanner.DecoratedBarcodeView>
-
 
 </RelativeLayout>

@@ -317,7 +317,7 @@ public class FirebaseConnect {
                 data.put("scannedUsers", Arrays.asList(username));
                 data.put("locationObjectPhoto", Arrays.asList(photoUrl));
                 data.put("qrPoints", points);
-                if (latitude != 0 && longitude != 0) {
+                if (latitude != 181 && longitude != 181) {
                     data.put("locations", Arrays.asList(new GeoPoint(latitude, longitude)));
                 }
                 db.collection("QRCodes").add(data).addOnSuccessListener(documentReference -> {
