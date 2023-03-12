@@ -1,10 +1,14 @@
 package com.example.qrgo;
 
+import static com.example.qrgo.MainActivity.sharedPrefdb;
+import static com.example.qrgo.SignupActivity.user;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -67,6 +71,9 @@ public class QRIntakeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_intake);
+
+
+
         // Hide the action bar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -111,8 +118,9 @@ public class QRIntakeActivity extends AppCompatActivity {
                         playerLocation[0] = 181;
                         playerLocation[1] = 181;
                     }
-
-                    db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+                    SharedPreferences sharedPreferences = getSharedPreferences(sharedPrefdb, Context.MODE_PRIVATE);
+                    user = sharedPreferences.getString("user", "");
+                    db.scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
                         @Override
                         public void onQRScanComplete(boolean success) {
                             Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
@@ -133,7 +141,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                 playerLocation[0] = 181;
                 playerLocation[1] = 181;
 
-                db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+                db.scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
                     @Override
                     public void onQRScanComplete(boolean success) {
                         Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
@@ -175,7 +183,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                 playerLocation[0] = 181;
                 playerLocation[1] = 181;
             }
-            db.scanQRCode(generator.getHash(), "testUser", generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
+            db.scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new FirebaseConnect.OnQRCodeScannedListener() {
                 @Override
                 public void onQRScanComplete(boolean success) {
                     Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
