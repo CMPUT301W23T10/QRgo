@@ -201,6 +201,7 @@ public class HomeActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startGeoLocationActivity();
             } else {
+                startGeoLocationActivity();
                 Toast.makeText(this, "Unable to get your location", Toast.LENGTH_SHORT).show();
             }
         }
