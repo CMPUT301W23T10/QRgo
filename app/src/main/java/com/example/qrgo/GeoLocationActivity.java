@@ -47,6 +47,9 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
 
+    private double latitude;
+    private double longitude;
+
     private GeoPoint startPoint;
     List<List<Double>> coordinates = new ArrayList<>();
 
@@ -99,8 +102,14 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
 
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = getLastKnownLocation();
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
+
+        if (getLastKnownLocation() == null) {
+            latitude = 53.5232;
+            longitude = -113.5263;
+        } else {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
         startPoint = new GeoPoint(latitude, longitude);
 
 
