@@ -37,12 +37,17 @@ import java.util.UUID;
  */
 public class SignupActivity extends AppCompatActivity {
 
-    static String userID = imei.substring(0,3);
+    static String userID;
+    static String enteredName;
+    //This is an important index
+    static int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        userID = imei.substring(0, 4);
 
         // Hide the action bar
         ActionBar actionBar = getSupportActionBar();
@@ -77,8 +82,6 @@ public class SignupActivity extends AppCompatActivity {
 
 
 
-
-
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,17 +90,20 @@ public class SignupActivity extends AppCompatActivity {
                 //Retrieve sign up info
 //                final String imei = getIntent().getStringExtra("imei");
 
-                final String realName = username.getText().toString();
+                enteredName = username.getText().toString();
 
 
 
-                // Traverse the string
-                for (int i = 0; i < realName.length(); i++) {
-                    if(realName.charAt(i) == ' '){
+                index = checkSpace();
+                System.out.println(index+"?????*******!!!!!!@@@@@@@@@@########");
+
+                    if(index != 0) {
                         //DO NOT FORGET TO ENSURE UNIQUE USERNAME HERE
-                        final String firstName = realName.substring(0,i);
-                        final String lastName = realName.substring(i+1);
-                        final String userName = lastName.charAt(0)+firstName+"#"+userID;
+
+                        final String firstName = enteredName.substring(0, index);
+                        final String lastName = enteredName.substring(index + 1);
+
+                        final String userName = lastName.charAt(0) + firstName + "#" + userID;
                         final String contactEmail = email.getText().toString();
                         final String contactPhone = phone.getText().toString();
                         final String imei = getIntent().getStringExtra("imei");
@@ -123,10 +129,14 @@ public class SignupActivity extends AppCompatActivity {
                             }
                         });
 
-                    }else{
-                        final String firstName = realName.substring(0, realName.length()-1);
-                        final String lastName = "";
-                        final String userName = realName.substring((realName.length()-1), realName.charAt(0))+"#"+userID;
+                    }//end of if statment
+                    else {
+
+                        final String firstName = enteredName;
+                        System.out.println(enteredName+"?????*******!!!!!!@@@@@@@@@@########");
+                        final String lastName = " ";
+                        final String userName = enteredName.toString() + "#" + userID;
+
                         final String contactEmail = email.getText().toString();
                         final String contactPhone = phone.getText().toString();
                         final String imei = getIntent().getStringExtra("imei");
@@ -151,8 +161,7 @@ public class SignupActivity extends AppCompatActivity {
                                 });
                             }
                         });
-                    }
-                }
+                    }// end of else
 
 
 
@@ -161,5 +170,24 @@ public class SignupActivity extends AppCompatActivity {
 
 
     } // end of onCreate
+
+    /**
+     * check if there is a space in the name entered
+     * @return
+     */
+    public static int checkSpace() {
+        System.out.println(enteredName+"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+
+        for (int i = 0; i < enteredName.length(); i++) {
+            if (enteredName.charAt(i) == ' ') {
+                index = i;
+            } else {
+                index = 0;
+            }
+
+
+        }
+        return index;
+    }//end of checkspace
 
 } // end of class
