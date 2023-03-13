@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- This class generates a QR code based on the input text and calculates a score, rarity, feature list, and a human-readable name.
+ * QRGenerationController is a utility class that generates the required fields for a {@link com.example.qrgo.models.QRCode}
+ * from the string data of a scanned QR code from {@link com.example.qrgo.QRScanActivity}. Fields
+ * generated are based on a hash computed from the string that a QR code represents
  */
 public class QRGenerationController {
     private HashMap<Character, int[]> hexKey = new HashMap<Character, int[]>();
@@ -20,9 +22,9 @@ public class QRGenerationController {
     private ArrayList<Integer> featureList = new ArrayList<Integer>();
 
     /**
-
-     Constructor for the QRGenerationController class.
-     @param qrText The hash of the QR code.
+     * constructor that takes a string and automatically generates all the required fields from that
+     * string
+     * @param qrText the String received from a QR scan
      */
     public QRGenerationController(String qrText) {
         initializeHashMaps();
@@ -74,8 +76,9 @@ public class QRGenerationController {
     }
 
     /**
-     Generates the SHA-256 hash of the input text.
-     @param qrText The input text to generate the hash from.
+     * hashes the QR code using the SHA-256 hashing algorithm, the hash becomes the basis of the QR
+     * code object and all fields are generated from the hash
+     * @param qrText the String received from a QR scan
      */
     private void generateHash(String qrText) {
         MessageDigest digest = null;
@@ -93,7 +96,8 @@ public class QRGenerationController {
     }
 
     /**
-     Parses the hash values into an ArrayList.
+     * parses each character into the hash into a list of items that contain useful information such
+     * as number of ones (used for feature list and score) and the rarity of the letter occurring
      */
     private void parseHash() {
         char[] hashArray = this.hash.toCharArray();
@@ -103,7 +107,7 @@ public class QRGenerationController {
     }
 
     /**
-     Calculates the score and rarity of the QR code based on the parsed hash values.
+     * calculates the score of the QR code based on the hash/parsed hash
      */
     private void calculateScore() {
         int score = 0;
@@ -148,7 +152,8 @@ public class QRGenerationController {
     }
 
     /**
-     Generates the feature list of the QR code based on the parsed hash values.
+     * generates the feature list based on the hash to be used for the human readable name and the
+     * visual representation.
      */
     private void generateFeatureList() {
         for (int i = 1; i <= 4; i++) {
@@ -159,7 +164,7 @@ public class QRGenerationController {
     }
 
     /**
-     Generates the human-readable name of the QR code based on the parsed hash values.
+     * generates the human readable name based on the hash
      */
     private void generateHumanReadableName() {
         String humanReadableName;

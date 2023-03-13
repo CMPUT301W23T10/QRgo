@@ -63,12 +63,12 @@ public class QrProfileActivity extends AppCompatActivity {
                         .transform(new RoundedSquareTransform(100))
                         .into(imageView);
 
-                Log.d("QrProfileActivity", "QR Code Name " + qrCode.getHumanReadableQR());
+//                Log.d("QrProfileActivity", "QR Code Name " + qrCode.getHumanReadableQR());
                 TextView qrCodeName = findViewById(R.id.qr_name);
                 qrCodeName.setText(qrCode.getHumanReadableQR());
 
                 List<BasicPlayerProfile> scanned_list = qrCode.getScannedPlayer();
-                Log.d("QrProfileActivity", "QR Code Players " + scanned_list);
+//                Log.d("QrProfileActivity", "QR Code Players " + scanned_list);
                 TextView users_head = findViewById(R.id.qr_users_head);
                 users_head.setText("Users (" + scanned_list.size() + ")");
                 List<BasicPlayerProfile> playerList = scanned_list;
@@ -95,12 +95,12 @@ public class QrProfileActivity extends AppCompatActivity {
                 });
 
 
-                Log.d("QrProfileActivity", "QR Code Points " + qrCode.getQrCodePoints());
+//                Log.d("QrProfileActivity", "QR Code Points " + qrCode.getQrCodePoints());
                 TextView qr_score = findViewById(R.id.qr_score);
                 qr_score.setText(Integer.toString(qrCode.getQrCodePoints()) + " pts");
 
 
-                Log.d("QrProfileActivity", "QR Code Comments " + qrCode.getComments());
+//                Log.d("QrProfileActivity", "QR Code Comments " + qrCode.getComments());
 //                TextView qr_comment_head = findViewById(R.id.qr_comment_head);
 //                qr_comment_head.setText("Comments (" + qrCode.getComments().size() + ")");
             }

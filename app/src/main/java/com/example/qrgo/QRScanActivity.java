@@ -16,6 +16,11 @@ import com.journeyapps.barcodescanner.ViewfinderView;
 
 import java.util.Random;
 
+/**
+ * QRScanActivity is the activity that represents the camera for QR scanning and also has options for
+ * the user to add their location to the QR scanning process. Result is passed back to
+ * {@link QRIntakeActivity} to complete the QR scanning process
+ */
 public class QRScanActivity extends Activity{
 
     private CaptureManager capture;
@@ -79,12 +84,20 @@ public class QRScanActivity extends Activity{
         return barcodeScannerView.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * allows option to change the color of the overlay on the QR scanning camera
+     * @param view
+     */
     public void changeMaskColor(View view) {
         Random rnd = new Random();
         int color = Color.argb(100, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
         viewfinderView.setMaskColor(color);
     }
 
+    /**
+     * allows option to set if the laser is visible on the QR scanner
+     * @param visible
+     */
     public void changeLaserVisibility(boolean visible) {
         viewfinderView.setLaserVisibility(visible);
     }

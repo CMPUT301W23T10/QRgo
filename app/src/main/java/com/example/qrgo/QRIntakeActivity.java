@@ -13,14 +13,10 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationRequest;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.view.Window;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,28 +24,25 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.QRGenerationController;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.CancellationTokenSource;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-
+/**
+ * This Activity serves as the basis for the QR scanning process, this activity registers the
+ * callback listener for {@link QRScanActivity} and based on the result uses
+ * {@link QRGenerationController} and {@link FirebaseConnect} to produce and push a
+ * {@link com.example.qrgo.models.QRCode} into the database with all required fields.
+ */
 public class QRIntakeActivity extends AppCompatActivity {
 
-    private String hash;
     private double[] playerLocation = {181, 181};
     private FirebaseConnect db = new FirebaseConnect();
-    private FusedLocationProviderClient fusedLocationClient;
     private QRGenerationController generator;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
-
 
     private final ActivityResultLauncher<ScanOptions> QRScanLauncher = registerForActivityResult(new ScanContract(),
             result -> {
@@ -57,6 +50,11 @@ public class QRIntakeActivity extends AppCompatActivity {
                     Intent originalIntent = result.getOriginalIntent();
                     if (originalIntent == null) {
                         Toast.makeText(QRIntakeActivity.this, "Cancelled", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(QRIntakeActivity.this, HomeActivity.class);
+                        // Clear the activity stack so that becomes the new root activity
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        // Start the HomeActivity and finish the current activity
+                        startActivity(intent);
                     } else if (originalIntent.hasExtra(Intents.Scan.MISSING_CAMERA_PERMISSION)) {
                         Toast.makeText(QRIntakeActivity.this, "Cancelled due to missing camera permission", Toast.LENGTH_LONG).show();
                     }
@@ -90,6 +88,10 @@ public class QRIntakeActivity extends AppCompatActivity {
         scanQRCode();
     }
 
+    /**
+     * sets up the QR scanner by initializing scan options and setting {@link QRScanActivity} as the
+     * activity for the actual scanning process, launches the QR scan process.
+     */
     public void scanQRCode() {
         ScanOptions options = new ScanOptions();
         options.setCaptureActivity(QRScanActivity.class);
@@ -100,6 +102,12 @@ public class QRIntakeActivity extends AppCompatActivity {
         QRScanLauncher.launch(options);
     }
 
+    /**
+     * based on the result of the {@link QRScanActivity} and whether the user has opted to include
+     * location information uses {@link FirebaseConnect} to push the scanned QR code into the database
+     * upon successful QR scan opens {@link QrProfileActivity} so that a user can view the scanned
+     * QR code and have options to add a location photo.
+     */
     public void submitQR() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Record location?");
@@ -145,7 +153,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                     @Override
                     public void onQRScanComplete(boolean success) {
                         Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
-                        intent.putExtra("hash", generator.getHash());
+                        intent.putExtra("qr_code", generator.getHash());
                         startActivity(intent);
                     }
                 });
