@@ -79,8 +79,7 @@ public class SearchFragment extends Fragment {
         dataList = new ArrayList<>();
         // 3. Display data in listview
         // Both instances of the code are the same up to this point
-        userSearchListAdapter = new UserSearchListAdapter(getActivity(), dataList);
-        userList.setAdapter(userSearchListAdapter);
+
         FirebaseConnect fb = new FirebaseConnect();
 
         // search firebase for name entered in searchUserEditText using searchUsers method in FirebaseConnect
@@ -90,9 +89,9 @@ public class SearchFragment extends Fragment {
                 // Do something with the search results
                 for (BasicPlayerProfile user : users) {
                     dataList.add(user);
-                    userSearchListAdapter.notifyDataSetChanged();
                 }
-
+                userSearchListAdapter = new UserSearchListAdapter(getActivity(), dataList);
+                userList.setAdapter(userSearchListAdapter);
                 loadingScreen.setVisibility(View.GONE);
             }
             @Override
@@ -117,11 +116,7 @@ public class SearchFragment extends Fragment {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                dataList.clear();
-                userSearchListAdapter.notifyDataSetChanged();
-                userList.setVisibility(View.VISIBLE);
-                loadingScreen.setVisibility(View.GONE);
-
+                // no application at the moment
             }
             @Override
             public void afterTextChanged(Editable s) {
@@ -132,11 +127,13 @@ public class SearchFragment extends Fragment {
                 } else {
                     // clear the dataList and hide the userList and loadingScreen
                     dataList.clear();
-                    userSearchListAdapter.notifyDataSetChanged();
+                    UserSearchListAdapter adapter = new UserSearchListAdapter(getActivity(), dataList);
+                    userList.setAdapter(adapter);
                     userList.setVisibility(View.VISIBLE);
                     loadingScreen.setVisibility(View.GONE);
 
-
+                    // update ListView with new data
+                    userSearchListAdapter.notifyDataSetChanged();
                 }
             }
         });
