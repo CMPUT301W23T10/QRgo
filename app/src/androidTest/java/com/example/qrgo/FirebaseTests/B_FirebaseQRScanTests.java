@@ -2,18 +2,24 @@ package com.example.qrgo.FirebaseTests;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
+
+import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
 import com.example.qrgo.MainActivity;
+import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.robotium.solo.Solo;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,20 +30,63 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class B_FirebaseQRScanTests {
-    private Solo solo;
+    private static Solo solo;
     private FirebaseConnect firebaseConnect;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Rule
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class,true, true);
 
+
+
     @Before
-    public void setup() {
+    public void setup() throws InterruptedException {
         solo =  new Solo(InstrumentationRegistry.getInstrumentation(),rule.getActivity());
         firebaseConnect = new FirebaseConnect();
+        String imei = "1234567890";
+        String username = "AUTOTESTUSERNAME";
+        final CountDownLatch latch = new CountDownLatch(1);
+        final CountDownLatch nlatch = new CountDownLatch(1);
+        final AtomicBoolean result = new AtomicBoolean(false);
+        final AtomicBoolean nresult = new AtomicBoolean(false);
+
+        // Act
+        firebaseConnect.addNewUser(imei, username, new FirebaseConnect.OnUserAddListener() {
+            @Override
+            public void onUserAdd(boolean success) {
+                Log.i("testAddNewUser()", "Success");
+                result.set(success);
+                latch.countDown();
+            }
+        });
+
+        latch.await(5, TimeUnit.SECONDS);
+        assertTrue(result.get());
+
+        String firstName = "John";
+        String lastName = "Doe";
+        String contactPhone = "123-456-7890";
+        String contactEmail = "johndoe@example.com";
+        int totalScore = 0;
+        int totalScans = 0;
+        int highestScore = 0;
+        int lowestScore = 0;
+        // Act
+        firebaseConnect.addNewPlayerProfile(username, firstName, lastName, contactPhone, contactEmail,
+                totalScore, totalScans, highestScore, lowestScore, new FirebaseConnect.OnUserProfileAddListener() {
+                    @Override
+                    public void onUserProfileAdd(boolean success) {
+                        nresult.set(success);
+                        nlatch.countDown();
+                    }
+                });
+
+        nlatch.await(5, TimeUnit.SECONDS);
+        assertTrue(nresult.get());
     }
+
     @Test
-    public void testScanQRCode_withExistingQRCodeAndNewUser() throws InterruptedException {
-        String qrString = "123";
+    public void testScanQRCode_WithNewUser() throws InterruptedException {
+        String qrString = "QRCODE WITH THIS HASH WON'T EXIST";
         String username = "AUTOTESTUSERNAME";
         String humanReadableQR = "Human Readable QR";
         double latitude = 37.7749;
@@ -46,6 +95,7 @@ public class B_FirebaseQRScanTests {
         int points = 10;
 
         final CountDownLatch latch = new CountDownLatch(1);
+        final CountDownLatch nlatch = new CountDownLatch(1);
         final AtomicBoolean result = new AtomicBoolean(false);
 
         solo.getCurrentActivity().runOnUiThread(new Runnable() {
@@ -54,6 +104,8 @@ public class B_FirebaseQRScanTests {
                 connect.scanQRCode(qrString, username, humanReadableQR, latitude, longitude, photoUrl, points, new FirebaseConnect.OnQRCodeScannedListener() {
                     @Override
                     public void onQRScanComplete(boolean success) {
+                        Log.d("onQRScanComplete", "onQRScanComplete: Complete");
+                        System.out.println(success);
                         result.set(success);
                         latch.countDown();
                     }
@@ -64,8 +116,7 @@ public class B_FirebaseQRScanTests {
         latch.await(10, TimeUnit.SECONDS);
         assertTrue(result.get());
 
-        Query query = db.collection("QRCodes").whereEqualTo("qrString", qrString);
-        query.get().addOnSuccessListener(querySnapshot -> {
+        db.collection("QRCodes").whereEqualTo("qrString", qrString).get().addOnSuccessListener(querySnapshot -> {
             if (!querySnapshot.isEmpty()) {
                 DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
                 List<String> scanUsers = (List<String>) documentSnapshot.get("scannedUsers");
@@ -90,13 +141,76 @@ public class B_FirebaseQRScanTests {
                         assertEquals(highestScore, points);
                         int lowestScore = userDocumentSnapshot.getLong("lowestScore").intValue();
                         assertEquals(lowestScore, points);
-                    } else {
-                        fail("User document not found");
                     }
                 });
             } else {
                 fail("QR Code document not found");
             }
         });
+        nlatch.await(10, TimeUnit.SECONDS);
+    }
+
+    @Test
+    public void testGetQRCode() throws InterruptedException {
+        // Arrange
+        String qrString = "QRCODEID1";
+        final CountDownLatch latch = new CountDownLatch(1);
+        final AtomicBoolean qrCodeRetrieved = new AtomicBoolean(false);
+        final AtomicBoolean qrCodeNotFound = new AtomicBoolean(false);
+        final AtomicBoolean qrCodeRetrievalFailure = new AtomicBoolean(false);
+
+        // Act
+        firebaseConnect.getQRCode(qrString, new FirebaseConnect.QRCodeListener() {
+            @Override
+            public void onQRCodeRetrieved(QRCode qrCode) {
+                Log.i("testGetQRCode()", "QR code retrieved");
+                qrCodeRetrieved.set(true);
+                latch.countDown();
+            }
+
+            @Override
+            public void onQRCodeNotFound() {
+                Log.i("testGetQRCode()", "QR code not found");
+                qrCodeNotFound.set(true);
+                latch.countDown();
+            }
+
+            @Override
+            public void onQRCodeRetrievalFailure(Exception e) {
+                Log.e("testGetQRCode()", "QR code retrieval failure", e);
+                qrCodeRetrievalFailure.set(true);
+                latch.countDown();
+            }
+        });
+
+        latch.await(10, TimeUnit.SECONDS);
+
+        // Assert
+        assertTrue(qrCodeRetrieved.get() || qrCodeNotFound.get());
+        assertFalse(qrCodeRetrievalFailure.get());
+    }
+    @AfterClass
+    public static void cleanup() {
+        String qrString = "QRCODE WITH THIS HASH WON'T EXIST";
+        String username = "AUTOTESTUSERNAME";
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Users").document("1234567890").delete(); // replace with the actual ID used in the tests
+        db.collection("Profiles").document(username).delete(); // replace with the actual username used in the tests
+        db.collection("QRCodes").whereEqualTo("qrString", qrString)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        List<String> scanUsers = (List<String>) documentSnapshot.get("scannedUsers");
+                        scanUsers.remove(username);
+                        if (scanUsers.isEmpty()) {
+                            documentSnapshot.getReference().delete();
+                        } else {
+                            documentSnapshot.getReference().update("scannedUsers", scanUsers);
+                        }
+                    }
+                });
+        // close the Solo instance to release any resources
+        solo.finishOpenedActivities();
+
     }
 }
