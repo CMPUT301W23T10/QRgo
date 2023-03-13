@@ -1,11 +1,14 @@
 package com.example.qrgo.FirebaseTests;
 
 import com.example.qrgo.MainActivity;
+import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.robotium.solo.Solo;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,7 +16,10 @@ import org.junit.Test;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+
+import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -21,9 +27,10 @@ import androidx.test.rule.ActivityTestRule;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class A_FirebaseUserAndProfileTests {
-    private Solo solo;
+    private static Solo solo;
     private FirebaseConnect firebaseConnect;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -39,7 +46,7 @@ public class A_FirebaseUserAndProfileTests {
 
     @Test
     public void testCheckImeiExists_withExistingImei() throws InterruptedException {
-        String imei = "IMEITEST1";
+        String imei = "1234567890";
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicBoolean result = new AtomicBoolean(false);
 
@@ -86,7 +93,7 @@ public class A_FirebaseUserAndProfileTests {
     @Test
     public void testCheckUsernameExists_withExistingUsername() throws InterruptedException{
         // Arrange
-        String username = "testUser";
+        String username = "AUTOTESTUSERNAME";
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicBoolean result = new AtomicBoolean(false);
 
@@ -144,6 +151,7 @@ public class A_FirebaseUserAndProfileTests {
         firebaseConnect.addNewUser(imei, username, new FirebaseConnect.OnUserAddListener() {
             @Override
             public void onUserAdd(boolean success) {
+                Log.i("testAddNewUser()", "Success");
                 result.set(success);
                 latch.countDown();
             }
@@ -182,6 +190,31 @@ public class A_FirebaseUserAndProfileTests {
         assertTrue(result.get());
     }
 
+    @Test
+    public void testGetBasicPlayerProfile() throws InterruptedException {
+        // Arrange
+        String username = "testuser1";
+        final CountDownLatch latch = new CountDownLatch(1);
+        final AtomicReference<BasicPlayerProfile> result = new AtomicReference<>();
+
+        // Act
+        firebaseConnect.getBasicPlayerProfile(username, new FirebaseConnect.OnBasicPlayerProfileLoadedListener() {
+            @Override
+            public void onBasicPlayerProfileLoaded(BasicPlayerProfile basicPlayerProfile) {
+                result.set(basicPlayerProfile);
+                latch.countDown();
+            }
+
+            @Override
+            public void onBasicPlayerProfileLoadFailure(Exception e) {
+                latch.countDown();
+            }
+        });
+
+        latch.await(5, TimeUnit.SECONDS);
+        assertNotNull(result.get());
+        assertEquals(result.get().getUsername(), username);
+    }
 
     @Test
     public void testGetPlayerProfile() throws InterruptedException {
@@ -209,6 +242,17 @@ public class A_FirebaseUserAndProfileTests {
         assertTrue(result.get());
     }
 
+    @AfterClass
+    public static void cleanup() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+        // delete any users and player profiles created during the tests
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Users").document("1234567890").delete(); // replace with the actual ID used in the tests
+        db.collection("Profiles").document("AUTOTESTUSERNAME").delete(); // replace with the actual username used in the tests
 
+        // close the Solo instance to release any resources
+        solo.finishOpenedActivities();
+        latch.await(5, TimeUnit.SECONDS);
+    }
 
 }

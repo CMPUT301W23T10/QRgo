@@ -564,8 +564,9 @@ public class FirebaseConnect {
      * @param listener The listener to call when the search is complete.
      */
     public void searchUsers(String searchQuery, OnUserSearchListener listener) {
-        db.collection("Users")
-                .whereEqualTo("username", searchQuery)
+        db.collection("Profiles")
+                .whereGreaterThanOrEqualTo("firstName", searchQuery)
+                .whereLessThanOrEqualTo("firstName", searchQuery + "\uf8ff")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<BasicPlayerProfile> users = new ArrayList<>();
