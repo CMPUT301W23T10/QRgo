@@ -15,12 +15,22 @@ import com.example.qrgo.models.BasicQRCode;
 
 import java.util.ArrayList;
 
+/**
+ * A custom ArrayAdapter class for displaying BasicQRCode objects in a ListView
+ */
 public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
     private Context mContext;
     private ArrayList<BasicQRCode> mQRList;
 
     private String caller = "";
 
+    /**
+     * Constructor for BasicQrArrayAdapter
+     *
+     * @param context the context in which the adapter is created
+     * @param qrList  the list of BasicQRCode objects to be displayed in the ListView
+     * @param caller  the caller of the adapter (player, homeAll, etc.)
+     */
     public BasicQrArrayAdapter(Context context, ArrayList<BasicQRCode> qrList, String caller) {
         super(context, 0, qrList);
         mContext = context;
@@ -28,6 +38,14 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
         this.caller = caller;
     }
 
+    /**
+     * Returns the view for a specific position in the ListView
+     *
+     * @param position    the position of the item in the ListView
+     * @param convertView the view to be converted or inflated
+     * @param parent      the parent ViewGroup of the view
+     * @return the view for the specified position
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the current item from the data array
@@ -47,6 +65,7 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
                 }
 
             }
+
         });
 
         // Get references to the views in the list item layout
@@ -65,9 +84,11 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
             marginParams.setMargins(10, 10, 10, 10);
             qr_arrow_icon.requestLayout();
 
+
             // make this is Gone
             ImageView qr_delete_icon = convertView.findViewById(R.id.qr_delete_icon);
             qr_delete_icon.setVisibility(View.INVISIBLE);
+
         }
         // Set the text for the views
         String name = currentQRCode.getHumanReadableQR();

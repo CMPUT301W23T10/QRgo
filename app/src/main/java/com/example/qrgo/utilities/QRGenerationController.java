@@ -6,6 +6,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ This class generates a QR code based on the input text and calculates a score, rarity, feature list, and a human-readable name.
+ */
 public class QRGenerationController {
     private HashMap<Character, int[]> hexKey = new HashMap<Character, int[]>();
     private HashMap<Character, String> color = new HashMap<Character, String>();
@@ -16,6 +19,11 @@ public class QRGenerationController {
     private String humanReadableName;
     private ArrayList<Integer> featureList = new ArrayList<Integer>();
 
+    /**
+
+     Constructor for the QRGenerationController class.
+     @param qrText The hash of the QR code.
+     */
     public QRGenerationController(String qrText) {
         initializeHashMaps();
         generateHash(qrText);
@@ -26,6 +34,9 @@ public class QRGenerationController {
 
     }
 
+    /**
+     Initializes the hexKey and color HashMaps with their corresponding values.
+     */
     private void initializeHashMaps() {
         hexKey.put('0', new int[] {3, 0});
         hexKey.put('1', new int[] {2, 1});
@@ -62,6 +73,10 @@ public class QRGenerationController {
         color.put('F', "Aqua ");
     }
 
+    /**
+     Generates the SHA-256 hash of the input text.
+     @param qrText The input text to generate the hash from.
+     */
     private void generateHash(String qrText) {
         MessageDigest digest = null;
         try {
@@ -77,6 +92,9 @@ public class QRGenerationController {
         this.hash = hexHash.toString().toUpperCase();
     }
 
+    /**
+     Parses the hash values into an ArrayList.
+     */
     private void parseHash() {
         char[] hashArray = this.hash.toCharArray();
         for (char c : hashArray) {
@@ -84,6 +102,9 @@ public class QRGenerationController {
         }
     }
 
+    /**
+     Calculates the score and rarity of the QR code based on the parsed hash values.
+     */
     private void calculateScore() {
         int score = 0;
         int rarity = 0;
@@ -126,6 +147,9 @@ public class QRGenerationController {
         this.score = score;
     }
 
+    /**
+     Generates the feature list of the QR code based on the parsed hash values.
+     */
     private void generateFeatureList() {
         for (int i = 1; i <= 4; i++) {
             if (this.parsedHash.get(i) != null) {
@@ -134,6 +158,9 @@ public class QRGenerationController {
         }
     }
 
+    /**
+     Generates the human-readable name of the QR code based on the parsed hash values.
+     */
     private void generateHumanReadableName() {
         String humanReadableName;
         String[] monsterNames = {"Skralix", "Gloombrute", "Phantasmaur", "Murkfiend", "Vilegloom", "Doomfang", "Nightshade", "Spectrashock", "Dreadmaw", "Blightspawn", "Necroclaw", "Shadowbeak", "Wraithhound", "Bloodbane", "Voidspawn", "Graveclaw", "Darkhowl", "Venomwing", "Thundercrush", "Frostbite", "Soulripper", "Infernojaw", "Bonecruncher", "Nightstalker", "Deathshade"};
@@ -145,14 +172,29 @@ public class QRGenerationController {
         this.humanReadableName = humanReadableName;
     }
 
+    /**
+
+     Returns the hash of this object.
+     @return the hash of this object
+     */
     public String getHash() {
         return this.hash;
     }
 
+    /**
+
+     Returns the score of this object.
+     @return the score of this object
+     */
     public int getScore() {
         return this.score;
     }
 
+    /**
+
+     Returns the human-readable name of this object.
+     @return the human-readable name of this object
+     */
     public String getHumanReadableName() {
         return this.humanReadableName;
     }
