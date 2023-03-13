@@ -140,7 +140,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="0dp"
-                        android:text="200 pts"
+                        android:text="NaN pts"
                         android:textColor="@color/white"
                         android:textSize="36sp"
                         android:textStyle="bold" />
