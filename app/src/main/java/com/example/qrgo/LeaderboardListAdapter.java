@@ -18,6 +18,8 @@ public class LeaderboardListAdapter extends ArrayAdapter<BasicPlayerProfile> {
         super(context, 0, users);
     }
 
+    @NonNull
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Inflate the view for each user in the list
         if (convertView == null) {

@@ -17,26 +17,12 @@ import com.google.firebase.ktx.Firebase;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LeaderbaordFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class LeaderbaordFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private ArrayList<BasicPlayerProfile> dataList;
-
     private ListView leaderboardList;
-
+    private ArrayList<BasicPlayerProfile> dataList;
+    private LeaderboardListAdapter leaderboardListAdapter;
     public LeaderbaordFragment() {
         // Required empty public constructor
     }
@@ -48,15 +34,13 @@ public class LeaderbaordFragment extends Fragment {
         Log.d("LeaderboardFragment", "onCreateView: ");
         View rootView = inflater.inflate(R.layout.fragment_leaderboard, container, false);
 
+        // initialize the leaderboard ListView and dataList
         leaderboardList = rootView.findViewById(R.id.all_users_list_view);
         dataList = new ArrayList<>();
 
+        // initiate firebase connection for fragment
         FirebaseConnect fb = new FirebaseConnect();
-
         FirebaseConnect.OnPlayerListLoadedListener listener = new FirebaseConnect.OnPlayerListLoadedListener() {
-
-
-
             @Override
             public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                 for (BasicPlayerProfile user : playerList) {
@@ -65,7 +49,7 @@ public class LeaderbaordFragment extends Fragment {
                     Log.d("LeaderboardFragment", user.getFirstName() + " " + user.getTotalScore());
                 }
 
-                LeaderboardListAdapter leaderboardListAdapter = new LeaderboardListAdapter(getContext(), dataList);
+                LeaderboardListAdapter leaderboardListAdapter = new LeaderboardListAdapter(getActivity(), dataList);
                 leaderboardList.setAdapter(leaderboardListAdapter);
             }
 
@@ -74,14 +58,9 @@ public class LeaderbaordFragment extends Fragment {
 
             }
         };
-
-
+        // perform query search
         fb.getPlayersSortedByTotalScore(listener);
-
-
-
-
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_leaderboard, container, false);
+        return rootView;
     }
 }

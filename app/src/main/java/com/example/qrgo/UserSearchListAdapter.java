@@ -14,7 +14,6 @@ import com.example.qrgo.models.BasicPlayerProfile;
 import java.util.ArrayList;
 
 public class UserSearchListAdapter extends ArrayAdapter<BasicPlayerProfile> {
-
     public UserSearchListAdapter(Context context, ArrayList<BasicPlayerProfile> users) {
         super(context, 0, users);
     }
