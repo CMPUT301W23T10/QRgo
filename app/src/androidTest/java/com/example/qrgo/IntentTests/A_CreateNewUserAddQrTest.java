@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -59,17 +60,17 @@ public class A_CreateNewUserAddQrTest extends AndroidJUnitRunner {
         rule.launchActivity(new Intent());
         // Initialize the solo object
         solo = new Solo(getInstrumentation(), rule.getActivity());
-        // Get the shared preferences object
         SharedPreferences sharedPreferences = rule.getActivity().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
+        imei = sharedPreferences.getString("qrgodb", "");
 
         // Edit the shared preferences using the editor
         SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        // Set the "qrgodb" key to null
-        editor.remove("qrgodb").commit();
-
         // Set the "user" key to null
         editor.remove("imei").commit();
+        // Set the "user" key to null
+        editor.remove("user").commit();
+        // Set the "qrgodb" key to null
+        editor.remove("qrgodb").commit();
 
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
                 "pm grant com.example.qrgo android.permission.ACCESS_COARSE_LOCATION");
@@ -90,10 +91,6 @@ public class A_CreateNewUserAddQrTest extends AndroidJUnitRunner {
 
         // Wait for home activity to launch
         solo.waitForActivity(HomeActivity.class, 2000);
-        // Copy imei from shared preferences
-        SharedPreferences sharedPreferences = rule.getActivity().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
-        imei = sharedPreferences.getString("imei", "");
-
         testActionBarIsHidden();
 
         // Click on the profile picture
@@ -103,52 +100,30 @@ public class A_CreateNewUserAddQrTest extends AndroidJUnitRunner {
 
         assertTrue(solo.waitForText("first last", 1, 2000));
         assertTrue(solo.waitForText("testemail@gmail.com", 1, 2000));
-
-        // copy the text from id play_username and store it in a string
-        username = sharedPreferences.getString("user", "");
-
-
+        
         // Click on the close_button
         solo.clickOnView(solo.getView(R.id.close_button));
         solo.waitForActivity(HomeActivity.class, 2000);
-
-//        // Try adding a QR code
-//        solo.clickOnView(solo.getView(R.id.add_button));
-//        solo.waitForActivity(QRIntakeActivity.class, 2000);
-//
-//        solo.waitForDialogToOpen();
-//        Button buttonYes = (Button) solo.getView(android.R.id.button1);
-//        solo.clickOnView(buttonYes);
-//
-//        // Wait for the QrProfileActivity to launch
-//        solo.waitForActivity(QrProfileActivity.class, 2000);
-//        // Click on @+id/close_button
-//        solo.clickOnView(solo.getView(R.id.close_button));
         solo.sleep(2000);
-
+        // Get the shared preferences object
+        SharedPreferences sharedPreferences = rule.getActivity().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
+        username = sharedPreferences.getString("user", "");
     }
-
     public void testActionBarIsHidden() {
         Activity activity = rule.getActivity();
         ActionBar actionBar = activity.getActionBar();
         assert (actionBar == null);
     }
-
-
     @AfterClass
     public static void cleanup() {
-        System.out.println("Cleaning up");
-        System.out.println("Username: " + username);
-        System.out.println("IMEI: " + imei);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Users").document(imei).delete(); // replace with the actual ID used in the tests
-        db.collection("Profiles").document(username).delete(); // replace with the actual username used in the tests
-        solo.finishOpenedActivities();
-
+        if (imei.equals("") && username.equals("")) {
+            Log.d("testSignUpUser", "imei or username is empty");
+        } else {
+            Log.d("testSignUpUser", "imei: " + imei + " username: " + username);
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Users").document(imei).delete(); // replace with the actual ID used in the tests
+            db.collection("Profiles").document(username).delete(); // replace with the actual username used in the tests
+            solo.finishOpenedActivities();
+        }
     }
-
 }
-
-
-
-
