@@ -320,7 +320,6 @@ public class FirebaseConnect {
                 data.put("qrString", qrString);
                 data.put("scannedUsers", Arrays.asList(username));
                 data.put("locationObjectPhoto", Arrays.asList(photoUrl));
-                data.put("locations",Arrays.asList());
                 data.put("qrPoints", points);
                 if (latitude != 181 && longitude != 181) {
                     data.put("locations", Arrays.asList(new GeoPoint(latitude, longitude)));
@@ -689,15 +688,17 @@ public class FirebaseConnect {
                     Map<String, List<List<Double>>> mapped_coordinates = new HashMap<String, List<List<Double>>>();
                     for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
                         List<GeoPoint> locations = (List<GeoPoint>) documentSnapshot.get("locations");
-                        List<List<Double>> coordinates = new ArrayList<List<Double>>();
-                        for(GeoPoint location: locations) {
-                            List<Double> coordinate = new ArrayList<Double>();
-                            coordinate.add(location.getLatitude());
-                            coordinate.add(location.getLongitude());
-                            coordinates.add(coordinate);
-                        }
-                        mapped_coordinates.put((String) documentSnapshot.get("qrString").toString(), coordinates);
+                        if (locations != null) {
+                            List<List<Double>> coordinates = new ArrayList<List<Double>>();
+                            for (GeoPoint location : locations) {
+                                List<Double> coordinate = new ArrayList<Double>();
+                                coordinate.add(location.getLatitude());
+                                coordinate.add(location.getLongitude());
+                                coordinates.add(coordinate);
+                            }
 
+                        mapped_coordinates.put((String) documentSnapshot.get("qrString").toString(), coordinates);
+                        }
                     }
                     listener.onCoordinatesListLoaded(mapped_coordinates);
                 })

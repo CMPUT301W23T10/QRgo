@@ -55,9 +55,9 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
     private double longitude;
 
     private GeoPoint startPoint;
-    List<List<Double>> coordinates = new ArrayList<>();
+    private List<List<Double>> coordinates = new ArrayList<>();
 
-    LocationManager mLocationManager;
+    private LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
