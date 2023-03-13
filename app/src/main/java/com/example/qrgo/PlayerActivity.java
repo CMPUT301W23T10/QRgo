@@ -171,7 +171,7 @@ public class PlayerActivity extends AppCompatActivity {
                             // Pass qrCodeList as a parameter to the fragment
                             qrFragment.setQrCodeList(qrCodeArrayList);
                             qrFragment.setComeFrom("player");
-
+                            qrFragment.setUserIntent(username);
                             getSupportFragmentManager().beginTransaction()
                                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                                     .add(R.id.fragment_container, qrFragment)

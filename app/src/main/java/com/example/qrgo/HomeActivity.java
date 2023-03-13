@@ -34,10 +34,8 @@ import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.example.qrgo.utilities.CarouselAdapter;
 import com.example.qrgo.utilities.CircleTransform;
-import com.example.qrgo.utilities.CustomCarouselItem;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.UserCarouselAdapter;
-import com.example.qrgo.utilities.UserCarouselitem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 

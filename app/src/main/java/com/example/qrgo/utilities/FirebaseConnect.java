@@ -120,6 +120,7 @@ public class FirebaseConnect {
      * @param contactPhone The phone number of the player's emergency contact.
      * @param contactEmail The email address of the player's emergency contact.
      * @param totalScore The total score of the player. Pass in 0 initially.
+     * @param totalScans The total scans of the player. Pass in 0 initially.
      * @param highestScore The highest score of the player. Pass in 0 initially.
      * @param lowestScore The lowest score of the player. Pass in 0 initially.
      * @param listener The listener to handle the result of the operation.
@@ -133,7 +134,7 @@ public class FirebaseConnect {
         data.put("contactPhone", contactPhone);
         data.put("contactEmail", contactEmail);
         data.put("totalScore", totalScore);
-        data.put("totalScore", totalScans);
+        data.put("totalScans", totalScans);
 
         data.put("highestScore", highestScore);
         data.put("lowestScore", lowestScore);
@@ -319,6 +320,7 @@ public class FirebaseConnect {
                 data.put("qrString", qrString);
                 data.put("scannedUsers", Arrays.asList(username));
                 data.put("locationObjectPhoto", Arrays.asList(photoUrl));
+                data.put("locations",Arrays.asList());
                 data.put("qrPoints", points);
                 if (latitude != 181 && longitude != 181) {
                     data.put("locations", Arrays.asList(new GeoPoint(latitude, longitude)));

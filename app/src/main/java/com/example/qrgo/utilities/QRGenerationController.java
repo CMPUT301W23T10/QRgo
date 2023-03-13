@@ -108,19 +108,19 @@ public class QRGenerationController {
         switch(rarity) {
             case 1:
                 score += 0;
-                this.rarity = "Common ";
+                this.rarity = "(C) ";
                 break;
             case 2:
                 score += 500;
-                this.rarity = "Rare ";
+                this.rarity = "(R) ";
                 break;
             case 3:
                 score += 1000;
-                this.rarity = "Epic ";
+                this.rarity = "(E) ";
                 break;
             case 4:
                 score += 1500;
-                this.rarity = "Legendary ";
+                this.rarity = "(L) ";
                 break;
         }
         this.score = score;
