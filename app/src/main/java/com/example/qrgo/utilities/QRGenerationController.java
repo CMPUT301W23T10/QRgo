@@ -36,6 +36,9 @@ public class QRGenerationController {
 
     }
 
+    /**
+     Initializes the hexKey and color HashMaps with their corresponding values.
+     */
     private void initializeHashMaps() {
         hexKey.put('0', new int[] {3, 0});
         hexKey.put('1', new int[] {2, 1});
@@ -174,14 +177,29 @@ public class QRGenerationController {
         this.humanReadableName = humanReadableName;
     }
 
+    /**
+
+     Returns the hash of this object.
+     @return the hash of this object
+     */
     public String getHash() {
         return this.hash;
     }
 
+    /**
+
+     Returns the score of this object.
+     @return the score of this object
+     */
     public int getScore() {
         return this.score;
     }
 
+    /**
+
+     Returns the human-readable name of this object.
+     @return the human-readable name of this object
+     */
     public String getHumanReadableName() {
         return this.humanReadableName;
     }
