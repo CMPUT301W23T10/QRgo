@@ -79,7 +79,7 @@ public class UserCarouselAdapter extends PagerAdapter {
             userName.setText(name);
             String scoreString = Integer.toString(user.getTotalScore());
             userScore.setText(scoreString);
-            collectedQrCodes.setText("NaN");
+            collectedQrCodes.setText("High score:"+user.getHighestScore());
 
             // Add the user view to the layout
             ViewGroup userContainer;

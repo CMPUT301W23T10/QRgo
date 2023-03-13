@@ -67,45 +67,38 @@ public class QrProfileActivity extends AppCompatActivity {
                 TextView qrCodeName = findViewById(R.id.qr_name);
                 qrCodeName.setText(qrCode.getHumanReadableQR());
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<BasicPlayerProfile> scanned_list = qrCode.getScannedPlayer();
-                        Log.d("QrProfileActivity", "QR Code Players " + scanned_list);
-                        TextView users_head = findViewById(R.id.qr_users_head);
-                        users_head.setText("Users (" + scanned_list.size() + ")");
-                        List<BasicPlayerProfile> playerList = scanned_list;
-                        if (scanned_list.size() > 3) {
-                            playerList = playerList.subList(0, 3);
-                        }
-                        // Define the user carousel items
-                        ViewPager userViewPager = findViewById(R.id.qr_view_pager);
+                List<BasicPlayerProfile> scanned_list = qrCode.getScannedPlayer();
+                Log.d("QrProfileActivity", "QR Code Players " + scanned_list);
+                TextView users_head = findViewById(R.id.qr_users_head);
+                users_head.setText("Users (" + scanned_list.size() + ")");
+                List<BasicPlayerProfile> playerList = scanned_list;
+                if (scanned_list.size() > 3) {
+                    playerList = playerList.subList(0, 3);
+                }
+                // Define the user carousel items
+                ViewPager userViewPager = findViewById(R.id.qr_view_pager);
 
-                        UserCarouselAdapter userCarouselAdapter = new UserCarouselAdapter(QrProfileActivity.this, playerList);
-                        userViewPager.setAdapter(userCarouselAdapter);
+                UserCarouselAdapter userCarouselAdapter = new UserCarouselAdapter(QrProfileActivity.this, playerList);
+                userViewPager.setAdapter(userCarouselAdapter);
 
-                        TextView qr_users_view_all = findViewById(R.id.qr_users_view_all);
-                        qr_users_view_all.setOnClickListener(v -> {
-                            QrAllUsers_listview  qrFragment = new QrAllUsers_listview();
-                            ArrayList<BasicPlayerProfile> qrCodeArrayList = new ArrayList<>(scanned_list);
-                            // Pass qrCodeList as a parameter to the fragment
-                            qrFragment.setQrCodeList(qrCodeArrayList);
-
-                            getSupportFragmentManager().beginTransaction()
-                                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                                    .add(R.id.qr_fragment_container, qrFragment)
-                                    .addToBackStack(null)
-                                    .commit();
-                        });
-
-                    }
-                }, 1000);
-//                TextView users_head = findViewById(R.id.users_head);
+                TextView qr_users_view_all = findViewById(R.id.qr_users_view_all);
+                qr_users_view_all.setOnClickListener(v -> {
+                    QrAllUsers_listview  qrFragment = new QrAllUsers_listview();
+                    ArrayList<BasicPlayerProfile> qrCodeArrayList = new ArrayList<>(scanned_list);
+                    // Pass qrCodeList as a parameter to the fragment
+                    qrFragment.setQrCodeList(qrCodeArrayList);
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                            .add(R.id.qr_fragment_container, qrFragment)
+                            .addToBackStack(null)
+                            .commit();
+                });
 
 
                 Log.d("QrProfileActivity", "QR Code Points " + qrCode.getQrCodePoints());
                 TextView qr_score = findViewById(R.id.qr_score);
                 qr_score.setText(Integer.toString(qrCode.getQrCodePoints()) + " pts");
+
 
                 Log.d("QrProfileActivity", "QR Code Comments " + qrCode.getComments());
 //                TextView qr_comment_head = findViewById(R.id.qr_comment_head);
@@ -121,6 +114,13 @@ public class QrProfileActivity extends AppCompatActivity {
             public void onQRCodeRetrievalFailure(Exception e) {
 
             }
+        });
+
+        // Define the back button
+        ImageView backButton = findViewById(R.id.close_button);
+        backButton.setOnClickListener(v -> {
+           Intent intent1 = new Intent(QrProfileActivity.this, MainActivity.class);
+              startActivity(intent1);
         });
     }
 }

@@ -48,8 +48,10 @@ public class CarouselAdapter extends PagerAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), QrProfileActivity.class);
-                intent.putExtra("qr_code", carouselItem.getQRString());
-                view.getContext().startActivity(intent);
+                if (carouselItem.getQRString() != "NaN") {
+                    intent.putExtra("qr_code", carouselItem.getQRString());
+                    view.getContext().startActivity(intent);
+                }
             }
         });
 

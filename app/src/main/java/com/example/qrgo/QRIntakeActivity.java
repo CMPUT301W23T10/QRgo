@@ -124,7 +124,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                         @Override
                         public void onQRScanComplete(boolean success) {
                             Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
-                            intent.putExtra("hash", generator.getHash());
+                            intent.putExtra("qr_code", generator.getHash());
                             startActivity(intent);
                         }
                     });
