@@ -1,6 +1,7 @@
 package com.example.qrgo.utilities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.qrgo.QrProfileActivity;
 import com.example.qrgo.R;
 import com.example.qrgo.models.BasicQRCode;
 
@@ -35,6 +37,17 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(com.example.qrgo.R.layout.qr_items, parent, false);
         }
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), QrProfileActivity.class);
+                if (currentQRCode.getQRString() != "NaN") {
+                    intent.putExtra("qr_code", currentQRCode.getQRString());
+                    view.getContext().startActivity(intent);
+                }
+
+            }
+        });
 
         // Get references to the views in the list item layout
         TextView nameTextView = convertView.findViewById(R.id.qr_name);

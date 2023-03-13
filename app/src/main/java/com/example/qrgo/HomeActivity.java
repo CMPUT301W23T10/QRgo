@@ -1,5 +1,8 @@
 package com.example.qrgo;
 
+import static com.example.qrgo.MainActivity.sharedPrefdb;
+import static com.example.qrgo.SignupActivity.user;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -7,7 +10,9 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -29,10 +34,8 @@ import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.example.qrgo.utilities.CarouselAdapter;
 import com.example.qrgo.utilities.CircleTransform;
-import com.example.qrgo.utilities.CustomCarouselItem;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.UserCarouselAdapter;
-import com.example.qrgo.utilities.UserCarouselitem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
@@ -48,15 +51,17 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_home);
+        SharedPreferences sharedPreferences = getSharedPreferences(sharedPrefdb, Context.MODE_PRIVATE);
+        user = sharedPreferences.getString("user", "");
 
+        setContentView(R.layout.activity_home);
 
         FloatingActionButton addBtn = findViewById(R.id.add_button);
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, QRIntakeActivity.class);
-                intent.putExtra("username", "testUser");
+                intent.putExtra("username", user);
                 startActivity(intent);
             }
         });
@@ -78,7 +83,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Firebase Connect
         FirebaseConnect firebaseConnect = new FirebaseConnect();
-        firebaseConnect.getPlayerProfile("testUser", new  FirebaseConnect.OnPlayerProfileGetListener(){
+        firebaseConnect.getPlayerProfile(user, new  FirebaseConnect.OnPlayerProfileGetListener(){
 
 
             @Override
@@ -137,7 +142,6 @@ public class HomeActivity extends AppCompatActivity {
                         if (playerList.size() > 3) {
                             playerList = playerList.subList(0, 3);
                         }
-                        Log.d("HomeActivity", "Player List: " + playerList);
                         // Define the user carousel items
                         ViewPager userViewPager = findViewById(R.id.user_view_pager);
 
@@ -175,8 +179,6 @@ public class HomeActivity extends AppCompatActivity {
 
                     @Override
                     public void onQrListLoaded(List<BasicQRCode> qrcodes) {
-                        Log.d("HomeActivity", "GLOBAL QR CODES: " + qrcodes);
-
                         ListView listView = findViewById(R.id.home_qr_listview);
                         // Set up the QR code list view
                         List<BasicQRCode> qrCodeList = qrcodes;
@@ -237,7 +239,7 @@ public class HomeActivity extends AppCompatActivity {
                 // Handle click event here
                 Intent intent = new Intent(HomeActivity.this, PlayerActivity.class);
                 // Put the username in the intent
-                intent.putExtra("username", "testUser");
+                intent.putExtra("username", user);
                 startActivity(intent);
             }
         });
@@ -287,7 +289,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }
         );
-        firebaseConnect.getPlayerProfile("testUser", new FirebaseConnect.OnPlayerProfileGetListener(){
+        firebaseConnect.getPlayerProfile(user, new FirebaseConnect.OnPlayerProfileGetListener(){
                     @Override
                     public void onPlayerProfileGet(PlayerProfile userProfile) {
 

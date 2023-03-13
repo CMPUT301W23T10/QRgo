@@ -1,9 +1,11 @@
 package com.example.qrgo;
 
 import static com.example.qrgo.MainActivity.imei;
+import static com.example.qrgo.MainActivity.sharedPrefdb;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,13 +40,15 @@ import java.util.UUID;
 public class SignupActivity extends AppCompatActivity {
 
     static String userID;
-    static String enteredName;
+    static String user;
+    String sharedDB = sharedPrefdb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        SharedPreferences sharedPreferences = getSharedPreferences(sharedDB, Context.MODE_PRIVATE);
         userID = imei.substring(0, 4);
 
         // Hide the action bar
@@ -97,7 +101,7 @@ public class SignupActivity extends AppCompatActivity {
                 //Retrieve sign up info
 //                final String imei = getIntent().getStringExtra("imei");
 
-                enteredName = username.getText().toString();
+
 
 
 
@@ -112,7 +116,16 @@ public class SignupActivity extends AppCompatActivity {
                 final String contactEmail = phone_num.getText().toString();
                 final String contactPhone = phone.getText().toString();
                 final String imei = getIntent().getStringExtra("imei");
+                user = userName;
                 //Add User
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("user", user);
+                editor.commit();
+
+
+
+
                 db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
                     @Override
                     public void onUserAdd(boolean success) {
