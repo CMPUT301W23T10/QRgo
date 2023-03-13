@@ -320,6 +320,7 @@ public class FirebaseConnect {
                 data.put("qrString", qrString);
                 data.put("scannedUsers", Arrays.asList(username));
                 data.put("locationObjectPhoto", Arrays.asList(photoUrl));
+                data.put("locations",Arrays.asList());
                 data.put("qrPoints", points);
                 if (latitude != 181 && longitude != 181) {
                     data.put("locations", Arrays.asList(new GeoPoint(latitude, longitude)));
