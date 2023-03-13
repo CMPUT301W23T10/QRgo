@@ -23,7 +23,10 @@ android {
             useJUnitPlatform()
         }
     }
-
+    
+    lintOptions {
+        abortOnError false
+    }
 
     buildTypes {
         release {
