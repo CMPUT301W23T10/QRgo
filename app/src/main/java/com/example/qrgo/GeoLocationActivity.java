@@ -3,6 +3,7 @@ package com.example.qrgo;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -18,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -28,9 +30,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
+import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -325,6 +329,25 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
                 marker.setPosition(new GeoPoint(latitude, longitude));
                 marker.setTitle("Latitude: " + Double.toString(latitude) + " Longitude: " + Double.toString(longitude));
                 map.getOverlays().add(marker);
+
+                marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(GeoLocationActivity.this);
+                        builder.setMessage("Do you want to go to a different activity?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.d("hazarika123", "latitude: " + latitude + "longitude" + longitude);
+                                Intent intent = new Intent(GeoLocationActivity.this, QrProfileActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                        builder.setNegativeButton("No", null);
+                        builder.show();
+                        return false;
+                    }
+                });
             }
         }
         map.invalidate();
@@ -350,5 +373,4 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         }
         return bestLocation;
     }
-
 }
