@@ -79,6 +79,22 @@ public class HomeActivity extends AppCompatActivity {
             window.setNavigationBarColor(getResources().getColor(R.color.transparent));
             window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
         }
+
+        // Set up leaderboard page
+        TextView leaderboardButton = findViewById(R.id.user_view_all);
+        leaderboardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Call your fragment here
+                fragment_leaderboard_highscore  qrFragment = new fragment_leaderboard_highscore();
+                // Pass qrCodeList as a parameter to the fragment
+                getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .add(R.id.fragment_container, qrFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
         ViewPager viewPager = findViewById(R.id.view_pager);
 
         // Firebase Connect
