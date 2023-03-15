@@ -12,7 +12,6 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -20,13 +19,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.example.qrgo.models.Comment;
 import com.example.qrgo.models.PlayerProfile;
-import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.FirebaseConnect;
 
 import com.example.qrgo.utilities.RoundedSquareTransform;
@@ -166,7 +163,7 @@ public class PlayerActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             // Call your fragment here
-                            QrListview  qrFragment = new QrListview();
+                            QrListviewFragment qrFragment = new QrListviewFragment();
                             ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(qrCodeList);
                             // Pass qrCodeList as a parameter to the fragment
                             qrFragment.setQrCodeList(qrCodeArrayList);

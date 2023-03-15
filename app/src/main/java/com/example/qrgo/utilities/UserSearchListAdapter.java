@@ -1,4 +1,4 @@
-package com.example.qrgo;
+package com.example.qrgo.utilities;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.example.qrgo.R;
 import com.example.qrgo.models.BasicPlayerProfile;
 
 import java.util.ArrayList;

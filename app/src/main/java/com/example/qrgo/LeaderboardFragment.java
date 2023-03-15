@@ -22,9 +22,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class fragment_leaderboard_highscore extends Fragment {
+public class LeaderboardFragment extends Fragment {
 
-    public fragment_leaderboard_highscore() {
+    public LeaderboardFragment() {
         // Required empty public constructor
     }
     FloatingActionButton back;

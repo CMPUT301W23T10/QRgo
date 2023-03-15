@@ -8,23 +8,18 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.qrgo.models.BasicPlayerProfile;
-import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.models.QRCode;
-import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.RoundedSquareTransform;
 import com.example.qrgo.utilities.UserCarouselAdapter;
 import com.squareup.picasso.Picasso;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +78,7 @@ public class QrProfileActivity extends AppCompatActivity {
 
                 TextView qr_users_view_all = findViewById(R.id.qr_users_view_all);
                 qr_users_view_all.setOnClickListener(v -> {
-                    QrAllUsers_listview  qrFragment = new QrAllUsers_listview();
+                    QRListFragment qrFragment = new QRListFragment();
                     ArrayList<BasicPlayerProfile> qrCodeArrayList = new ArrayList<>(scanned_list);
                     // Pass qrCodeList as a parameter to the fragment
                     qrFragment.setQrCodeList(qrCodeArrayList);

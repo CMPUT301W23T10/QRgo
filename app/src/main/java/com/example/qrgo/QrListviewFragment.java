@@ -6,14 +6,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,16 +22,16 @@ import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link QrListview} factory method to
+ * Use the {@link QrListviewFragment} factory method to
  * create an instance of this fragment.
  */
-public class QrListview extends Fragment {
+public class QrListviewFragment extends Fragment {
     private ArrayList<BasicQRCode> qrCodeList;
     private String comeFrom;
     private String userIntent;
     private boolean toggle = false;
     ListView listView;
-    public QrListview() {
+    public QrListviewFragment() {
         // Required empty public constructor
     }
     public void setQrCodeList(ArrayList<BasicQRCode> qrCodeList) {

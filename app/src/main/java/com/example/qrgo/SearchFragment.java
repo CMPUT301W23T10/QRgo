@@ -2,23 +2,20 @@ package com.example.qrgo;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
+import com.example.qrgo.utilities.UserSearchListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
