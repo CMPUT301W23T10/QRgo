@@ -54,7 +54,7 @@ public class fragment_leaderboard_highscore extends Fragment {
                                 public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                                     // convert the list to an array
                                     ArrayList<BasicPlayerProfile> playerArrayList = new ArrayList<>(playerList);
-                                    BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList);
+                                    BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "highScore");
                                     all_users_listview.setAdapter(userAdapter);
                                 }
                                 @Override
@@ -70,7 +70,7 @@ public class fragment_leaderboard_highscore extends Fragment {
                                 public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                                     // convert the list to an array
                                     ArrayList<BasicPlayerProfile> playerArrayList = new ArrayList<>(playerList);
-                                    BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList);
+                                    BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "totalScore");
                                     all_users_listview.setAdapter(userAdapter);
                                 }
                                 @Override
@@ -86,7 +86,7 @@ public class fragment_leaderboard_highscore extends Fragment {
                                 public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                                     // convert the list to an array
                                     ArrayList<BasicPlayerProfile> playerArrayList = new ArrayList<>(playerList);
-                                    BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList);
+                                    BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "totalScore");
                                     all_users_listview.setAdapter(userAdapter);
                                 }
                                 @Override

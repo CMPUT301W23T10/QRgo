@@ -35,7 +35,7 @@ public class QrAllUsers_listview extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_qr_all_users_listview, container, false);
          qr_users_listview = rootView.findViewById(R.id.qr_users_listview);
-        BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerList);
+        BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerList, "totalScore");
         qr_users_listview.setAdapter(userAdapter);
 
         FloatingActionButton back = rootView.findViewById(R.id.back_button);
