@@ -24,16 +24,19 @@ public class BasicUserArrayAdapter extends ArrayAdapter<BasicPlayerProfile> {
 
     private Context mContext;
     private ArrayList<BasicPlayerProfile> mUserList;
+    private String field;
 
     /**
      * Constructor for BasicUserArrayAdapter.
      *
      * @param context  the context in which the adapter is used
      * @param userList an ArrayList of BasicPlayerProfile objects to be displayed in the ListView
+     * @param field    the field for which the list is being displayed for.
      */
-    public BasicUserArrayAdapter(Context context, ArrayList<BasicPlayerProfile> userList) {
+    public BasicUserArrayAdapter(Context context, ArrayList<BasicPlayerProfile> userList, String field) {
         super(context, 0, userList);
         mContext = context;
+        this.field = field;
         mUserList = userList;
     }
 
@@ -78,8 +81,11 @@ public class BasicUserArrayAdapter extends ArrayAdapter<BasicPlayerProfile> {
 
         // Set the text for the views
         nameTextView.setText(currentUser.getFirstName());
-        scoreTextView.setText(currentUser.getTotalScore() + " pts");
-
+        if (field == "totalScore") {
+            scoreTextView.setText(currentUser.getTotalScore() + " pts");
+        } else if (field == "highScore") {
+            scoreTextView.setText(currentUser.getHighestScore() + " pts");
+        }
         return convertView;
     }
 }
