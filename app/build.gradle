@@ -51,7 +51,7 @@ task javadoc(type: Javadoc) {
     exclude '**/R.html', '**/R.*.html', '**/index.html', '**/Manifest.html'
     failOnError false
     options.addStringOption('Xdoclint:none', '-quiet')
-    destinationDir = file("$buildDir/docs/javadoc")
+    destinationDir = file("javadocs")
 }
 
 task wrapper(type: Wrapper){
