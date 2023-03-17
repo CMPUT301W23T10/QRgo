@@ -32,9 +32,9 @@ jobs:
 
       - name: Generate Javadoc
         run: |
-          cd ${{ github.workspace }}
           ./gradlew javadoc -sourcepath $ANDROID_SDK_ROOT/platforms/android-30/android.jar -console=plain
-          cp -R app/build/docs/javadoc/* javadocs/ 
+          cp -R app/build/docs/javadoc/* javadocs/
+        working-directory: {{ github.workspace }}
 
       - name: Deploy JavaDoc 🚀
         uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
