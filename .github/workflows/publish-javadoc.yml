@@ -33,7 +33,7 @@ jobs:
       - name: Generate Javadoc
         run: |
           ./gradlew javadoc -sourcepath $ANDROID_SDK_ROOT/platforms/android-30/android.jar
-          cp -R javadocs
+          cp -R app/build/docs/javadoc/* javadocs/
         working-directory: ./
 
 
@@ -41,7 +41,7 @@ jobs:
         uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          javadoc-branch: javadoc
+          javadoc-branch: javadocs
           java-version: 17
-          target-folder: javadoc
+          target-folder: javadocs
           project: gradle
