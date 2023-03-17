@@ -40,20 +40,6 @@ android {
     }
 }
 
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    options.linkSource true
-    options.links("https://docs.oracle.com/javase/8/docs/api/")
-    options.links("https://developer.android.com/reference/")
-    options.memberLevel = JavadocMemberLevel.PUBLIC
-    options.encoding = "UTF-8"
-    exclude '**/R.html', '**/R.*.html', '**/index.html', '**/Manifest.html'
-    failOnError false
-    options.addStringOption('Xdoclint:none', '-quiet')
-    destinationDir = file("javadocs")
-}
-
 task wrapper(type: Wrapper){
     gradleVersion = '7.4.0'
 }
