@@ -28,7 +28,7 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew assembleDebug
-        working-directory: ./your-project-directory
+        working-directory: ./
 
       - name: Generate Javadoc
         run: |
