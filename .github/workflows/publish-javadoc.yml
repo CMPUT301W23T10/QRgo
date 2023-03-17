@@ -30,11 +30,14 @@ jobs:
         run: ./gradlew assembleDebug
         working-directory: ./
 
+  publish:
+    runs-on: ubuntu-latest
+    steps:
       - name: Generate Javadoc
         run: |
-          cd ${{ github.workspace }} -c ./gradle.properties
-          ./gradlew javadoc -sourcepath $ANDROID_SDK_ROOT/platforms/android-30/android.jar -c ./gradle.properties
-          cp -R app/build/docs/javadoc/* javadocs/ -c ./gradle.properties
+          cd ${{ github.workspace }}
+          ./gradlew javadoc -sourcepath $ANDROID_SDK_ROOT/platforms/android-30/android.jar
+          cp -R app/build/docs/javadoc/* javadocs/ 
 
       - name: Deploy JavaDoc 🚀
         uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
