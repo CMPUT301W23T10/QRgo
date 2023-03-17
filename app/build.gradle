@@ -50,9 +50,8 @@ task javadoc(type: Javadoc) {
     options.encoding = "UTF-8"
     exclude '**/R.html', '**/R.*.html', '**/index.html', '**/Manifest.html'
     failOnError false
-    options.verbose false
     options.addStringOption('Xdoclint:none', '-quiet')
-    destinationDir = file("javadocs")
+    destinationDir = file("$buildDir/docs/javadoc")
 }
 
 task wrapper(type: Wrapper){
