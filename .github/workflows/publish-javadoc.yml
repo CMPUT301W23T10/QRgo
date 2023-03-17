@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - fardeenfs-patch-1
 
 jobs:
   build:
