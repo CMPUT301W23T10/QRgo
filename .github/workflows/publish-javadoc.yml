@@ -3,8 +3,7 @@ name: Deploy Javadoc
 on:
   push:
     branches:
-      - master
-      - fardeenfs-patch-1
+      - main
 
 jobs:
   publish:
