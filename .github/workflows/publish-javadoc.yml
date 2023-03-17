@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate Javadoc
         run: |
-          ./gradlew javadoc -sourcepath $ANDROID_SDK_ROOT/platforms/android-30/android.jar --noparallel
+          ./gradlew javadoc -Dsourcepath $ANDROID_SDK_ROOT/platforms/android-30/android.jar --noparallel
           cp -R app/build/docs/javadoc/* javadocs/
         working-directory: /home/runner/work/QRgo/QRgo
 
