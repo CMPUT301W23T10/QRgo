@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - fardeenfs-patch-1
+      - main
 
 jobs:
   publish:
@@ -14,7 +14,7 @@ jobs:
         uses: MathieuSoysal/Javadoc-publisher.yml@v2.4.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          javadoc-branch: javadocs
+          javadoc-branch: javadoc
           java-version: 17
-          target-folder: javadocs
+          target-folder: javadoc 
           project: gradle
