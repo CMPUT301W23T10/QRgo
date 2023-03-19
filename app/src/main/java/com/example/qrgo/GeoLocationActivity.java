@@ -17,8 +17,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -28,24 +28,21 @@ import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.events.MapEventsReceiver;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -59,7 +56,8 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
     private double longitude;
 
     private GeoPoint startPoint;
-    private List<List<Double>> coordinates = new ArrayList<>();
+    //private List<List<Double>> coordinates = new ArrayList<>();
+    private Map<String, List<List<Double>>> coordinates = new HashMap<>();
 
     private LocationManager mLocationManager;
 
@@ -71,18 +69,24 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         database.getAllQrCoordinates(new FirebaseConnect.OnCoordinatesListLoadedListener() {
             @Override
             public void onCoordinatesListLoaded(Map<String, List<List<Double>>> mapped_coordinates) {
-                for (List<List<Double>> coordinateList : mapped_coordinates.values()) {
+                /*for (List<List<Double>> coordinateList : mapped_coordinates.values()) {
                     for (List<Double> coordinate : coordinateList) {
                         coordinates.add(coordinate);
                     }
+                }*/
+                for (Map.Entry<String, List<List<Double>>> entry : mapped_coordinates.entrySet()) {
+                    coordinates.put(entry.getKey(), entry.getValue());
                 }
             }
+
 
             @Override
             public void onCoordinatesListLoadFailure(Exception e) {
 
             }
         });
+
+        Log.d("hazarika", String.valueOf(coordinates));
 
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -123,10 +127,68 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
 
 
         //Log.d("hazarika", "latitude: " + startPoint.getLatitude() + "longitude" + startPoint.getLongitude());
-        mapController.setCenter(startPoint);
+        //mapController.setCenter(startPoint);
         mapController.setZoom(15);
 
-        createDraggableMarker(map, new GeoPoint(startPoint.getLatitude(), startPoint.getLongitude()), "Hello world", coordinates);
+        Intent intent = getIntent();
+        String qrCodeID = intent.getStringExtra("qrCode");
+
+        if (qrCodeID == null) {
+            createDraggableMarker(map, new GeoPoint(startPoint.getLatitude(), startPoint.getLongitude()), "Place me!", coordinates);
+        } else {
+            database.getQRCode(qrCodeID, new FirebaseConnect.QRCodeListener() {
+                @Override
+                public void onQRCodeRetrieved(QRCode qrCode) {
+                    List<com.google.firebase.firestore.GeoPoint> qrCodeCoordinates = qrCode.getLocations();
+                    if (qrCodeCoordinates == null || qrCodeCoordinates.size() == 0) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(GeoLocationActivity.this);
+                        builder.setTitle("Location Disabled");
+                        builder.setMessage("Go back to QR Code page?");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(GeoLocationActivity.this, QrProfileActivity.class);
+                                intent.putExtra("qr_code", qrCodeID);
+                                startActivity(intent);
+                            }
+                        });
+                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(GeoLocationActivity.this, HomeActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                        builder.show();
+
+                    } else {
+                        for (com.google.firebase.firestore.GeoPoint qrLocation : qrCodeCoordinates) {
+                            startPoint = new GeoPoint(qrLocation.getLatitude(), qrLocation.getLongitude());
+                            addMarker(qrLocation.getLatitude(), qrLocation.getLongitude());
+                        }
+                        if (startPoint != null) {
+                            mapController.setCenter(startPoint);
+                        }
+                    }
+                }
+
+                @Override
+                public void onQRCodeNotFound() {
+
+                }
+
+                @Override
+                public void onQRCodeRetrievalFailure(Exception e) {
+
+                }
+            });
+        }
+
+        // Hide the action bar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.hide();
+        }
 
         // Hide the status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -229,7 +291,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
      * @param longitude double value representing the longitude
      */
     private void addMarker(double latitude, double longitude) {
-        //Log.d("hazarika123", "latitude: " + latitude + "longitude" + longitude);
+        Log.d("hazarika123", "latitude: " + latitude + "longitude" + longitude);
         Marker marker = new Marker(map);
         marker.setPosition(new GeoPoint(latitude, longitude));
         marker.setTitle("Latitude: " + Double.toString(latitude) + " Longitude: " + Double.toString(longitude));
@@ -246,21 +308,27 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
      * @param markerPositions A nested list of doubles containing the latitude and longitude values of all the markers fetched from the firebase
      * @return
      */
-    private Marker createDraggableMarker(MapView map, GeoPoint position, String title, List<List<Double>> markerPositions) {
+    private Marker createDraggableMarker(MapView map, GeoPoint position, String title, Map<String, List<List<Double>>> markerPositions) {
         Marker marker = new Marker(map);
         marker.setIcon(getResources().getDrawable(R.drawable.baseline_accessibility_24));
         marker.setPosition(position);
         marker.setTitle(title);
         marker.setDraggable(true);
+        List<List<Double>> markerCoordinates = new ArrayList<>();
         marker.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
             @Override
             public void onMarkerDrag(Marker marker) {
                 // This method is called repeatedly while the marker is being dragged
-                for (List coordinate:coordinates) {
-                    addMarker((Double) coordinate.get(0), (Double) coordinate.get(1));
+
+                for (List<List<Double>> coordinateList : coordinates.values()) {
+                    for (List<Double> coordinate : coordinateList) {
+                        addMarker(coordinate.get(0), coordinate.get(1));
+                        markerCoordinates.add(coordinate);
+                    }
                 }
-                removeMarkersOutOfRange(markerPositions, marker.getPosition());
+                removeMarkersOutOfRange(marker.getPosition());
             }
+
 
             @Override
             public void onMarkerDragEnd(Marker marker) {
@@ -283,10 +351,9 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
 
     /**
      * Removes the markers that are outside the set range from the reach of the draggable marker
-     * @param markerPositions A nested list of doubles containing the latitude and longitude values of all the markers fetched from the firebase
      * @param center the GeoPoint of the draggable marker
      */
-    private void removeMarkersOutOfRange(List<List<Double>> markerPositions, GeoPoint center) {
+    private void removeMarkersOutOfRange(GeoPoint center) {
         double range = 0.05;
         List<Overlay> overlaysToKeep = new ArrayList<>();
         for (Overlay overlay : map.getOverlays()) {
@@ -318,28 +385,30 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
      * @param markerPositions A nested list of doubles containing the latitude and longitude values of all the markers fetched from the firebase
      * @param center the GeoPoint of the draggable marker
      */
-    private void addMarkersInRange(MapView map, List<List<Double>> markerPositions, GeoPoint center) {
+    private void addMarkersInRange(MapView map, Map<String, List<List<Double>>> markerPositions, GeoPoint center) {
         double range = 0.05;
-        for (List<Double> markerPosition : markerPositions) {
-            double latitude = markerPosition.get(0);
-            double longitude = markerPosition.get(1);
+        for (Map.Entry<String, List<List<Double>>> entry : markerPositions.entrySet()) {
+            String title = entry.getKey();
+            List<Double> position = entry.getValue().get(0);
+            double latitude = position.get(0);
+            double longitude = position.get(1);
             double distance = Math.sqrt(Math.pow((latitude - center.getLatitude()), 2) + Math.pow((longitude - center.getLongitude()), 2));
             if (distance <= range) {
                 Marker marker = new Marker(map);
                 marker.setPosition(new GeoPoint(latitude, longitude));
-                marker.setTitle("Latitude: " + Double.toString(latitude) + " Longitude: " + Double.toString(longitude));
+                marker.setTitle(title);
                 map.getOverlays().add(marker);
 
                 marker.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker, MapView mapView) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(GeoLocationActivity.this);
-                        builder.setMessage("Do you want to go to a different activity?");
+                        builder.setMessage("Do you want to view this QR Code??");
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Log.d("hazarika123", "latitude: " + latitude + "longitude" + longitude);
                                 Intent intent = new Intent(GeoLocationActivity.this, QrProfileActivity.class);
+                                intent.putExtra("qr_code", title);
                                 startActivity(intent);
                             }
                         });
@@ -352,6 +421,8 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         }
         map.invalidate();
     }
+
+
 
     /**
      * Gets the current location of the user.
