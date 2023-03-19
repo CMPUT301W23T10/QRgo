@@ -56,6 +56,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
     private double longitude;
 
     private GeoPoint startPoint;
+    
     //private List<List<Double>> coordinates = new ArrayList<>();
     private Map<String, List<List<Double>>> coordinates = new HashMap<>();
 

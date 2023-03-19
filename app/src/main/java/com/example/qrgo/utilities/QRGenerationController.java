@@ -6,6 +6,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * QRGenerationController is a utility class that generates the required fields for a {@link com.example.qrgo.models.QRCode}
+ * from the string data of a scanned QR code from {@link com.example.qrgo.QRScanActivity}. Fields
+ * generated are based on a hash computed from the string that a QR code represents
+ */
 public class QRGenerationController {
     private HashMap<Character, int[]> hexKey = new HashMap<Character, int[]>();
     private HashMap<Character, String> color = new HashMap<Character, String>();
@@ -16,6 +21,11 @@ public class QRGenerationController {
     private String humanReadableName;
     private ArrayList<Integer> featureList = new ArrayList<Integer>();
 
+    /**
+     * constructor that takes a string and automatically generates all the required fields from that
+     * string
+     * @param qrText the String received from a QR scan
+     */
     public QRGenerationController(String qrText) {
         initializeHashMaps();
         generateHash(qrText);
@@ -26,6 +36,9 @@ public class QRGenerationController {
 
     }
 
+    /**
+     Initializes the hexKey and color HashMaps with their corresponding values.
+     */
     private void initializeHashMaps() {
         hexKey.put('0', new int[] {3, 0});
         hexKey.put('1', new int[] {2, 1});
@@ -62,6 +75,11 @@ public class QRGenerationController {
         color.put('F', "Aqua ");
     }
 
+    /**
+     * hashes the QR code using the SHA-256 hashing algorithm, the hash becomes the basis of the QR
+     * code object and all fields are generated from the hash
+     * @param qrText the String received from a QR scan
+     */
     private void generateHash(String qrText) {
         MessageDigest digest = null;
         try {
@@ -77,6 +95,10 @@ public class QRGenerationController {
         this.hash = hexHash.toString().toUpperCase();
     }
 
+    /**
+     * parses each character into the hash into a list of items that contain useful information such
+     * as number of ones (used for feature list and score) and the rarity of the letter occurring
+     */
     private void parseHash() {
         char[] hashArray = this.hash.toCharArray();
         for (char c : hashArray) {
@@ -84,6 +106,9 @@ public class QRGenerationController {
         }
     }
 
+    /**
+     * calculates the score of the QR code based on the hash/parsed hash
+     */
     private void calculateScore() {
         int score = 0;
         int rarity = 0;
@@ -126,6 +151,10 @@ public class QRGenerationController {
         this.score = score;
     }
 
+    /**
+     * generates the feature list based on the hash to be used for the human readable name and the
+     * visual representation.
+     */
     private void generateFeatureList() {
         for (int i = 1; i <= 4; i++) {
             if (this.parsedHash.get(i) != null) {
@@ -134,6 +163,9 @@ public class QRGenerationController {
         }
     }
 
+    /**
+     * generates the human readable name based on the hash
+     */
     private void generateHumanReadableName() {
         String humanReadableName;
         String[] monsterNames = {"Skralix", "Gloombrute", "Phantasmaur", "Murkfiend", "Vilegloom", "Doomfang", "Nightshade", "Spectrashock", "Dreadmaw", "Blightspawn", "Necroclaw", "Shadowbeak", "Wraithhound", "Bloodbane", "Voidspawn", "Graveclaw", "Darkhowl", "Venomwing", "Thundercrush", "Frostbite", "Soulripper", "Infernojaw", "Bonecruncher", "Nightstalker", "Deathshade"};
@@ -145,14 +177,29 @@ public class QRGenerationController {
         this.humanReadableName = humanReadableName;
     }
 
+    /**
+
+     Returns the hash of this object.
+     @return the hash of this object
+     */
     public String getHash() {
         return this.hash;
     }
 
+    /**
+
+     Returns the score of this object.
+     @return the score of this object
+     */
     public int getScore() {
         return this.score;
     }
 
+    /**
+
+     Returns the human-readable name of this object.
+     @return the human-readable name of this object
+     */
     public String getHumanReadableName() {
         return this.humanReadableName;
     }

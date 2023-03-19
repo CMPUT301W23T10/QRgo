@@ -17,11 +17,9 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -79,6 +77,22 @@ public class HomeActivity extends AppCompatActivity {
             window.setNavigationBarColor(getResources().getColor(R.color.transparent));
             window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
         }
+
+        // Set up leaderboard page
+        TextView leaderboardButton = findViewById(R.id.user_view_all);
+        leaderboardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Call your fragment here
+                LeaderboardFragment qrFragment = new LeaderboardFragment();
+                // Pass qrCodeList as a parameter to the fragment
+                getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .add(R.id.fragment_container, qrFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
         ViewPager viewPager = findViewById(R.id.view_pager);
 
         // Firebase Connect
@@ -116,7 +130,7 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         // Call your fragment here
-                        QrListview  qrFragment = new QrListview();
+                        QrListviewFragment qrFragment = new QrListviewFragment();
                         ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(carouselItems);
                         // Pass qrCodeList as a parameter to the fragment
                         qrFragment.setQrCodeList(qrCodeArrayList);
@@ -189,7 +203,7 @@ public class HomeActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 // Call your fragment here
-                                QrListview  qrFragment = new QrListview();
+                                QrListviewFragment qrFragment = new QrListviewFragment();
                                 ArrayList<BasicQRCode> qrCodeArrayList = new ArrayList<>(qrcodes);
                                 // Pass qrCodeList as a parameter to the fragment
                                 qrFragment.setQrCodeList(qrCodeArrayList);

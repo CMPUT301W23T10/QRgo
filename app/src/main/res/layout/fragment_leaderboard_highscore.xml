@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Add your existing layout elements here -->
+    <TableLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:stretchColumns="1,2,3"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content">
+        <TableRow android:gravity="center">
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/back_button"
+                android:layout_marginBottom="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_arrow_back_ios_24"
+                app:backgroundTint="@color/play_close_button"
+                app:tint="@color/white" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginRight="64dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="All Users"
+                    android:textSize="36sp"
+                    android:layout_marginHorizontal="16dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/users_subtitle"
+                    android:layout_width="wrap_content"
+                    android:text="Code name"
+                    android:textSize="18sp"
+                    android:layout_marginHorizontal="16dp"
+                    android:textStyle="normal"
+                    android:textColor="#878787"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="16dp">
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/high_score_button"
+                        android:scaleType="center"
+                        android:layout_width="wrap_content"
+                        app:fabSize="mini"
+                        android:contentDescription="High Score QR"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:src="@drawable/baseline_score_16"
+                        app:backgroundTint="@color/play_close_button"
+                        app:tint="@color/white" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/most_scanned_button"
+                        android:scaleType="center"
+                        android:layout_width="wrap_content"
+                        app:fabSize="mini"
+                        android:contentDescription="Most QR Scanned"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_123_24"
+                        app:backgroundTint="@color/play_close_button"
+                        app:tint="@color/white" />
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/total_score_button"
+                        android:scaleType="center"
+                        android:contentDescription="Total high score"
+                        android:layout_width="wrap_content"
+                        app:fabSize="mini"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:src="@drawable/outline_stacked_line_chart_24"
+                        app:backgroundTint="@color/play_close_button"
+                        app:tint="@color/white" />
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/location_score_button"
+                        android:scaleType="center"
+                        android:contentDescription="High score region"
+                        android:layout_width="wrap_content"
+                        app:fabSize="mini"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_location_on_24"
+                        app:backgroundTint="@color/play_close_button"
+                        app:tint="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+        </TableRow>
+        <ListView
+            android:id="@+id/all_users_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:choiceMode="none"
+            android:divider="#00000000"
+            android:dividerHeight="0dp"
+            android:layout="@layout/user_items"/>
+    </TableLayout>
+
+</LinearLayout>

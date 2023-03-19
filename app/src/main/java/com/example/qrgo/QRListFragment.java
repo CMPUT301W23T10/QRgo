@@ -10,17 +10,15 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.example.qrgo.models.BasicPlayerProfile;
-import com.example.qrgo.models.BasicQRCode;
-import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.example.qrgo.utilities.BasicUserArrayAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
-public class QrAllUsers_listview extends Fragment {
+public class QRListFragment extends Fragment {
     private ArrayList<BasicPlayerProfile> playerList;
     ListView qr_users_listview;
-    public QrAllUsers_listview() {
+    public QRListFragment() {
     }
 
     public void setQrCodeList(ArrayList<BasicPlayerProfile> playerList) {
@@ -35,7 +33,7 @@ public class QrAllUsers_listview extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_qr_all_users_listview, container, false);
          qr_users_listview = rootView.findViewById(R.id.qr_users_listview);
-        BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerList);
+        BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerList, "totalScore");
         qr_users_listview.setAdapter(userAdapter);
 
         FloatingActionButton back = rootView.findViewById(R.id.back_button);

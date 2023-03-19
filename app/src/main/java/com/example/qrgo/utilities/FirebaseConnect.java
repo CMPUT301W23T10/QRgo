@@ -149,6 +149,42 @@ public class FirebaseConnect {
         });
     }
 
+
+    /**
+     * Deletes a user from the database.
+     *
+     * @param imei The IMEI of the user to be deleted.
+     * @param listener The listener to handle the result of the operation.
+     */
+    public void deleteUser(String imei, OnUserDeleteListener listener) {
+        DocumentReference docRef = db.collection("Users").document(imei);
+        docRef.delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                listener.onUserDelete(true);
+            } else {
+                listener.onUserDelete(false);
+            }
+        });
+    }
+
+    /**
+     * Deletes a player profile from the database.
+     *
+     * @param username The username of the player whose profile is to be deleted.
+     * @param listener The listener to handle the result of the operation.
+     */
+    public void deletePlayerProfile(String username, OnUserProfileDeleteListener listener) {
+        DocumentReference docRef = db.collection("Profiles").document(username);
+        docRef.delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                listener.onUserProfileDelete(true);
+            } else {
+                listener.onUserProfileDelete(false);
+            }
+        });
+    }
+
+
     /**
      * Splits a list of items into batches with a maximum size.
      *
@@ -528,8 +564,9 @@ public class FirebaseConnect {
      * @param listener The listener to call when the search is complete.
      */
     public void searchUsers(String searchQuery, OnUserSearchListener listener) {
-        db.collection("Users")
-                .whereEqualTo("username", searchQuery)
+        db.collection("Profiles")
+                .whereGreaterThanOrEqualTo("firstName", searchQuery)
+                .whereLessThanOrEqualTo("firstName", searchQuery + "\uf8ff")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<BasicPlayerProfile> users = new ArrayList<>();
@@ -706,6 +743,13 @@ public class FirebaseConnect {
     }
 
 
+    public interface OnUserDeleteListener {
+        void onUserDelete(boolean success);
+    }
+
+    public interface OnUserProfileDeleteListener {
+        void onUserProfileDelete(boolean success);
+    }
 
 
     public interface OnScannedUsersLoadedListener {

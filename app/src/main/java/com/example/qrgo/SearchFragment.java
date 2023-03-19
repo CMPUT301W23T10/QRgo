@@ -2,23 +2,20 @@ package com.example.qrgo;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
+import com.example.qrgo.utilities.UserSearchListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -79,7 +76,8 @@ public class SearchFragment extends Fragment {
         dataList = new ArrayList<>();
         // 3. Display data in listview
         // Both instances of the code are the same up to this point
-
+        userSearchListAdapter = new UserSearchListAdapter(getActivity(), dataList);
+        userList.setAdapter(userSearchListAdapter);
         FirebaseConnect fb = new FirebaseConnect();
 
         // search firebase for name entered in searchUserEditText using searchUsers method in FirebaseConnect
@@ -89,9 +87,9 @@ public class SearchFragment extends Fragment {
                 // Do something with the search results
                 for (BasicPlayerProfile user : users) {
                     dataList.add(user);
+                    userSearchListAdapter.notifyDataSetChanged();
                 }
-                userSearchListAdapter = new UserSearchListAdapter(getActivity(), dataList);
-                userList.setAdapter(userSearchListAdapter);
+
                 loadingScreen.setVisibility(View.GONE);
             }
             @Override
@@ -116,7 +114,11 @@ public class SearchFragment extends Fragment {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // no application at the moment
+                dataList.clear();
+                userSearchListAdapter.notifyDataSetChanged();
+                userList.setVisibility(View.VISIBLE);
+                loadingScreen.setVisibility(View.GONE);
+
             }
             @Override
             public void afterTextChanged(Editable s) {
@@ -127,13 +129,11 @@ public class SearchFragment extends Fragment {
                 } else {
                     // clear the dataList and hide the userList and loadingScreen
                     dataList.clear();
-                    UserSearchListAdapter adapter = new UserSearchListAdapter(getActivity(), dataList);
-                    userList.setAdapter(adapter);
+                    userSearchListAdapter.notifyDataSetChanged();
                     userList.setVisibility(View.VISIBLE);
                     loadingScreen.setVisibility(View.GONE);
 
-                    // update ListView with new data
-                    userSearchListAdapter.notifyDataSetChanged();
+
                 }
             }
         });

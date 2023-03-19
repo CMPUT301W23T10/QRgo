@@ -19,26 +19,56 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 
+/**
+ * An adapter class for displaying a list of QR codes in a carousel format using a ViewPager.
+ *
+ * This adapter extends PagerAdapter to handle the swipe functionality.
+ */
 public class CarouselAdapter extends PagerAdapter {
 
     private List<BasicQRCode> carouselItems;
     private LayoutInflater layoutInflater;
 
+    /**
+     * Constructs a new CarouselAdapter object.
+     *
+     * @param context       The context of the current state of the application.
+     * @param carouselItems The list of BasicQRCode objects to be displayed in the carousel.
+     */
     public CarouselAdapter(Context context, List<BasicQRCode> carouselItems) {
         this.carouselItems = carouselItems;
         this.layoutInflater = LayoutInflater.from(context);
     }
 
+    /**
+     * Returns the number of QR codes in the carousel.
+     *
+     * @return The number of QR codes in the carousel.
+     */
     @Override
     public int getCount() {
         return carouselItems.size();
     }
 
+    /**
+     * Determines if a given view is associated with a given object.
+     *
+     * @param view   The view to be compared with the object.
+     * @param object The object to be compared with the view.
+     * @return True if the view is associated with the object, false otherwise.
+     */
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view == object;
     }
 
+    /**
+     * Creates a new view for a QR code in the carousel.
+     *
+     * @param container The parent view where the new view will be attached.
+     * @param position  The position of the QR code in the carousel.
+     * @return The new view for the QR code.
+     */
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         View view = layoutInflater.inflate(R.layout.caraousel_card, container, false);
@@ -67,7 +97,7 @@ public class CarouselAdapter extends PagerAdapter {
                 .transform(new RoundedSquareTransform(500))
                 .into(qrCodeImage);
         String positionString = Integer.toString(position + 1);
-        qrCodeRank.setText("#"+positionString);
+        qrCodeRank.setText("#" + positionString);
         // Truncate the qrname if it is too long
         if (carouselItem.getHumanReadableQR().length() > 6) {
             String truncatedName = carouselItem.getHumanReadableQR().substring(0, 6) + "...";
@@ -83,6 +113,15 @@ public class CarouselAdapter extends PagerAdapter {
         return view;
     }
 
+    /**
+     * This method is called when the item instantiated by {@link #instantiateItem(ViewGroup, int)}
+     * is no longer needed and should be removed from the container. In this case, it removes the
+     * view associated with the specified position.
+     *
+     * @param container The containing {@link ViewGroup} from which the item will be removed.
+     * @param position  The position of the item within the adapter's data set that is being removed.
+     * @param object    The {@link Object} representing the view to be removed.
+     */
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);

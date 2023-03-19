@@ -11,7 +11,6 @@ import android.widget.ListView;
 
 import com.example.qrgo.models.Comment;
 import com.example.qrgo.utilities.BasicCommentArrayAdapter;
-import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link QrListview#newInstance} factory method to
+ * Use the {@link QrListviewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class CommentListview extends Fragment {
