@@ -11,6 +11,10 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
 import com.example.qrgo.MainActivity;
+import com.example.qrgo.listeners.OnQRCodeScannedListener;
+import com.example.qrgo.listeners.OnUserAddListener;
+import com.example.qrgo.listeners.OnUserProfileAddListener;
+import com.example.qrgo.listeners.QRCodeListener;
 import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -50,7 +54,7 @@ public class B_FirebaseQRScanTests {
         final AtomicBoolean nresult = new AtomicBoolean(false);
 
         // Act
-        firebaseConnect.addNewUser(imei, username, new FirebaseConnect.OnUserAddListener() {
+        firebaseConnect.getUserManager().addNewUser(imei, username, new OnUserAddListener() {
             @Override
             public void onUserAdd(boolean success) {
                 Log.i("testAddNewUser()", "Success");
@@ -71,8 +75,8 @@ public class B_FirebaseQRScanTests {
         int highestScore = 0;
         int lowestScore = 0;
         // Act
-        firebaseConnect.addNewPlayerProfile(username, firstName, lastName, contactPhone, contactEmail,
-                totalScore, totalScans, highestScore, lowestScore, new FirebaseConnect.OnUserProfileAddListener() {
+        firebaseConnect.getPlayerProfileManager().addNewPlayerProfile(username, firstName, lastName, contactPhone, contactEmail,
+                totalScore, totalScans, highestScore, lowestScore, new OnUserProfileAddListener() {
                     @Override
                     public void onUserProfileAdd(boolean success) {
                         nresult.set(success);
@@ -101,7 +105,7 @@ public class B_FirebaseQRScanTests {
         solo.getCurrentActivity().runOnUiThread(new Runnable() {
             public void run() {
                 FirebaseConnect connect = new FirebaseConnect();
-                connect.scanQRCode(qrString, username, humanReadableQR, latitude, longitude, photoUrl, points, new FirebaseConnect.OnQRCodeScannedListener() {
+                connect.getQRCodeManager().scanQRCode(qrString, username, humanReadableQR, latitude, longitude, photoUrl, points, new OnQRCodeScannedListener() {
                     @Override
                     public void onQRScanComplete(boolean success) {
                         Log.d("onQRScanComplete", "onQRScanComplete: Complete");
@@ -160,7 +164,7 @@ public class B_FirebaseQRScanTests {
         final AtomicBoolean qrCodeRetrievalFailure = new AtomicBoolean(false);
 
         // Act
-        firebaseConnect.getQRCode(qrString, new FirebaseConnect.QRCodeListener() {
+        firebaseConnect.getQRCodeManager().getQRCode(qrString, new QRCodeListener() {
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {
                 Log.i("testGetQRCode()", "QR code retrieved");
