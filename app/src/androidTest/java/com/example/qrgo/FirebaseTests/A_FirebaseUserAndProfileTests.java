@@ -1,6 +1,12 @@
 package com.example.qrgo.FirebaseTests;
 
 import com.example.qrgo.MainActivity;
+import com.example.qrgo.listeners.OnBasicPlayerProfileLoadedListener;
+import com.example.qrgo.listeners.OnImeiCheckListener;
+import com.example.qrgo.listeners.OnPlayerProfileGetListener;
+import com.example.qrgo.listeners.OnUserAddListener;
+import com.example.qrgo.listeners.OnUserProfileAddListener;
+import com.example.qrgo.listeners.OnUsernameCheckListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
@@ -53,7 +59,7 @@ public class A_FirebaseUserAndProfileTests {
         solo.getCurrentActivity().runOnUiThread(new Runnable() {
             public void run() {
                 FirebaseConnect connect = new FirebaseConnect();
-                connect.checkImeiExists(imei, new FirebaseConnect.OnImeiCheckListener() {
+                connect.getUserManager().checkImeiExists(imei, new OnImeiCheckListener() {
                     @Override
                     public void onImeiCheck(boolean exists) {
                         result.set(exists);
@@ -76,7 +82,7 @@ public class A_FirebaseUserAndProfileTests {
         solo.getCurrentActivity().runOnUiThread(new Runnable() {
             public void run() {
                 FirebaseConnect connect = new FirebaseConnect();
-                connect.checkImeiExists(imei, new FirebaseConnect.OnImeiCheckListener() {
+                connect.getUserManager().checkImeiExists(imei, new OnImeiCheckListener() {
                     @Override
                     public void onImeiCheck(boolean exists) {
                         result.set(exists);
@@ -101,7 +107,7 @@ public class A_FirebaseUserAndProfileTests {
             public void run() {
                 FirebaseConnect connect = new FirebaseConnect();
                 // Act
-                firebaseConnect.checkUsernameExists(username, new FirebaseConnect.OnUsernameCheckListener() {
+                firebaseConnect.getUserManager().checkUsernameExists(username, new OnUsernameCheckListener() {
                     @Override
                     public void onUsernameCheck(boolean exists) {
                         result.set(exists);
@@ -126,7 +132,7 @@ public class A_FirebaseUserAndProfileTests {
             public void run() {
                 FirebaseConnect connect = new FirebaseConnect();
                 // Act
-                firebaseConnect.checkUsernameExists(username, new FirebaseConnect.OnUsernameCheckListener() {
+                firebaseConnect.getUserManager().checkUsernameExists(username, new OnUsernameCheckListener() {
                     @Override
                     public void onUsernameCheck(boolean exists) {
                         result.set(exists);
@@ -148,7 +154,7 @@ public class A_FirebaseUserAndProfileTests {
         final AtomicBoolean result = new AtomicBoolean(false);
 
         // Act
-        firebaseConnect.addNewUser(imei, username, new FirebaseConnect.OnUserAddListener() {
+        firebaseConnect.getUserManager().addNewUser(imei, username, new OnUserAddListener() {
             @Override
             public void onUserAdd(boolean success) {
                 Log.i("testAddNewUser()", "Success");
@@ -177,8 +183,8 @@ public class A_FirebaseUserAndProfileTests {
         final AtomicBoolean result = new AtomicBoolean(false);
 
         // Act
-        firebaseConnect.addNewPlayerProfile(username, firstName, lastName, contactPhone, contactEmail,
-                totalScore, totalScans, highestScore, lowestScore, new FirebaseConnect.OnUserProfileAddListener() {
+        firebaseConnect.getPlayerProfileManager().addNewPlayerProfile(username, firstName, lastName, contactPhone, contactEmail,
+                totalScore, totalScans, highestScore, lowestScore, new OnUserProfileAddListener() {
                     @Override
                     public void onUserProfileAdd(boolean success) {
                         result.set(success);
@@ -198,7 +204,7 @@ public class A_FirebaseUserAndProfileTests {
         final AtomicReference<BasicPlayerProfile> result = new AtomicReference<>();
 
         // Act
-        firebaseConnect.getBasicPlayerProfile(username, new FirebaseConnect.OnBasicPlayerProfileLoadedListener() {
+        firebaseConnect.getPlayerProfileManager().getBasicPlayerProfile(username, new OnBasicPlayerProfileLoadedListener() {
             @Override
             public void onBasicPlayerProfileLoaded(BasicPlayerProfile basicPlayerProfile) {
                 result.set(basicPlayerProfile);
@@ -225,7 +231,7 @@ public class A_FirebaseUserAndProfileTests {
         solo.getCurrentActivity().runOnUiThread(new Runnable() {
             public void run() {
                 FirebaseConnect connect = new FirebaseConnect();
-                connect.getPlayerProfile(username, new FirebaseConnect.OnPlayerProfileGetListener() {
+                connect.getPlayerProfileManager().getPlayerProfile(username, new OnPlayerProfileGetListener() {
                     @Override
                     public void onPlayerProfileGet(PlayerProfile playerProfile) {
                         if (playerProfile != null && playerProfile.getUsername().equals(username)) {
