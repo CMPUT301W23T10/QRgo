@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.qrgo.listeners.OnUserSearchListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.UserSearchListAdapter;
@@ -81,7 +82,7 @@ public class SearchFragment extends Fragment {
         FirebaseConnect fb = new FirebaseConnect();
 
         // search firebase for name entered in searchUserEditText using searchUsers method in FirebaseConnect
-        FirebaseConnect.OnUserSearchListener listener = new FirebaseConnect.OnUserSearchListener() {
+        OnUserSearchListener listener = new OnUserSearchListener() {
             @Override
             public void onUserSearchComplete(List<BasicPlayerProfile> users) {
                 // Do something with the search results
@@ -125,7 +126,7 @@ public class SearchFragment extends Fragment {
                 String searchQuery = s.toString();
                 if (searchQuery.length() > 0) {
                     loadingScreen.setVisibility(View.VISIBLE);
-                    fb.searchUsers(searchQuery, listener);
+                    fb.getUserManager().searchUsers(searchQuery, listener);
                 } else {
                     // clear the dataList and hide the userList and loadingScreen
                     dataList.clear();

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.qrgo.listeners.QRCodeListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.FirebaseConnect;
@@ -48,7 +49,7 @@ public class QrProfileActivity extends AppCompatActivity {
         }
 
         FirebaseConnect firebaseconnect = new FirebaseConnect();
-        firebaseconnect.getQRCode(qr_code_id, new FirebaseConnect.QRCodeListener() {
+        firebaseconnect.getQRCodeManager().getQRCode(qr_code_id, new QRCodeListener() {
 
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {

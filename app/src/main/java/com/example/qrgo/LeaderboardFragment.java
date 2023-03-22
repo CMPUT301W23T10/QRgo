@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.qrgo.listeners.OnPlayerListLoadedListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.utilities.BasicUserArrayAdapter;
 import com.example.qrgo.utilities.FirebaseConnect;
@@ -48,8 +49,8 @@ public class LeaderboardFragment extends Fragment {
                 users_subtitle.setText(fab.getContentDescription());
                 // If the active fab is highScoreQR, load the high score list
                 if (activeFab == highScoreQR){
-                    fb.getPlayersSortedByHighestScore(
-                            new FirebaseConnect.OnPlayerListLoadedListener (){
+                    fb.getPlayerProfileManager().getPlayersSortedByHighestScore(
+                            new OnPlayerListLoadedListener(){
                                 @Override
                                 public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                                     // convert the list to an array
@@ -64,8 +65,8 @@ public class LeaderboardFragment extends Fragment {
                             }
                     );
                 } else if (activeFab == totalHighScore) {
-                    fb.getPlayersSortedByTotalScore(
-                            new FirebaseConnect.OnPlayerListLoadedListener (){
+                    fb.getPlayerProfileManager().getPlayersSortedByTotalScore(
+                            new OnPlayerListLoadedListener (){
                                 @Override
                                 public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                                     // convert the list to an array
@@ -80,8 +81,8 @@ public class LeaderboardFragment extends Fragment {
                             }
                     );
                 } else if (activeFab == mostScannedQR) {
-                    fb.getPlayersSortedByTotalScans(
-                            new FirebaseConnect.OnPlayerListLoadedListener (){
+                    fb.getPlayerProfileManager().getPlayersSortedByTotalScans(
+                            new OnPlayerListLoadedListener (){
                                 @Override
                                 public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                                     // convert the list to an array
