@@ -157,7 +157,7 @@ public class QrProfileActivity extends AppCompatActivity {
                 TextView qr_user_name = findViewById(R.id.qr_user_name);
                 // find username in the shared preferences with key user
                 SharedPreferences sharedPreferences = getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
-                String userFirstLast = sharedPreferences.getString("userFirstLast", "");
+                String userFirstLast = sharedPreferences.getString("user", "");
                 qr_user_name.setText(userFirstLast + " (You)");
 
                 // Set up the picture for the current user

@@ -125,7 +125,6 @@ public class SignupActivity extends AppCompatActivity {
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("user", user);
-                editor.putString("userFirstLast", userFirstLast);
                 editor.commit();
 
 
