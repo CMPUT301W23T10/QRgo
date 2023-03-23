@@ -15,8 +15,8 @@ import android.widget.ListView;
 
 import com.example.qrgo.listeners.OnUserSearchListener;
 import com.example.qrgo.models.BasicPlayerProfile;
+import com.example.qrgo.utilities.BasicUserArrayAdapter;
 import com.example.qrgo.utilities.FirebaseConnect;
-import com.example.qrgo.utilities.UserSearchListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class SearchFragment extends Fragment {
     private LinearLayout loadingScreen;
     private ListView userList;
     private ArrayList<BasicPlayerProfile> dataList;
-    private UserSearchListAdapter userSearchListAdapter;
+    private BasicUserArrayAdapter userSearchListAdapter;
     public SearchFragment() {
         // Required empty public constructor
     }
@@ -75,9 +75,8 @@ public class SearchFragment extends Fragment {
         userList = rootView.findViewById(R.id.user_list);
         loadingScreen.setVisibility(View.GONE);
         dataList = new ArrayList<>();
-        // 3. Display data in listview
-        // Both instances of the code are the same up to this point
-        userSearchListAdapter = new UserSearchListAdapter(getActivity(), dataList);
+
+        userSearchListAdapter = new BasicUserArrayAdapter(getContext(), dataList, "total");
         userList.setAdapter(userSearchListAdapter);
         FirebaseConnect fb = new FirebaseConnect();
 
