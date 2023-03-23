@@ -7,10 +7,14 @@ import com.example.qrgo.listeners.OnUserSearchListener;
 import com.example.qrgo.listeners.OnUsernameCheckListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,26 +112,46 @@ public class UserFirebaseManager extends BaseFirebaseConnectManager{
      * @param listener The listener to call when the search is complete.
      */
     public void searchUsers(String searchQuery, OnUserSearchListener listener) {
-        db.collection("Profiles")
-                .whereGreaterThanOrEqualTo("firstName", searchQuery)
-                .whereLessThanOrEqualTo("firstName", searchQuery + "\uf8ff")
+
+                db.collection("Users")
+
+                .whereGreaterThanOrEqualTo("username", searchQuery)
+                .whereLessThanOrEqualTo("username", searchQuery + "\uf8ff")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<BasicPlayerProfile> users = new ArrayList<>();
                     for (DocumentSnapshot document : queryDocumentSnapshots) {
-                        String username = document.getId();
-                        String firstName = document.getString("firstName");
-                        String lastName = document.getString("lastName");
-                        int totalScore = document.getLong("totalScore").intValue();
-                        int highestScore = document.getLong("highestScore").intValue();
-                        int lowestScore = document.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
-                        users.add(basicPlayerProfile);
+                        String username = document.getString("username");
+                        onUserNameFound(username, listener);
                     }
-                    listener.onUserSearchComplete(users);
+
 
                 })
                 .addOnFailureListener(e -> listener.onUserSearchFailure(e));
     }
 
+    public void onUserNameFound(String username, OnUserSearchListener listener) {
+        db.collection("Profiles")
+                .document(username)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+
+                        String firstName = documentSnapshot.getString("firstName");
+                        String lastName = documentSnapshot.getString("lastName");
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int highestScore = documentSnapshot.getLong("highestScore").intValue();
+                        int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        listener.onUserSearchComplete(Collections.singletonList(basicPlayerProfile));
+                    } else {
+                        listener.onUserSearchComplete(Collections.emptyList());
+                    }
+                })
+                .addOnFailureListener(e -> listener.onUserSearchFailure(e));
+    }
+
 }
+
+
+
+
