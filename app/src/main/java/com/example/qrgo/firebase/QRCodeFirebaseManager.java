@@ -7,18 +7,21 @@ import com.example.qrgo.listeners.OnCoordinatesListLoadedListener;
 import com.example.qrgo.listeners.OnQRCodeScannedListener;
 import com.example.qrgo.listeners.OnQrListLoadedListener;
 import com.example.qrgo.listeners.OnScannedUsersLoadedListener;
+import com.example.qrgo.listeners.OnUserDeleteFromQRCodeListener;
 import com.example.qrgo.listeners.QRCodeListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.models.Comment;
 import com.example.qrgo.models.QRCode;
-import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -117,6 +120,43 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                                 "totalScans", FieldValue.increment(1));
                 listener.onQRScanComplete(true);
             });
+        });
+    }
+
+    /**
+     * Deletes a user's username from a QR code's scannedUsers array in the database.
+     *
+     * @param qrString The string value of the QR code.
+     * @param username The username of the user to be deleted.
+     * @param listener The listener to handle the result of the operation.
+     */
+    public void deleteUserFromQRCode(String qrString, String username, OnUserDeleteFromQRCodeListener listener) {
+        CollectionReference qrCodesRef = db.collection("QRCodes");
+        qrCodesRef.whereEqualTo("qrString", qrString).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                QuerySnapshot querySnapshot = task.getResult();
+                if (querySnapshot.size() == 1) {
+                    DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                    DocumentReference qrCodeRef = qrCodesRef.document(document.getId());
+                    ArrayList<String> scannedUsers = (ArrayList<String>) document.get("scannedUsers");
+                    if (scannedUsers != null && scannedUsers.contains(username)) {
+                        scannedUsers.remove(username);
+                        qrCodeRef.update("scannedUsers", scannedUsers).addOnCompleteListener(updateTask -> {
+                            if (updateTask.isSuccessful()) {
+                                listener.onUserDeleteFromQRCode(true);
+                            } else {
+                                listener.onUserDeleteFromQRCode(false);
+                            }
+                        });
+                    } else {
+                        listener.onUserDeleteFromQRCode(false);
+                    }
+                } else {
+                    listener.onUserDeleteFromQRCode(false);
+                }
+            } else {
+                listener.onUserDeleteFromQRCode(false);
+            }
         });
     }
 
