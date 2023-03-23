@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.example.qrgo.listeners.OnPlayerProfileGetListener;
 import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.utilities.BasicQrArrayAdapter;
@@ -67,7 +68,7 @@ public class PlayerActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String username = intent.getStringExtra("username");
         // GETTING THE PLAYER PROFILE FOR THE USER
-        firebaseConnect.getPlayerProfile(username, new FirebaseConnect.OnPlayerProfileGetListener(){
+        firebaseConnect.getPlayerProfileManager().getPlayerProfile(username, new OnPlayerProfileGetListener(){
             @Override
             public void onPlayerProfileGet(PlayerProfile playerProfile) {
                 if (playerProfile != null) {

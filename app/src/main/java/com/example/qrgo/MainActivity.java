@@ -18,7 +18,7 @@ import android.os.Bundle;
 import android.view.Window;
 
 
-
+import com.example.qrgo.listeners.OnImeiCheckListener;
 import com.example.qrgo.utilities.FirebaseConnect;
 
 import java.util.UUID;
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         imei = getUniqueID(this);
 
         // Check if IMEI is already in Firebase
-        db.checkImeiExists(imei, new FirebaseConnect.OnImeiCheckListener() {
+        db.getUserManager().checkImeiExists(imei, new OnImeiCheckListener() {
             @Override
             public void onImeiCheck(boolean imeiExists) {
                 if(!imeiExists){
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         imei = getUniqueID(this);
 
         // Check if IMEI is already in Firebase
-        db.checkImeiExists(imei, new FirebaseConnect.OnImeiCheckListener() {
+        db.getUserManager().checkImeiExists(imei, new OnImeiCheckListener() {
             @Override
             public void onImeiCheck(boolean imeiExists) {
                 if(!imeiExists){

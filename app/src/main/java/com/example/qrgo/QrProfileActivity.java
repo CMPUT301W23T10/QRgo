@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.qrgo.listeners.QRCodeListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.Comment;
 import com.example.qrgo.models.QRCode;
@@ -62,7 +63,8 @@ public class QrProfileActivity extends AppCompatActivity {
         FirebaseConnect firebaseconnect = new FirebaseConnect();
         ListView commentListView = findViewById(R.id.qr_comment_listview);
 
-        firebaseconnect.getQRCode(qr_code_id, new FirebaseConnect.QRCodeListener() {
+
+        firebaseconnect.getQRCodeManager().getQRCode(qr_code_id, new QRCodeListener() {
 
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {

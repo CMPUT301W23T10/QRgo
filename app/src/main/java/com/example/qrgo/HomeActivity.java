@@ -26,6 +26,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.qrgo.listeners.OnPlayerListLoadedListener;
+import com.example.qrgo.listeners.OnPlayerProfileGetListener;
+import com.example.qrgo.listeners.OnQrListLoadedListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.models.PlayerProfile;
@@ -97,7 +100,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Firebase Connect
         FirebaseConnect firebaseConnect = new FirebaseConnect();
-        firebaseConnect.getPlayerProfile(user, new  FirebaseConnect.OnPlayerProfileGetListener(){
+        firebaseConnect.getPlayerProfileManager().getPlayerProfile(user, new  OnPlayerProfileGetListener(){
 
 
             @Override
@@ -147,8 +150,8 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        firebaseConnect.getPlayersSortedByTotalScore(
-                new FirebaseConnect.OnPlayerListLoadedListener () {
+        firebaseConnect.getPlayerProfileManager().getPlayersSortedByTotalScore(
+                new OnPlayerListLoadedListener() {
                     @Override
                     public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                         TextView play_user_head = findViewById(R.id.users_head);
@@ -170,8 +173,8 @@ public class HomeActivity extends AppCompatActivity {
                 }
         );
 
-        firebaseConnect.getQrCodesSortedByPoints(
-                new FirebaseConnect.OnQrListLoadedListener() {
+        firebaseConnect.getQRCodeManager().getQrCodesSortedByPoints(
+                new OnQrListLoadedListener() {
 
                     @Override
                     public void onQrListLoaded(List<BasicQRCode> qrcodes) {
@@ -285,7 +288,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }
         );
-        firebaseConnect.getPlayerProfile(user, new FirebaseConnect.OnPlayerProfileGetListener(){
+        firebaseConnect.getPlayerProfileManager().getPlayerProfile(user, new OnPlayerProfileGetListener(){
                     @Override
                     public void onPlayerProfileGet(PlayerProfile userProfile) {
 
