@@ -212,6 +212,8 @@
                                 android:textSize="20sp"
                                 android:textStyle="normal" />
 
+
+
                             <TextView
                                 android:id="@+id/qr_comment_view_all"
                                 android:layout_width="wrap_content"
@@ -224,6 +226,80 @@
                                 android:textSize="16sp" />
                         </TableRow>
                     </TableLayout>
+
+<!--                    ADD COMMENT-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <FrameLayout
+                            xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:layout_width="wrap_content"
+                            android:layout_marginHorizontal="16dp"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/qr_user_profile_picture"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_marginVertical="10dp"
+                                android:background="@drawable/circle"
+                                android:layout_gravity="center"/>
+
+                        </FrameLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_marginStart="10dp"
+                                android:layout_marginBottom="5dp"
+                                android:id="@+id/qr_user_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="User (you)"
+                                android:textStyle="bold"
+                                android:textSize="20dp"
+                                android:textColor="@color/white"
+                                />
+                            <LinearLayout
+                                android:paddingHorizontal="10sp"
+                                android:layout_width="match_parent"
+                                android:layout_height="37dp"
+                                android:orientation="horizontal"
+                                android:background="@drawable/comment_box"
+                                android:layout_weight="2"
+                                android:gravity="center_vertical">
+                                <EditText
+                                    android:id="@+id/qr_comment_box"
+                                    android:layout_width="match_parent"
+                                    android:layout_weight="1"
+                                    android:layout_height="wrap_content"
+                                    android:hint="Add a comment..."
+                                    android:inputType="text"
+                                    android:background="@null"
+                                    android:textColor="@color/white"
+                                    android:textColorHint="#A2A2A2"
+                                    android:textSize="14sp"/>
+
+                                <ImageView
+                                    android:id="@+id/qr_send_comment"
+                                    android:layout_weight="0"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/baseline_send_24"/>
+
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <View
+                        android:layout_marginTop="5dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/white"/>
+
 
                     <ListView
                         android:id="@+id/qr_comment_listview"

@@ -54,7 +54,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text='Commented on '
+                        android:text='On'
                         android:layout_weight="1"
                         android:textColor="@color/comment_subheading"
                         android:textSize="14sp"
