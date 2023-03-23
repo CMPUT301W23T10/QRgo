@@ -68,15 +68,15 @@ This is an Android app that was created as a final project for CMPUT 301. The go
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/CMPUT301W23T10/QRgo.svg?style=for-the-badge
 [contributors-url]: https://github.com/CMPUT301W23T10/QRgo/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/CMPUT301W23T10/QRgo.svg?style=for-the-badge
 [forks-url]: https://github.com/CMPUT301W23T10/QRgo/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/CMPUT301W23T10/QRgo.svg?style=for-the-badge
 [stars-url]: https://github.com/CMPUT301W23T10/QRgo/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/CMPUT301W23T10/QRgo.svg?style=for-the-badge
 [issues-url]: https://github.com/CMPUT301W23T10/QRgo/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/CMPUT301W23T10/QRgo.svg?style=for-the-badge
 [license-url]: https://github.com/CMPUT301W23T10/QRgo/LICENSE.txt
 
 [android-shield]: https://img.shields.io/badge/Android-green.svg?style=for-the-badge&logo=android&logoColor=white
