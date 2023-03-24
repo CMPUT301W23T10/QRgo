@@ -30,7 +30,11 @@
 </div>
 
 
-
+### Built With
+* [![android][android-shield]][android-url]
+* [![java][java-shield]][java-url]
+* [![firebase][firebase-shield]][firebase-url]
+* [![gradle][gradle-shield]][gradle-url]
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 <div style="display: flex; justify-content: center; align-items: center; width: full">
@@ -42,13 +46,6 @@ This is an Android app that was created as a final project for CMPUT 301. The go
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-### Built With
-* [![android][android-shield]][android-url]
-* [![java][java-shield]][java-url]
-* [![firebase][firebase-shield]][firebase-url]
-* [![gradle][gradle-shield]][gradle-url]
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
