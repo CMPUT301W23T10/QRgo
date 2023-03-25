@@ -25,6 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.qrgo.listeners.OnCoordinatesListLoadedListener;
+import com.example.qrgo.listeners.QRCodeListener;
 import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -141,7 +142,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         } else if (leaderBoard != null) {
             createLeaderBoardDraggableMarker(map, new GeoPoint(startPoint.getLatitude(), startPoint.getLongitude()), "Place me!", coordinates);
         } else {
-            database.getQRCode(qrCodeID, new FirebaseConnect.QRCodeListener() {
+            database.getQRCodeManager().getQRCode(qrCodeID, new QRCodeListener() {
                 @Override
                 public void onQRCodeRetrieved(QRCode qrCode) {
                     List<com.google.firebase.firestore.GeoPoint> qrCodeCoordinates = qrCode.getLocations();
