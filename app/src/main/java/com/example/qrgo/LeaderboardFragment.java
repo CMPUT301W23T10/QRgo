@@ -2,11 +2,19 @@ package com.example.qrgo;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +22,29 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.qrgo.firebase.QRCodeFirebaseManager;
 import com.example.qrgo.listeners.OnPlayerListLoadedListener;
+import com.example.qrgo.listeners.QRCodeListener;
 import com.example.qrgo.models.BasicPlayerProfile;
+import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.BasicUserArrayAdapter;
 import com.example.qrgo.utilities.FirebaseConnect;
+import com.example.qrgo.utilities.QRCodeArrayAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class LeaderboardFragment extends Fragment {
-
+    private String comeFromString = "";
+    private ArrayList<String> qrCodeList;
+    public void setComeFrom(String comeFromString) {
+        this.comeFromString = comeFromString;
+    }
+    public void setQrCodeList(ArrayList<String> qrCodeList) {
+        this.qrCodeList = qrCodeList;
+    }
     public LeaderboardFragment() {
         // Required empty public constructor
     }
@@ -97,9 +117,63 @@ public class LeaderboardFragment extends Fragment {
                             }
                     );
                 } else if (activeFab == highScoreLocation) {
-                    Intent intent = new Intent(getActivity(), GeoLocationActivity.class);
-                    intent.putExtra("LeaderBoard", "leaderboard");
-                    startActivity(intent);
+                    if (comeFromString.equals("HomeActivity")) {
+                        Intent intent = new Intent(getActivity(), GeoLocationActivity.class);
+                        intent.putExtra("LeaderBoard", "leaderboard");
+                        startActivity(intent);
+                    }
+                    else {
+                        // populate listview
+                        QRCodeFirebaseManager qrCodeFirebaseManager = new QRCodeFirebaseManager();
+                        //Loop through qrCodeList and get the QRCode objects and add them to the list
+                        ArrayList<QRCode> qrCodeArrayList = new ArrayList<>();
+                        final int[] numRetrieved = {0};
+
+                        for (String qrCode : qrCodeList) {
+                            qrCodeFirebaseManager.getQRCode(qrCode, new QRCodeListener() {
+                                @Override
+                                public void onQRCodeRetrieved(QRCode qrCode) {
+                                    // add the qrCode to the list
+                                    qrCodeArrayList.add(qrCode);
+                                    numRetrieved[0]++;
+                                    if (numRetrieved[0] == qrCodeList.size()) {
+                                        // all QR codes have been retrieved, sort the list
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                            qrCodeArrayList.sort(new Comparator<QRCode>() {
+                                                @Override
+                                                public int compare(QRCode qrCode1, QRCode qrCode2) {
+                                                    if (qrCode1.getQrCodePoints() > qrCode2.getQrCodePoints()) {
+                                                        return -1;
+                                                    } else if (qrCode1.getQrCodePoints() < qrCode2.getQrCodePoints()) {
+                                                        return 1;
+                                                    } else {
+                                                        return 0;
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        QRCodeArrayAdapter userAdapter = new QRCodeArrayAdapter(requireActivity(), qrCodeArrayList);
+                                        all_users_listview.setAdapter(userAdapter);
+
+                                    }
+
+                                }
+
+                                @Override
+                                public void onQRCodeNotFound() {
+                                    Toast.makeText(requireActivity(), "QR Code not found", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onQRCodeRetrievalFailure(Exception e) {
+                                    Toast.makeText(requireActivity(), "Failed to retrieve QR Code", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            // once the above code is done, log the list
+                        }
+
+
+                    }
                 }
             } else {
                 // Untoggle other fabs
@@ -108,7 +182,6 @@ public class LeaderboardFragment extends Fragment {
             }
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -156,7 +229,6 @@ public class LeaderboardFragment extends Fragment {
                 toggleFabs(highScoreLocation);
             }
         });
-
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
