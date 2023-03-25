@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -351,11 +352,16 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        if (leaderBoardRanks.size() == 0) {
+                            Toast.makeText(GeoLocationActivity.this, "No QR Codes in this region", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         // Hide FloatingActionButton and MapView
                         FloatingActionButton fab = findViewById(R.id.close_button);
                         fab.setVisibility(View.GONE);
                         MapView mapView = findViewById(R.id.map);
                         mapView.setVisibility(View.GONE);
+
                         // put fragment here to show the leaderboard - Akarshan
                         LeaderboardFragment leadFragment = new LeaderboardFragment();
                         leadFragment.setComeFrom("GeolocationActivity");
