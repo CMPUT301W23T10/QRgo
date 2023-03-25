@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -139,6 +140,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         } else if (leaderBoard != null) {
             createLeaderBoardDraggableMarker(map, new GeoPoint(startPoint.getLatitude(), startPoint.getLongitude()), "Place me!", coordinates);
         } else {
+            // Function gets the QRCode object from the database by passing the qrCodeID (string)
             database.getQRCodeManager().getQRCode(qrCodeID, new QRCodeListener() {
                 @Override
                 public void onQRCodeRetrieved(QRCode qrCode) {
@@ -344,12 +346,33 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
                         leaderBoardRanks.add(title);
                     }
                 }
+                // This the list of QR codes in the range of the draggable marker. Need to pass this to the leaderboard fragment - Akarshan
                 AlertDialog.Builder builder = new AlertDialog.Builder(GeoLocationActivity.this);
                 builder.setMessage("Show ranking of QR Codes in this region?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // put fragment here!
+                        if (leaderBoardRanks.size() == 0) {
+                            Toast.makeText(GeoLocationActivity.this, "No QR Codes in this region", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        // Hide FloatingActionButton and MapView
+                        FloatingActionButton fab = findViewById(R.id.close_button);
+                        fab.setVisibility(View.GONE);
+                        MapView mapView = findViewById(R.id.map);
+                        mapView.setVisibility(View.GONE);
+
+                        // put fragment here to show the leaderboard - Akarshan
+                        LeaderboardFragment leadFragment = new LeaderboardFragment();
+                        leadFragment.setComeFrom("GeolocationActivity");
+                        leadFragment.setQrCodeList(leaderBoardRanks);
+                        // Pass qrCodeList as a parameter to the fragment
+                        getSupportFragmentManager().beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                .add(R.id.geolocation_fragment_container, leadFragment)
+                                .addToBackStack(null)
+                                .commit();
+
                     }
                 });
                 builder.setNegativeButton("No", null);

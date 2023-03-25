@@ -86,8 +86,8 @@ public class HomeActivity extends AppCompatActivity {
         leaderboardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Call your fragment here
                 LeaderboardFragment qrFragment = new LeaderboardFragment();
+                qrFragment.setComeFrom("HomeActivity");
                 // Pass qrCodeList as a parameter to the fragment
                 getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
