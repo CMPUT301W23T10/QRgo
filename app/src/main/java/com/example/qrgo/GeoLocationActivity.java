@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -199,8 +200,9 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         // Hide the status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
-            window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(getResources().getColor(R.color.transparent));
+            window.setNavigationBarColor(getResources().getColor(R.color.transparent));
+            window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
         }
         // Set up the close button
         FloatingActionButton goToPlayerActivityButton = findViewById(R.id.close_button);
