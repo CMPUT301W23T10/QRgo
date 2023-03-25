@@ -90,8 +90,6 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
             }
         });
 
-        //Log.d("hazarika", String.valueOf(coordinates));
-
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         setContentView(R.layout.activity_geo_location);
@@ -128,9 +126,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
             longitude = location.getLongitude();
         }
         startPoint = new GeoPoint(latitude, longitude);
-
-
-        //Log.d("hazarika", "latitude: " + startPoint.getLatitude() + "longitude" + startPoint.getLongitude());
+        
         mapController.setCenter(startPoint);
         mapController.setZoom(15);
 
@@ -299,7 +295,6 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
      * @param longitude double value representing the longitude
      */
     private void addMarker(double latitude, double longitude) {
-        //Log.d("hazarika123", "latitude: " + latitude + "longitude" + longitude);
         Marker marker = new Marker(map);
         marker.setPosition(new GeoPoint(latitude, longitude));
         marker.setTitle("Latitude: " + Double.toString(latitude) + " Longitude: " + Double.toString(longitude));
@@ -349,7 +344,6 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
                         leaderBoardRanks.add(title);
                     }
                 }
-                Log.d("hazarika123", String.valueOf(leaderBoardRanks));
                 AlertDialog.Builder builder = new AlertDialog.Builder(GeoLocationActivity.this);
                 builder.setMessage("Show ranking of QR Codes in this region?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
