@@ -199,7 +199,11 @@ public class LeaderboardFragment extends Fragment {
         all_users_listview = rootView.findViewById(R.id.all_users_listview);
 
         // Set highScoreQR as the default active FAB
-        toggleFabs(highScoreQR);
+        if (comeFromString.equals("HomeActivity")) {
+            toggleFabs(highScoreQR);
+        } else {
+            toggleFabs(highScoreLocation);
+        }
 
 
         highScoreQR.setOnClickListener(new View.OnClickListener() {
