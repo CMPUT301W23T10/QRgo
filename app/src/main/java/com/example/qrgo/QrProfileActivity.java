@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QrProfileActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,5 +199,14 @@ public class QrProfileActivity extends AppCompatActivity {
            Intent intent1 = new Intent(QrProfileActivity.this, MainActivity.class);
               startActivity(intent1);
         });
+
+        // GeoLocation button
+        ImageView locationButton = findViewById(R.id.location_button);
+        locationButton.setOnClickListener(v -> {
+            Intent intent1 = new Intent(QrProfileActivity.this, GeoLocationActivity.class);
+            intent1.putExtra("qrCode", qr_code_id);
+            startActivity(intent1);
+        });
     }
+
 }

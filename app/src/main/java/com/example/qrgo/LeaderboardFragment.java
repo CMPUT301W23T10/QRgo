@@ -96,6 +96,10 @@ public class LeaderboardFragment extends Fragment {
                                 }
                             }
                     );
+                } else if (activeFab == highScoreLocation) {
+                    Intent intent = new Intent(getActivity(), GeoLocationActivity.class);
+                    intent.putExtra("LeaderBoard", "leaderboard");
+                    startActivity(intent);
                 }
             } else {
                 // Untoggle other fabs
