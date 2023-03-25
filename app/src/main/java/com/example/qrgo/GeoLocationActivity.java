@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.qrgo.listeners.OnCoordinatesListLoadedListener;
 import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -67,7 +68,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         super.onCreate(savedInstanceState);
 
         FirebaseConnect database = new FirebaseConnect();
-        database.getAllQrCoordinates(new FirebaseConnect.OnCoordinatesListLoadedListener() {
+        database.getQRCodeManager().getAllQrCoordinates(new OnCoordinatesListLoadedListener() {
             @Override
             public void onCoordinatesListLoaded(Map<String, List<List<Double>>> mapped_coordinates) {
                 /*for (List<List<Double>> coordinateList : mapped_coordinates.values()) {

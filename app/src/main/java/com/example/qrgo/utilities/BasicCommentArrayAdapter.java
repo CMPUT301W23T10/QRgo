@@ -71,16 +71,20 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
             int diffDays = diffHours / 24;
             int remainingHours = diffHours % 24;
             commentTimeTextView.setText(diffDays + " days ago");
-            Log.d("Comment", "Time difference in days: " + diffDays);
+
         } else {
             commentTimeTextView.setText(diffHours + " h ago");
-            Log.d("Comment", "Time difference in hours: " + diffHours);
         }
 
         commentNameTextView.setText(comment.getPlayerFirstName() + ' ' + comment.getPlayerLastName());
 
         commentBodyTimeTextView.setText(comment.getCommentString());
-        commentedOnTextView.setText(comment.getQrCodeId());
+        String commentedOn = comment.getQrCodeId();
+        // Truncate the commented on string to 10
+        if (commentedOn.length() > 22) {
+            commentedOn = commentedOn.substring(0, 22) + "...";
+        }
+        commentedOnTextView.setText(commentedOn);
 
         Picasso.get().load("https://i.imgur.com/DvpvklR.png").transform(new CircleTransform()).into(commentsProfilePictureImageView);
 

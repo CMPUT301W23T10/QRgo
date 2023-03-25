@@ -22,6 +22,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.qrgo.R;
+import com.example.qrgo.listeners.OnUserAddListener;
+import com.example.qrgo.listeners.OnUserProfileAddListener;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,6 +43,7 @@ public class SignupActivity extends AppCompatActivity {
 
     static String userID;
     static String user;
+    static String userFirstLast;
     String sharedDB = sharedPrefdb;
 
     @Override
@@ -99,15 +102,7 @@ public class SignupActivity extends AppCompatActivity {
                 //Disable button
                 mRegister.setClickable(false);
                 //Retrieve sign up info
-//                final String imei = getIntent().getStringExtra("imei");
 
-
-
-
-
-
-
-//                    if(index != 0) {
                         //DO NOT FORGET TO ENSURE UNIQUE USERNAME HERE
 
                 final String firstName = username.getText().toString();
@@ -117,6 +112,9 @@ public class SignupActivity extends AppCompatActivity {
                 final String contactPhone = phone.getText().toString();
                 final String imei = getIntent().getStringExtra("imei");
                 user = userName;
+
+                // Save username (first last) to shared preferences, to be used in QRProfileActivity
+                userFirstLast = firstName + " " + lastName;
                 //Add User
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -126,11 +124,11 @@ public class SignupActivity extends AppCompatActivity {
 
 
 
-                db.addNewUser(imei, userName, new FirebaseConnect.OnUserAddListener() {
+                db.getUserManager().addNewUser(imei, userName, new OnUserAddListener() {
                     @Override
                     public void onUserAdd(boolean success) {
                         //Add Profile
-                        db.addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, 0, new FirebaseConnect.OnUserProfileAddListener() {
+                        db.getPlayerProfileManager().addNewPlayerProfile(userName, firstName, lastName, contactEmail, contactPhone, 0, 0, 0, 0, new OnUserProfileAddListener() {
                             @Override
 
                             public void onUserProfileAdd(boolean success) {
