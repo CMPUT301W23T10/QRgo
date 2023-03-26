@@ -77,6 +77,9 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                 // Add the user's username to the "scannedUsers" array
                 db.collection("QRCodes").document(qrCodeId)
                         .update("scannedUsers", FieldValue.arrayUnion(username));
+
+                db.collection("Profiles").document(username)
+                        .update("qrScans", FieldValue.arrayUnion(qrCodeId));
             } else {
                 // QR Code document with the given qrString does not exist, so create a new document
                 Map<String, Object> data = new HashMap<>();
