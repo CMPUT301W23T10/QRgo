@@ -17,8 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.example.qrgo.listeners.OnGlobalRankLoadedListener;
 import com.example.qrgo.listeners.OnPlayerProfileGetListener;
 import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.models.BasicQRCode;
@@ -72,7 +74,37 @@ public class PlayerActivity extends AppCompatActivity {
             @Override
             public void onPlayerProfileGet(PlayerProfile playerProfile) {
                 if (playerProfile != null) {
-                    // Do something with the player profile object
+
+                    firebaseConnect.getPlayerProfileManager().getGlobalRankForTotalScore(
+                            playerProfile.getUsername(), new OnGlobalRankLoadedListener() {
+                                @Override
+                                public void onGlobalRankLoaded(int rank, int totalScore, int userTotalScore) {
+                                    // Make toast of rank totalScore userTotal
+                                    Toast.makeText(PlayerActivity.this, "rank :" +rank + " " + totalScore + " " + userTotalScore, Toast.LENGTH_SHORT).show();
+                                    Log.d("PlayerActivity", "onGlobalRankLoaded: "+ "rank : " +rank + " total Score : " + totalScore + " userTotalScore : " + userTotalScore);
+                                }
+                                @Override
+                                public void onGlobalRankLoadFailure(Exception e) {
+
+                                }
+                            }
+                    );
+
+                    firebaseConnect.getPlayerProfileManager().getGlobalRankForHighScore(
+                            playerProfile.getUsername(), new OnGlobalRankLoadedListener() {
+                                @Override
+                                public void onGlobalRankLoaded(int rank, int maxScore, int userMaxScore) {
+                                    // Make toast of rank totalScore userTotal
+                                    Toast.makeText(PlayerActivity.this, "rank :" +rank + " " + maxScore + " " + userMaxScore, Toast.LENGTH_SHORT).show();
+                                    Log.d("PlayerActivity", "onGlobalRankLoaded: "+ "rank : " +rank + " High Score : " + maxScore + " userHighScore : " + userMaxScore);
+                                }
+                                @Override
+                                public void onGlobalRankLoadFailure(Exception e) {
+
+                                }
+                            }
+                    );
+
 
                     TextView usernameTextView = findViewById(R.id.play_username);
                     usernameTextView.setText(playerProfile.getUsername());
