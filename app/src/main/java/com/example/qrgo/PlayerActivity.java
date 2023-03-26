@@ -185,7 +185,7 @@ public class PlayerActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
                             // Call your fragment here
-                            CommentListview  commentFragment = new CommentListview();
+                            CommentListviewFragment commentFragment = new CommentListviewFragment();
                             ArrayList<Comment> commentArrayList = new ArrayList<>(commentList);
                             // Pass qrCodeList as a parameter to the fragment
                             commentFragment.setCommentList(commentArrayList);

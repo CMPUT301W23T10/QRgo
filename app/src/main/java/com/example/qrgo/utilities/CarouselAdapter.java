@@ -2,6 +2,7 @@ package com.example.qrgo.utilities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.example.qrgo.GeoLocationActivity;
 import com.example.qrgo.HomeActivity;
 import com.example.qrgo.QrProfileActivity;
 import com.example.qrgo.R;
@@ -73,6 +75,23 @@ public class CarouselAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View view = layoutInflater.inflate(R.layout.caraousel_card, container, false);
         BasicQRCode carouselItem = carouselItems.get(position);
+
+
+        ImageView locationButton = view.findViewById(R.id.qr_code_location);
+        String qr_code_id = carouselItem.getQRString();
+
+        if (qr_code_id.equals("NaN")) {
+            // Do nothing
+
+        } else {
+            locationButton.setOnClickListener(v -> {
+                Intent intent1 = new Intent(v.getContext(), GeoLocationActivity.class);
+                intent1.putExtra("qrCode", qr_code_id);
+                v.getContext().startActivity(intent1);
+            });
+        }
+
+
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
