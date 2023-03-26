@@ -12,6 +12,7 @@ public class BasicPlayerProfile {
     protected String lastName; // the last name of the player
     protected Photo profilePhoto; // the profile photo of the player
     protected int totalScore; // the total score of the player
+    protected int totalScans; // the total score of the player
     protected int highestScore; // the highest score of the player
     protected int lowestScore; // the lowest score of the player
 
@@ -21,16 +22,26 @@ public class BasicPlayerProfile {
      * @param firstName the first name of the player
      * @param lastName the last name of the player
      * @param totalScore the total score of the player
+     * @param totalScans the total score of the player
      * @param highestScore the highest score of the player
      * @param lowestScore the lowest score of the player
      */
-    public BasicPlayerProfile(String username, String firstName, String lastName, int totalScore, int highestScore, int lowestScore) {
+    public BasicPlayerProfile(String username, String firstName, String lastName, int totalScore, int totalScans, int highestScore, int lowestScore) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.totalScore = totalScore;
+        this.totalScans = totalScans;
         this.highestScore = highestScore;
         this.lowestScore = lowestScore;
+    }
+
+    public int getTotalScans() {
+        return totalScans;
+    }
+
+    public void setTotalScans(int totalScans) {
+        this.totalScans = totalScans;
     }
 
     /**

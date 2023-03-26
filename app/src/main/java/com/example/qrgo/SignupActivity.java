@@ -43,7 +43,6 @@ public class SignupActivity extends AppCompatActivity {
 
     static String userID;
     static String user;
-    static String userFirstLast;
     String sharedDB = sharedPrefdb;
 
     @Override
@@ -113,12 +112,11 @@ public class SignupActivity extends AppCompatActivity {
                 final String imei = getIntent().getStringExtra("imei");
                 user = userName;
 
-                // Save username (first last) to shared preferences, to be used in QRProfileActivity
-                userFirstLast = firstName + " " + lastName;
                 //Add User
-
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("user", user);
+                editor.putString("firstName", firstName);
+                editor.putString("lastName", lastName);
                 editor.commit();
 
 

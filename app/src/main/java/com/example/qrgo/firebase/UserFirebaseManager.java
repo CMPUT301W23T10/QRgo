@@ -111,9 +111,10 @@ public class UserFirebaseManager extends BaseFirebaseConnectManager{
      * @param searchQuery The search query to use.
      * @param listener The listener to call when the search is complete.
      */
+
     public void searchUsers(String searchQuery, OnUserSearchListener listener) {
 
-                db.collection("Users")
+        db.collection("Users")
 
                 .whereGreaterThanOrEqualTo("username", searchQuery)
                 .whereLessThanOrEqualTo("username", searchQuery + "\uf8ff")
@@ -138,10 +139,11 @@ public class UserFirebaseManager extends BaseFirebaseConnectManager{
 
                         String firstName = documentSnapshot.getString("firstName");
                         String lastName = documentSnapshot.getString("lastName");
+                        int profilePhoto = documentSnapshot.getLong("profilePhoto").intValue();
                         int totalScore = documentSnapshot.getLong("totalScore").intValue();
                         int highestScore = documentSnapshot.getLong("highestScore").intValue();
                         int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, profilePhoto, totalScore, highestScore, lowestScore);
                         listener.onUserSearchComplete(Collections.singletonList(basicPlayerProfile));
                     } else {
                         listener.onUserSearchComplete(Collections.emptyList());
@@ -149,6 +151,7 @@ public class UserFirebaseManager extends BaseFirebaseConnectManager{
                 })
                 .addOnFailureListener(e -> listener.onUserSearchFailure(e));
     }
+
 
 }
 

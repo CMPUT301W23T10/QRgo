@@ -2,15 +2,19 @@ package com.example.qrgo.utilities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.qrgo.HomeActivity;
 import com.example.qrgo.QrProfileActivity;
 import com.example.qrgo.R;
+import com.example.qrgo.listeners.OnUserDeleteFromQRCodeListener;
 import com.example.qrgo.models.BasicQRCode;
 
 import java.util.ArrayList;
@@ -50,31 +54,56 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the current item from the data array
         BasicQRCode currentQRCode = getItem(position);
-
         // Inflate the list item layout if necessary
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(com.example.qrgo.R.layout.qr_items, parent, false);
-        }
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), QrProfileActivity.class);
-                if (currentQRCode.getQRString() != "NaN") {
-                    intent.putExtra("qr_code", currentQRCode.getQRString());
-                    view.getContext().startActivity(intent);
+            ImageView qr_arrow_icon = convertView.findViewById(R.id.qr_arrow_icon);
+            ImageView qr_delete_icon = convertView.findViewById(R.id.qr_delete_icon);
+            SharedPreferences sharedPreferences = convertView.getContext().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
+            String user = sharedPreferences.getString("user", "");
+            String qr_code_id = currentQRCode.getQRString();
+
+            qr_arrow_icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(), QrProfileActivity.class);
+                    if (currentQRCode.getQRString() != "NaN") {
+                        intent.putExtra("qr_code", currentQRCode.getQRString());
+                        view.getContext().startActivity(intent);
+                    }
+
                 }
 
-            }
+            });
+            qr_delete_icon.setOnClickListener(v -> {
+                FirebaseConnect firebaseConnect = new FirebaseConnect();
+                firebaseConnect.getQRCodeManager().deleteUserFromQRCode(
+                        qr_code_id,
+                        user,
+                        new OnUserDeleteFromQRCodeListener() {
+                            @Override
+                            public void onUserDeleteFromQRCode(boolean success) {
+                                if (success) {
+                                    // Refresh the list
+                                    Intent intent = new Intent(v.getContext(), HomeActivity.class);
+                                    v.getContext().startActivity(intent);
+                                } else {
+                                    Toast.makeText(v.getContext(), "Error deleting user from QR code", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                );
+            });
+        }
 
-        });
-
+        ImageView qr_arrow_icon = convertView.findViewById(R.id.qr_arrow_icon);
+        ImageView qr_delete_icon = convertView.findViewById(R.id.qr_delete_icon);
         // Get references to the views in the list item layout
         TextView nameTextView = convertView.findViewById(R.id.qr_name);
         TextView scoreTextView = convertView.findViewById(R.id.qr_score);
         TextView rankTextView = convertView.findViewById(R.id.qr_rank);
 
         if (this.caller.equals("player") || this.caller.equals("homeAll")) {
-            ImageView qr_arrow_icon = convertView.findViewById(R.id.qr_arrow_icon);
             // set height to match parent
             qr_arrow_icon.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
             // set width to 50dp
@@ -83,10 +112,7 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
             ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) qr_arrow_icon.getLayoutParams();
             marginParams.setMargins(10, 10, 10, 10);
             qr_arrow_icon.requestLayout();
-
-
             // make this is Gone
-            ImageView qr_delete_icon = convertView.findViewById(R.id.qr_delete_icon);
             qr_delete_icon.setVisibility(View.INVISIBLE);
 
         }

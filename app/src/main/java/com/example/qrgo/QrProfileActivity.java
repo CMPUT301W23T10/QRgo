@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.qrgo.listeners.OnCommentAddListener;
 import com.example.qrgo.listeners.QRCodeListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.Comment;
@@ -37,14 +37,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QrProfileActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_profile);
+        // find username in the shared preferences with key user
+        SharedPreferences sharedPreferences = getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
+        String user = sharedPreferences.getString("user", "");
+        String firstName = sharedPreferences.getString("firstName", "");
+        String LastName = sharedPreferences.getString("lastName", "");
+        Log.d("QrProfileActivity", "User " + user + " " + firstName + " " + LastName);
         // Checking intent for qr_code key
         Intent intent = getIntent();
         String qr_code_id = intent.getStringExtra("qr_code");
+
 
         // Hide the action bar
         ActionBar actionBar = getSupportActionBar();
@@ -74,12 +80,10 @@ public class QrProfileActivity extends AppCompatActivity {
                         .transform(new RoundedSquareTransform(100))
                         .into(imageView);
 
-//                Log.d("QrProfileActivity", "QR Code Name " + qrCode.getHumanReadableQR());
                 TextView qrCodeName = findViewById(R.id.qr_name);
                 qrCodeName.setText(qrCode.getHumanReadableQR());
 
                 List<BasicPlayerProfile> scanned_list = qrCode.getScannedPlayer();
-//                Log.d("QrProfileActivity", "QR Code Players " + scanned_list);
                 TextView users_head = findViewById(R.id.qr_users_head);
                 users_head.setText("Users (" + scanned_list.size() + ")");
                 List<BasicPlayerProfile> playerList = scanned_list;
@@ -106,12 +110,10 @@ public class QrProfileActivity extends AppCompatActivity {
                 });
 
 
-//                Log.d("QrProfileActivity", "QR Code Points " + qrCode.getQrCodePoints());
                 TextView qr_score = findViewById(R.id.qr_score);
                 qr_score.setText(Integer.toString(qrCode.getQrCodePoints()) + " pts");
 
 
-//                Log.d("QrProfileActivity", "QR Code Comments " + qrCode.getComments());
 //                TextView qr_comment_head = findViewById(R.id.qr_comment_head);
 //                qr_comment_head.setText("Comments (" + qrCode.getComments().size() + ")");
 
@@ -142,7 +144,7 @@ public class QrProfileActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         // Call your fragment here
-                        CommentListview  commentFragment = new CommentListview();
+                        CommentListviewFragment commentFragment = new CommentListviewFragment();
                         ArrayList<Comment> commentArrayList = new ArrayList<>(commentList);
                         // Pass qrCodeList as a parameter to the fragment
                         commentFragment.setCommentList(commentArrayList);
@@ -157,10 +159,8 @@ public class QrProfileActivity extends AppCompatActivity {
 
                 // Set current user's name for the heading above comment editText
                 TextView qr_user_name = findViewById(R.id.qr_user_name);
-                // find username in the shared preferences with key user
-                SharedPreferences sharedPreferences = getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
-                String userFirstLast = sharedPreferences.getString("user", "");
-                qr_user_name.setText(userFirstLast + " (You)");
+
+                qr_user_name.setText(user + " (You)");
 
                 // Set up the picture for the current user
                 ImageView qr_user_profile_picture = findViewById(R.id.qr_user_profile_picture);
@@ -175,10 +175,20 @@ public class QrProfileActivity extends AppCompatActivity {
                         // Get the comment from the editText
                         EditText qr_comment_box = findViewById(R.id.qr_comment_box);
                         String comment = qr_comment_box.getText().toString();
-                        Log.d("QrProfileActivity", "Comment " + comment);
-                        // make a toast with the comment for now to test
-                        Toast.makeText(QrProfileActivity.this, comment, Toast.LENGTH_SHORT).show();
-
+                        firebaseconnect.getCommentManager().addComment(comment, user, qrCode.getQrString(), firstName, LastName, new OnCommentAddListener() {
+                            @Override
+                            public void onCommentAdd(boolean success) {
+                                if (success) {
+                                    Toast.makeText(QrProfileActivity.this, "Comment added", Toast.LENGTH_SHORT).show();
+                                    // Refresh the activity
+                                    Intent intent = getIntent();
+                                    finish();
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(QrProfileActivity.this, "Comment not added", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }
                 });
             }
@@ -200,5 +210,14 @@ public class QrProfileActivity extends AppCompatActivity {
            Intent intent1 = new Intent(QrProfileActivity.this, MainActivity.class);
               startActivity(intent1);
         });
+
+        // GeoLocation button
+        ImageView locationButton = findViewById(R.id.location_button);
+        locationButton.setOnClickListener(v -> {
+            Intent intent1 = new Intent(QrProfileActivity.this, GeoLocationActivity.class);
+            intent1.putExtra("qrCode", qr_code_id);
+            startActivity(intent1);
+        });
     }
+
 }
