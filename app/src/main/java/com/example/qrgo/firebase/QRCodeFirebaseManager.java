@@ -132,6 +132,7 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
      */
     public void deleteUserFromQRCode(String qrString, String username, OnUserDeleteFromQRCodeListener listener) {
         CollectionReference qrCodesRef = db.collection("QRCodes");
+        CollectionReference profilesRef = db.collection("Profiles");
         qrCodesRef.whereEqualTo("qrString", qrString).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 QuerySnapshot querySnapshot = task.getResult();
@@ -139,11 +140,36 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                     DocumentSnapshot document = querySnapshot.getDocuments().get(0);
                     DocumentReference qrCodeRef = qrCodesRef.document(document.getId());
                     ArrayList<String> scannedUsers = (ArrayList<String>) document.get("scannedUsers");
+                    String qrCodeId = document.getId();
+                    int qrPoints = document.getLong("qrPoints").intValue();
                     if (scannedUsers != null && scannedUsers.contains(username)) {
                         scannedUsers.remove(username);
                         qrCodeRef.update("scannedUsers", scannedUsers).addOnCompleteListener(updateTask -> {
+
                             if (updateTask.isSuccessful()) {
-                                listener.onUserDeleteFromQRCode(true);
+                                profilesRef.document(username).get().addOnCompleteListener(profileTask -> {
+                                    if (profileTask.isSuccessful()) {
+                                        DocumentSnapshot profileDocument = profileTask.getResult();
+                                        DocumentReference profileRef = profilesRef.document(username);
+                                        ArrayList<String> qrScans = (ArrayList<String>) profileDocument.get("qrScans");
+                                        int totalScore = profileDocument.getLong("totalScore").intValue();
+                                        if (qrScans.contains(qrCodeId)) {
+                                            qrScans.remove(qrCodeId);
+                                            totalScore -= qrPoints;
+                                            profileRef.update("qrScans", qrScans, "totalScore", totalScore).addOnCompleteListener(updateProfileTask -> {
+                                                if (updateProfileTask.isSuccessful()) {
+                                                    listener.onUserDeleteFromQRCode(true);
+                                                } else {
+                                                    listener.onUserDeleteFromQRCode(false);
+                                                }
+                                            });
+                                        } else {
+                                            listener.onUserDeleteFromQRCode(false);
+                                        }
+                                    } else {
+                                        listener.onUserDeleteFromQRCode(false);
+                                    }
+                                });
                             } else {
                                 listener.onUserDeleteFromQRCode(false);
                             }
@@ -325,5 +351,7 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                 })
                 .addOnFailureListener(e -> listener.onQrListLoadFailure(e));
     }
+
+
 
 }
