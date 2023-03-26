@@ -7,6 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="wrap_content"
@@ -132,6 +133,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/play_total_score_head"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -165,6 +167,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/play_high_qr_head"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -313,5 +316,9 @@
 
 </ScrollView>
     </FrameLayout>
+    <FrameLayout
+        android:id="@+id/fragment_container_2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
