@@ -119,9 +119,10 @@ public class UserFirebaseManager extends BaseFirebaseConnectManager{
                         String firstName = document.getString("firstName");
                         String lastName = document.getString("lastName");
                         int totalScore = document.getLong("totalScore").intValue();
+                        int totalScans = document.getLong("totalScans").intValue();
                         int highestScore = document.getLong("highestScore").intValue();
                         int lowestScore = document.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, totalScans,highestScore, lowestScore);
                         users.add(basicPlayerProfile);
                     }
                     listener.onUserSearchComplete(users);

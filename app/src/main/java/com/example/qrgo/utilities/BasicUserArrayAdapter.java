@@ -85,7 +85,9 @@ public class BasicUserArrayAdapter extends ArrayAdapter<BasicPlayerProfile> {
             scoreTextView.setText(currentUser.getTotalScore() + " pts");
         } else if (field == "highScore") {
             scoreTextView.setText(currentUser.getHighestScore() + " pts");
-        }
+        } else if (field == "totalScans") {
+        scoreTextView.setText(currentUser.getTotalScans() + " scans");
+    }
         return convertView;
     }
 }

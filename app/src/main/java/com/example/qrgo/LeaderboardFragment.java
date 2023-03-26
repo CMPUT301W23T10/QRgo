@@ -107,7 +107,7 @@ public class LeaderboardFragment extends Fragment {
                                 public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                                     // convert the list to an array
                                     ArrayList<BasicPlayerProfile> playerArrayList = new ArrayList<>(playerList);
-                                    BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "totalScore");
+                                    BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "totalScans");
                                     all_users_listview.setAdapter(userAdapter);
                                 }
                                 @Override

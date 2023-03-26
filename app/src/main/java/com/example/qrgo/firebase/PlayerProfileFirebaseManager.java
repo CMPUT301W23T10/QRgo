@@ -52,7 +52,6 @@ public class PlayerProfileFirebaseManager extends BaseFirebaseConnectManager{
         data.put("contactEmail", contactEmail);
         data.put("totalScore", totalScore);
         data.put("totalScans", totalScans);
-
         data.put("highestScore", highestScore);
         data.put("lowestScore", lowestScore);
         data.put("qrScans", new ArrayList<String>());
@@ -215,9 +214,10 @@ public class PlayerProfileFirebaseManager extends BaseFirebaseConnectManager{
                         String firstName = documentSnapshot.getString("firstName");
                         String lastName = documentSnapshot.getString("lastName");
                         int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int totalScans = documentSnapshot.getLong("totalScans").intValue();
                         int highestScore = documentSnapshot.getLong("highestScore").intValue();
                         int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, totalScans,highestScore, lowestScore);
                         listener.onBasicPlayerProfileLoaded(basicPlayerProfile);
                     } else {
                         listener.onBasicPlayerProfileLoadFailure(new Exception("Profile does not exist."));
@@ -242,9 +242,10 @@ public class PlayerProfileFirebaseManager extends BaseFirebaseConnectManager{
                         String firstName = documentSnapshot.getString("firstName");
                         String lastName = documentSnapshot.getString("lastName");
                         int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int totalScans = documentSnapshot.getLong("totalScans").intValue();
                         int highestScore = documentSnapshot.getLong("highestScore").intValue();
                         int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, totalScans, highestScore, lowestScore);
                         playerList.add(basicPlayerProfile);
                     }
                     listener.onPlayerListLoaded(playerList);
@@ -268,9 +269,10 @@ public class PlayerProfileFirebaseManager extends BaseFirebaseConnectManager{
                         String firstName = documentSnapshot.getString("firstName");
                         String lastName = documentSnapshot.getString("lastName");
                         int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int totalScans = documentSnapshot.getLong("totalScans").intValue();
                         int highestScore = documentSnapshot.getLong("highestScore").intValue();
                         int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, totalScans, highestScore, lowestScore);
                         playerList.add(basicPlayerProfile);
                     }
                     listener.onPlayerListLoaded(playerList);
@@ -293,9 +295,10 @@ public class PlayerProfileFirebaseManager extends BaseFirebaseConnectManager{
                         String firstName = documentSnapshot.getString("firstName");
                         String lastName = documentSnapshot.getString("lastName");
                         int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int totalScans = documentSnapshot.getLong("totalScans").intValue();
                         int highestScore = documentSnapshot.getLong("highestScore").intValue();
                         int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, totalScans, highestScore, lowestScore);
                         playerList.add(basicPlayerProfile);
                     }
                     listener.onPlayerListLoaded(playerList);
@@ -318,9 +321,10 @@ public class PlayerProfileFirebaseManager extends BaseFirebaseConnectManager{
                         String firstName = documentSnapshot.getString("firstName");
                         String lastName = documentSnapshot.getString("lastName");
                         int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        int totalScans = documentSnapshot.getLong("totalScans").intValue();
                         int highestScore = documentSnapshot.getLong("highestScore").intValue();
                         int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, highestScore, lowestScore);
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, totalScans,highestScore, lowestScore);
                         playerList.add(basicPlayerProfile);
                     }
                     listener.onPlayerListLoaded(playerList);
