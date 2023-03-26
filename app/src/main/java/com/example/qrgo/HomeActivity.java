@@ -17,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
@@ -113,6 +114,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 // Define the carousel items
                 List<BasicQRCode> carouselItems = userProfile.getQrCodeBasicProfiles();
+                Log.d("HomeActivity", "onPlayerProfileGet: " + carouselItems);
                 List<BasicQRCode> temp = carouselItems;
                 if (temp.size() > 3) {
                     temp = temp.subList(0, 3);
