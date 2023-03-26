@@ -180,6 +180,10 @@ public class QrProfileActivity extends AppCompatActivity {
                             public void onCommentAdd(boolean success) {
                                 if (success) {
                                     Toast.makeText(QrProfileActivity.this, "Comment added", Toast.LENGTH_SHORT).show();
+                                    // Refresh the activity
+                                    Intent intent = getIntent();
+                                    finish();
+                                    startActivity(intent);
                                 } else {
                                     Toast.makeText(QrProfileActivity.this, "Comment not added", Toast.LENGTH_SHORT).show();
                                 }

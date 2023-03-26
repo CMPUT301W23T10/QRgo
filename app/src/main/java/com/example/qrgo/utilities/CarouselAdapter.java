@@ -2,12 +2,14 @@ package com.example.qrgo.utilities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.viewpager.widget.PagerAdapter;
 
@@ -15,6 +17,7 @@ import com.example.qrgo.GeoLocationActivity;
 import com.example.qrgo.HomeActivity;
 import com.example.qrgo.QrProfileActivity;
 import com.example.qrgo.R;
+import com.example.qrgo.listeners.OnUserDeleteFromQRCodeListener;
 import com.example.qrgo.models.BasicQRCode;
 import com.squareup.picasso.Picasso;
 
@@ -78,7 +81,10 @@ public class CarouselAdapter extends PagerAdapter {
 
 
         ImageView locationButton = view.findViewById(R.id.qr_code_location);
+        ImageView deleteButton = view.findViewById(R.id.qr_code_delete);
         String qr_code_id = carouselItem.getQRString();
+        SharedPreferences sharedPreferences = view.getContext().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
+        String user = sharedPreferences.getString("user", "");
 
         if (qr_code_id.equals("NaN")) {
             // Do nothing
@@ -88,6 +94,25 @@ public class CarouselAdapter extends PagerAdapter {
                 Intent intent1 = new Intent(v.getContext(), GeoLocationActivity.class);
                 intent1.putExtra("qrCode", qr_code_id);
                 v.getContext().startActivity(intent1);
+            });
+            deleteButton.setOnClickListener(v -> {
+                FirebaseConnect firebaseConnect = new FirebaseConnect();
+                firebaseConnect.getQRCodeManager().deleteUserFromQRCode(
+                    qr_code_id,
+                    user,
+                    new OnUserDeleteFromQRCodeListener() {
+                        @Override
+                        public void onUserDeleteFromQRCode(boolean success) {
+                            if (success) {
+                                // Refresh the activity
+                                Intent intent = new Intent(v.getContext(), HomeActivity.class);
+                                v.getContext().startActivity(intent);
+                            } else {
+                                Toast.makeText(v.getContext(), "Error deleting user from QR code", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+            );
             });
         }
 
