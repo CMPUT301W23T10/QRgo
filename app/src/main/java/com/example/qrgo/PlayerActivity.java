@@ -17,8 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
+import com.example.qrgo.listeners.OnGlobalRankLoadedListener;
 import com.example.qrgo.listeners.OnPlayerProfileGetListener;
 import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.models.BasicQRCode;
@@ -72,7 +74,62 @@ public class PlayerActivity extends AppCompatActivity {
             @Override
             public void onPlayerProfileGet(PlayerProfile playerProfile) {
                 if (playerProfile != null) {
-                    // Do something with the player profile object
+
+                    TextView totalHead = findViewById(R.id.play_total_score_head);
+                    totalHead.setOnClickListener(v -> {
+                        firebaseConnect.getPlayerProfileManager().getGlobalRankForTotalScore(
+                                playerProfile.getUsername(), new OnGlobalRankLoadedListener() {
+                                    @Override
+                                    public void onGlobalRankLoaded(int rank, int maxTotalScore, int userTotalScore) {
+                                        GlobalScoresFragment GlobalScoresFragment = new GlobalScoresFragment();
+                                        GlobalScoresFragment.setRankHeading("Global rank for total score");
+                                        GlobalScoresFragment.setTotalScoreHeading("Global High Score");
+                                        GlobalScoresFragment.setCurrentScoreHeading("Your Total Score");
+                                        GlobalScoresFragment.setRank("#"+rank);
+                                        GlobalScoresFragment.setTotalScore(Integer.toString(maxTotalScore));
+                                        GlobalScoresFragment.setCurrentScore(Integer.toString(userTotalScore));
+                                        getSupportFragmentManager().beginTransaction()
+                                                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                                                .add(R.id.fragment_container_2, GlobalScoresFragment)
+                                                .addToBackStack(null)
+                                                .commit();
+                                    }
+                                    @Override
+                                    public void onGlobalRankLoadFailure(Exception e) {
+
+                                    }
+                                }
+                        );
+
+                    });
+
+                    TextView highHead = findViewById(R.id.play_high_qr_head);
+                    highHead.setOnClickListener(v -> {
+                        firebaseConnect.getPlayerProfileManager().getGlobalRankForHighScore(
+                                playerProfile.getUsername(), new OnGlobalRankLoadedListener() {
+                                    @Override
+                                    public void onGlobalRankLoaded(int rank, int maxScore, int userMaxScore) {
+                                        GlobalScoresFragment GlobalScoresFragment = new GlobalScoresFragment();
+                                        GlobalScoresFragment.setRankHeading("Global rank for highest QR");
+                                        GlobalScoresFragment.setTotalScoreHeading("Global High QR");
+                                        GlobalScoresFragment.setCurrentScoreHeading("Your Highest QR");
+                                        GlobalScoresFragment.setRank("#"+rank);
+                                        GlobalScoresFragment.setTotalScore(Integer.toString(maxScore));
+                                        GlobalScoresFragment.setCurrentScore(Integer.toString(userMaxScore));
+                                        getSupportFragmentManager().beginTransaction()
+                                                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                                                .add(R.id.fragment_container_2, GlobalScoresFragment)
+                                                .addToBackStack(null)
+                                                .commit();
+                                    }
+                                    @Override
+                                    public void onGlobalRankLoadFailure(Exception e) {
+
+                                    }
+                                }
+                        );
+
+                    });
 
                     TextView usernameTextView = findViewById(R.id.play_username);
                     usernameTextView.setText(playerProfile.getUsername());

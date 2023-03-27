@@ -190,7 +190,8 @@ public class LeaderboardFragment extends Fragment {
             container.removeAllViews();
         }
         View rootView = inflater.inflate(R.layout.fragment_leaderboard_highscore, container, false);
-         back = rootView.findViewById(R.id.back_button);
+
+        back = rootView.findViewById(R.id.back_button);
          highScoreQR = rootView.findViewById(R.id.high_score_button);
          users_subtitle = rootView.findViewById(R.id.users_subtitle);
          mostScannedQR = rootView.findViewById(R.id.most_scanned_button);

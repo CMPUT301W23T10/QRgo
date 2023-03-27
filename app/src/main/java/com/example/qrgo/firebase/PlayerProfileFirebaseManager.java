@@ -1,6 +1,7 @@
 package com.example.qrgo.firebase;
 
 import com.example.qrgo.listeners.OnBasicPlayerProfileLoadedListener;
+import com.example.qrgo.listeners.OnGlobalRankLoadedListener;
 import com.example.qrgo.listeners.OnPlayerListLoadedListener;
 import com.example.qrgo.listeners.OnPlayerProfileGetListener;
 import com.example.qrgo.listeners.OnUserProfileAddListener;
@@ -331,5 +332,62 @@ public class PlayerProfileFirebaseManager extends BaseFirebaseConnectManager{
                 })
                 .addOnFailureListener(e -> listener.onPlayerListLoadFailure(e));
     }
+    /**
+     A function that retrieves the maximum total score globally, user rank and calling users total score.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getGlobalRankForTotalScore(String userName, OnGlobalRankLoadedListener listener) {
+        db.collection("Profiles")
+                .orderBy("totalScore", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int maxTotalScore = 0;
+                    int userTotalScore = 0;
+                    int userRank = 0;
+                    for (int i = 0; i < querySnapshot.getDocuments().size(); i++) {
+                        DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(i);
+                        String documentId = documentSnapshot.getId();
+                        if (documentId.equals(userName)) {
+                            userTotalScore = documentSnapshot.getLong("totalScore").intValue();
+                            userRank = i + 1;
+                        }
+                        int totalScore = documentSnapshot.getLong("totalScore").intValue();
+                        if (totalScore > maxTotalScore) {
+                            maxTotalScore = totalScore;
+                        }
+                    }
+                    listener.onGlobalRankLoaded(userRank,maxTotalScore, userTotalScore);
+                })
+                .addOnFailureListener(e -> listener.onGlobalRankLoadFailure(e));
+    }
 
+    /**
+     A function that retrieves the maximum highest score of qrcode globally among all users, user rank and
+     calling users highest score of qrcode.
+     @param listener The listener to be notified of the result of the function.
+     */
+    public void getGlobalRankForHighScore(String userName, OnGlobalRankLoadedListener listener) {
+        db.collection("Profiles")
+                .orderBy("highestScore", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int maxHighScore = 0;
+                    int userHighScore = 0;
+                    int userRank = 0;
+                    for (int i = 0; i < querySnapshot.getDocuments().size(); i++) {
+                        DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(i);
+                        String documentId = documentSnapshot.getId();
+                        if (documentId.equals(userName)) {
+                            userHighScore = documentSnapshot.getLong("highestScore").intValue();
+                            userRank = i + 1;
+                        }
+                        int totalScore = documentSnapshot.getLong("highestScore").intValue();
+                        if (totalScore > maxHighScore) {
+                            maxHighScore = totalScore;
+                        }
+                    }
+                    listener.onGlobalRankLoaded(userRank,maxHighScore, userHighScore);
+                })
+                .addOnFailureListener(e -> listener.onGlobalRankLoadFailure(e));
+    }
 }
