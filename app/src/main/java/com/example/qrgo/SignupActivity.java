@@ -43,6 +43,7 @@ public class SignupActivity extends AppCompatActivity {
 
     static String userID;
     static String user;
+    static String userFirstLast;
     String sharedDB = sharedPrefdb;
 
     @Override
@@ -72,26 +73,26 @@ public class SignupActivity extends AppCompatActivity {
         final String TAG = "Sample";
         Button mRegister;
         //First name
-        final EditText username;
+        final EditText firstNameEntry;
         //Last name
-        final EditText email;
+        final EditText lastNameEntry;
         //Email
-        final EditText phone;
+        final EditText emailEntry;
         //Phone
-        final EditText phone_num;
+        final EditText phoneEntry;
 
         FirebaseConnect db = new FirebaseConnect();
 
         mRegister = findViewById(R.id.register);
 
         // The users first name
-        username = findViewById(R.id.username);
+        firstNameEntry = findViewById(R.id.firstNameEntry);
         //last name
-        email = findViewById(R.id.address);
+        lastNameEntry = findViewById(R.id.lastNameEntry);
         //email
-        phone = findViewById(R.id.phone_number);
+        emailEntry = findViewById(R.id.emailEntry);
         //phone
-        phone_num = findViewById(R.id.phone_number2);
+        phoneEntry = findViewById(R.id.phoneEntry);
 
 
 
@@ -101,22 +102,33 @@ public class SignupActivity extends AppCompatActivity {
                 //Disable button
                 mRegister.setClickable(false);
                 //Retrieve sign up info
-
-                        //DO NOT FORGET TO ENSURE UNIQUE USERNAME HERE
-
-                final String firstName = username.getText().toString();
-                final String lastName = email.getText().toString();
+                final String firstName = firstNameEntry.getText().toString();
+                final String lastName = lastNameEntry.getText().toString();
                 final String userName = lastName.charAt(0) + firstName + "#" + userID;
-                final String contactEmail = phone_num.getText().toString();
-                final String contactPhone = phone.getText().toString();
+                final String contactEmail = emailEntry.getText().toString();
+                final String contactPhone = phoneEntry.getText().toString();
                 final String imei = getIntent().getStringExtra("imei");
                 user = userName;
 
+                // Check if email is in valid format
+                if (!isValidEmail(contactEmail)) {
+                    emailEntry.setError("Invalid email address");
+                    mRegister.setClickable(true);
+                    return;
+                }
+                // Check if phone is in valid format
+                if (!isValidPhoneNumber(contactPhone)) {
+                    phoneEntry.setError("Invalid phone number");
+                    mRegister.setClickable(true);
+                    return;
+                }
+
+                // Save username (first last) to shared preferences, to be used in QRProfileActivity
+                userFirstLast = firstName + " " + lastName;
                 //Add User
+
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("user", user);
-                editor.putString("firstName", firstName);
-                editor.putString("lastName", lastName);
                 editor.commit();
 
 
@@ -131,9 +143,10 @@ public class SignupActivity extends AppCompatActivity {
 
                             public void onUserProfileAdd(boolean success) {
                                 // Clear fields on signup page
-                                username.setText("");
-                                email.setText("");
-                                phone.setText("");
+                                firstNameEntry.setText("");
+                                lastNameEntry.setText("");
+                                emailEntry.setText("");
+                                phoneEntry.setText("");
                                 // Navigate to Home Activity
                                 Intent intent = new Intent(SignupActivity.this, HomeActivity.class);
                                 startActivity(intent);
@@ -153,4 +166,13 @@ public class SignupActivity extends AppCompatActivity {
 
     } // end of onCreate
 
+    private boolean isValidEmail(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        // Regular expression to match a phone number in any format
+        String regex = "^(\\+\\d{1,3})?\\s*\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}$";
+        return phoneNumber.matches(regex);
+    }
 } // end of class

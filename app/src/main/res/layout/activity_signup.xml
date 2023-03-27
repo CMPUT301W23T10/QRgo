@@ -9,10 +9,10 @@
 
 
     <EditText
-        android:id="@+id/phone_number2"
+        android:id="@+id/phoneEntry"
         android:layout_width="286dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/phone_number_final"
+        android:layout_below="@+id/phone"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
@@ -22,10 +22,12 @@
         android:layout_marginTop="-4dp"
         android:layout_marginEnd="60dp"
         android:layout_marginRight="60dp"
-        android:inputType="text"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
-        android:textSize="15dp" />
+        android:textSize="15dp"
+        android:inputType="phone"
+        android:maxLength="10"
+        />
 
     <TextView
         android:id="@+id/signup"
@@ -43,7 +45,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/firstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/signup"
@@ -62,30 +64,29 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/firstNameEntry"
         android:layout_width="286dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/name"
+        android:layout_below="@+id/firstName"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginStart="65dp"
         android:layout_marginLeft="65dp"
-        android:layout_marginTop="-6dp"
+        android:layout_marginTop="-3dp"
         android:layout_marginEnd="60dp"
         android:layout_marginRight="60dp"
+        android:inputType="text"
         android:textColor="@color/black"
         android:textColorHint="@color/black"
-        android:textSize="15dp"
-        android:inputType="text"
-        />
+        android:textSize="15dp" />
 
     <TextView
-        android:id="@+id/email"
+        android:id="@+id/lastName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/username"
+        android:layout_below="@+id/firstNameEntry"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
@@ -101,10 +102,10 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/address"
+        android:id="@+id/lastNameEntry"
         android:layout_width="286dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/email"
+        android:layout_below="@+id/lastName"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
@@ -120,10 +121,10 @@
         android:textSize="15dp" />
 
     <TextView
-        android:id="@+id/phone"
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/address"
+        android:layout_below="@+id/lastNameEntry"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
@@ -139,10 +140,10 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/phone_number"
+        android:id="@+id/emailEntry"
         android:layout_width="286dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/phone"
+        android:layout_below="@+id/email"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
@@ -161,7 +162,7 @@
         android:id="@+id/register"
         android:layout_width="288dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/phone_number2"
+        android:layout_below="@+id/phoneEntry"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
@@ -173,10 +174,10 @@
         android:text="REGISTER" />
 
     <TextView
-        android:id="@+id/phone_number_final"
+        android:id="@+id/phone"
         android:layout_width="123dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/phone_number"
+        android:layout_below="@+id/emailEntry"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="67dp"
