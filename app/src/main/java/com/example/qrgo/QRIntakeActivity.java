@@ -10,27 +10,39 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Window;
 
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import com.example.qrgo.listeners.OnQRCodeScannedListener;
+import com.example.qrgo.listeners.OnQRCodeUploadListener;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.QRGenerationController;
 import com.google.zxing.client.android.Intents;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * This Activity serves as the basis for the QR scanning process, this activity registers the
@@ -41,6 +53,8 @@ import com.journeyapps.barcodescanner.ScanOptions;
 public class QRIntakeActivity extends AppCompatActivity {
 
     private double[] playerLocation = {181, 181};
+    private File locationPhotoFile;
+    private Uri locationPhotoUri;
     private FirebaseConnect db = new FirebaseConnect();
     private QRGenerationController generator;
     private static final int REQUEST_LOCATION_PERMISSION = 1;
@@ -61,9 +75,48 @@ public class QRIntakeActivity extends AppCompatActivity {
                     }
                 } else {
                     generator = new QRGenerationController(result.getContents());
-                    submitQR();
+                    askUserForLocation();
                 }
             });
+
+    private final ActivityResultLauncher<Uri> captureLocationPhoto = registerForActivityResult( new ActivityResultContracts.TakePicture(), result -> {
+        if (result) {
+            try {
+                Bitmap uncompressed = MediaStore.Images.Media.getBitmap(this.getContentResolver(), locationPhotoUri);
+                if (uncompressed.compress(Bitmap.CompressFormat.JPEG, 50, this.getContentResolver().openOutputStream(locationPhotoUri))) {
+                    db.getQRCodeManager().uploadAndRetrieveDownloadUrl(locationPhotoUri, generator.getHash(), new OnQRCodeUploadListener() {
+                        @Override
+                        public void onQRCodeUploadSuccess(String downloadUrl) {
+                            generator.setPhotoUrl(downloadUrl);
+                            submitQR();
+                        }
+                    });
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            //write a dialog box that tells the user they must take a photo and have 2 options that offer to retake a photo or scan without location
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Location Photo Required");
+            builder.setMessage("You must take a photo of if you want to add location data");
+            builder.setPositiveButton("Retake Photo", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    addLocationPhoto();
+                }
+            });
+            builder.setNegativeButton("Scan Without Location", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    addLocationData(null);
+                }
+            });
+            builder.show();
+
+        }
+
+    });
 
 
     @Override
@@ -102,6 +155,47 @@ public class QRIntakeActivity extends AppCompatActivity {
         options.setBeepEnabled(false);
         QRScanLauncher.launch(options);
     }
+    public void addLocationPhoto() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String prefix = "JPEG_" + timeStamp + "_";
+        locationPhotoFile = new File(getCacheDir(), prefix + ".jpg");
+        if (!locationPhotoFile.exists()) {
+            try {
+                locationPhotoFile.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        locationPhotoUri = FileProvider.getUriForFile(this, "com.example.qrgo.fileprovider", locationPhotoFile);
+        captureLocationPhoto.launch(locationPhotoUri);
+        locationPhotoFile.deleteOnExit();
+    }
+    public void addLocationData(Location location) {
+        if (location != null) {
+            playerLocation[0] = location.getLatitude();
+            playerLocation[1] = location.getLongitude();
+            Log.d("AddLocationData", "can we get here?");
+            addLocationPhoto();
+        } else {
+            playerLocation[0] = 181;
+            playerLocation[1] = 181;
+            generator.setPhotoUrl("None");
+            Log.d("AddLocationData", "is this where we are");
+            submitQR();
+        }
+    }
+    public void submitQR() {
+        SharedPreferences sharedPreferences = getSharedPreferences(sharedPrefdb, Context.MODE_PRIVATE);
+        user = sharedPreferences.getString("user", "");
+        db.getQRCodeManager().scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], generator.getPhotoUrl(), generator.getScore(), new OnQRCodeScannedListener() {
+            @Override
+            public void onQRScanComplete(boolean success) {
+                Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
+                intent.putExtra("qr_code", generator.getHash());
+                startActivity(intent);
+            }
+        });
+    }
 
     /**
      * based on the result of the {@link QRScanActivity} and whether the user has opted to include
@@ -109,7 +203,7 @@ public class QRIntakeActivity extends AppCompatActivity {
      * upon successful QR scan opens {@link QrProfileActivity} so that a user can view the scanned
      * QR code and have options to add a location photo.
      */
-    public void submitQR() {
+    public void askUserForLocation() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Record location?");
         builder.setMessage("Do you want to record your location?");
@@ -120,24 +214,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                     // We have permission, so get the user's location
                     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (location != null) {
-                        playerLocation[0] = location.getLatitude();
-                        playerLocation[1] = location.getLongitude();
-                    } else {
-                        playerLocation[0] = 181;
-                        playerLocation[1] = 181;
-                    }
-                    SharedPreferences sharedPreferences = getSharedPreferences(sharedPrefdb, Context.MODE_PRIVATE);
-                    user = sharedPreferences.getString("user", "");
-                    db.getQRCodeManager().scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new OnQRCodeScannedListener() {
-                        @Override
-                        public void onQRScanComplete(boolean success) {
-                            Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
-                            intent.putExtra("qr_code", generator.getHash());
-                            startActivity(intent);
-                        }
-                    });
-
+                    addLocationData(location);
                 } else {
                     ActivityCompat.requestPermissions(QRIntakeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
                 }
@@ -149,15 +226,8 @@ public class QRIntakeActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 playerLocation[0] = 181;
                 playerLocation[1] = 181;
-
-                db.getQRCodeManager().scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new OnQRCodeScannedListener() {
-                    @Override
-                    public void onQRScanComplete(boolean success) {
-                        Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
-                        intent.putExtra("qr_code", generator.getHash());
-                        startActivity(intent);
-                    }
-                });
+                generator.setPhotoUrl("None");
+                submitQR();
 
             }
         });
@@ -185,21 +255,7 @@ public class QRIntakeActivity extends AppCompatActivity {
             // We have permission, so get the user's location
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location != null) {
-                playerLocation[0] = location.getLatitude();
-                playerLocation[1] = location.getLongitude();
-            } else {
-                playerLocation[0] = 181;
-                playerLocation[1] = 181;
-            }
-            db.getQRCodeManager().scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], "www.google.ca", generator.getScore(), new OnQRCodeScannedListener() {
-                @Override
-                public void onQRScanComplete(boolean success) {
-                    Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
-                    intent.putExtra("qr_code", generator.getHash());
-                    startActivity(intent);
-                }
-            });
+            addLocationData(location);
         } else {
             Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
         }

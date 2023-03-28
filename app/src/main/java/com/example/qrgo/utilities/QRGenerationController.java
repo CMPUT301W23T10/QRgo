@@ -20,6 +20,7 @@ public class QRGenerationController {
     private int score;
     private String humanReadableName;
     private ArrayList<Integer> featureList = new ArrayList<Integer>();
+    private String photoUrl;
 
     /**
      * constructor that takes a string and automatically generates all the required fields from that
@@ -203,4 +204,8 @@ public class QRGenerationController {
     public String getHumanReadableName() {
         return this.humanReadableName;
     }
+
+    public void setPhotoUrl(String downloadUrl) {this.photoUrl = downloadUrl;}
+
+    public String getPhotoUrl() {return this.photoUrl;}
 }
