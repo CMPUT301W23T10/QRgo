@@ -172,8 +172,8 @@ public class QRIntakeActivity extends AppCompatActivity {
     }
     public void addLocationData(Location location) {
         if (location != null) {
-            playerLocation[0] = location.getLatitude();
-            playerLocation[1] = location.getLongitude();
+            playerLocation[0] = 12.3;
+            playerLocation[1] = 12.3;
             Log.d("AddLocationData", "can we get here?");
             addLocationPhoto();
         } else {

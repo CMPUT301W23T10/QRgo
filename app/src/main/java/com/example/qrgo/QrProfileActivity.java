@@ -7,6 +7,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.FirebaseConnect;
+import com.example.qrgo.utilities.QRCodeVisualRenderer;
 import com.example.qrgo.utilities.RoundedSquareTransform;
 import com.example.qrgo.utilities.UserCarouselAdapter;
 import com.squareup.picasso.Picasso;
@@ -75,10 +77,18 @@ public class QrProfileActivity extends AppCompatActivity {
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {
                 ImageView imageView = findViewById(R.id.qr_image_view);
-                Picasso.get()
-                        .load(R.drawable.demo_qr_image)
-                        .transform(new RoundedSquareTransform(100))
-                        .into(imageView);
+                ArrayList<Integer> testfeaturelist = new ArrayList<Integer>();
+                testfeaturelist.add(1);
+                testfeaturelist.add(1);
+                testfeaturelist.add(3);
+                testfeaturelist.add(2);
+
+                Bitmap bitmap = QRCodeVisualRenderer.renderQRCodeVisual(QrProfileActivity.this, testfeaturelist);
+                imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 1000, 1000, true));
+//                Picasso.get()
+//                        .load(R.drawable.demo_qr_image)
+//                        .transform(new RoundedSquareTransform(100))
+//                        .into(imageView);
 
                 TextView qrCodeName = findViewById(R.id.qr_name);
                 qrCodeName.setText(qrCode.getHumanReadableQR());
