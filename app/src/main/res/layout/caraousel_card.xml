@@ -24,6 +24,7 @@
             android:layout_marginRight="10sp"
             android:layout_height="match_parent">
             <LinearLayout
+                android:id="@+id/caraousel_image_container"
                 android:layout_width="115dp"
                 android:layout_height="115dp"
                 android:background="@drawable/home_card_rounded_corners"

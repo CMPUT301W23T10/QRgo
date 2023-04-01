@@ -139,11 +139,11 @@ public class UserFirebaseManager extends BaseFirebaseConnectManager{
 
                         String firstName = documentSnapshot.getString("firstName");
                         String lastName = documentSnapshot.getString("lastName");
-                        int profilePhoto = documentSnapshot.getLong("profilePhoto").intValue();
+                        int totalScans = documentSnapshot.getLong("totalScans").intValue();
                         int totalScore = documentSnapshot.getLong("totalScore").intValue();
                         int highestScore = documentSnapshot.getLong("highestScore").intValue();
                         int lowestScore = documentSnapshot.getLong("lowestScore").intValue();
-                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, profilePhoto, totalScore, highestScore, lowestScore);
+                        BasicPlayerProfile basicPlayerProfile = new BasicPlayerProfile(username, firstName, lastName, totalScore, totalScans, highestScore, lowestScore);
                         listener.onUserSearchComplete(Collections.singletonList(basicPlayerProfile));
                     } else {
                         listener.onUserSearchComplete(Collections.emptyList());
