@@ -29,6 +29,7 @@ import com.example.qrgo.models.Comment;
 import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.FirebaseConnect;
 
+import com.example.qrgo.utilities.ImageViewController;
 import com.example.qrgo.utilities.RoundedSquareTransform;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
@@ -171,7 +172,8 @@ public class PlayerActivity extends AppCompatActivity {
                         }
                     });
                     ImageView imageView = findViewById(R.id.play_image_view);
-                    Picasso.get().load("https://i.imgur.com/DvpvklR.png").transform(new RoundedSquareTransform(100)).into(imageView);
+                    ImageViewController imageViewController = new ImageViewController();
+                    imageViewController.setImage(playerProfile.getFirstName(),imageView);
 
 
                     // Set up the QR code list view

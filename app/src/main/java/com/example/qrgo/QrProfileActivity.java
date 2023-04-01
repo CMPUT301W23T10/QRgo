@@ -29,6 +29,7 @@ import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.FirebaseConnect;
+import com.example.qrgo.utilities.ImageViewController;
 import com.example.qrgo.utilities.RoundedSquareTransform;
 import com.example.qrgo.utilities.UserCarouselAdapter;
 import com.squareup.picasso.Picasso;
@@ -164,10 +165,10 @@ public class QrProfileActivity extends AppCompatActivity {
 
                 // Set up the picture for the current user
                 ImageView qr_user_profile_picture = findViewById(R.id.qr_user_profile_picture);
-                Picasso.get()
-                        .load(R.drawable.demo_picture)
-                        .transform(new CircleTransform())
-                        .into(qr_user_profile_picture);
+
+                // Load user image into the ImageView
+                ImageViewController imageViewController = new ImageViewController();
+                imageViewController.setImage(firstName,qr_user_profile_picture);
                 ImageView qr_send_comment = findViewById(R.id.qr_send_comment);
                 qr_send_comment.setOnClickListener(new View.OnClickListener() {
                     @Override

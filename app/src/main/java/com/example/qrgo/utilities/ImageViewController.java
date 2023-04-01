@@ -1,5 +1,17 @@
 package com.example.qrgo.utilities;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.ImageView;
+
+import com.example.qrgo.R;
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 /**
  * The ImageViewController class provides a utility method to set an ImageView's image based on the first
@@ -13,32 +25,29 @@ public class ImageViewController {
      *
      * @param name        The name to base the image on.
      * @param imageView   The ImageView to set the image on.
-     * @param roundSquare Boolean indicating whether to set the image as a round or square image. (true = round, false = square)
      */
-    public static void setImage(String name, ImageView imageView, Boolean roundSquare) {
+    public static void setImage(String name, ImageView imageView) {
 
         String firstChar = name.substring(0, 1);
 
-        int imageResource;
 
         if (Character.isLetter(firstChar.charAt(0))) {
 
             int charVal = Character.toUpperCase(firstChar.charAt(0)) - 'A' + 1;
 
-            imageResource = imageView.getResources()
-                    .getIdentifier(String.format("%02d", charVal),
-                            "drawable", imageView.getContext().getPackageName());
+            try {
+                // Load image from assets folder
+                String imageName = String.format("%02d.png", charVal);
+                Log.d("imageViewController", "setImage: " + imageName);
+                InputStream ims = imageView.getContext().getAssets().open(imageName);
+                Bitmap bitmap = BitmapFactory.decodeStream(ims);
+                imageView.setImageBitmap(bitmap);
 
-        } else {
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
 
-            Random rand = new Random();
-            int randomNum = rand.nextInt(26) + 1;
-
-            imageResource = imageView.getResources()
-                    .getIdentifier(String.format("%02d", randomNum),
-                            "drawable", imageView.getContext().getPackageName());
         }
-
-        imageView.setImageResource(imageResource);
     }
 }

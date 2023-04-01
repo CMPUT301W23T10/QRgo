@@ -70,11 +70,9 @@ public class SearchArrayAdapter extends ArrayAdapter<BasicPlayerProfile> {
         TextView nameTextView = convertView.findViewById(R.id.search_user_name);
         ImageView user_icon = convertView.findViewById(R.id.search_user_image);
 
-        // Load user image with Picasso library
-        Picasso.get()
-                .load(R.drawable.demo_picture)
-                .transform(new CircleTransform())
-                .into(user_icon);
+        // Load user image into the ImageView
+        ImageViewController imageViewController = new ImageViewController();
+        imageViewController.setImage(currentUser.getFirstName(),user_icon);
 
         // Set the text for the views
         nameTextView.setText(currentUser.getFirstName());

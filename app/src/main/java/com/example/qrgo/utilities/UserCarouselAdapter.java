@@ -98,11 +98,10 @@ public class UserCarouselAdapter extends PagerAdapter {
             TextView userScore = userView.findViewById(R.id.player_score);
             TextView collectedQrCodes = userView.findViewById(R.id.player_collected);
 
-            // Set rounded square image using Picasso and RoundedSquareTransform
-            Picasso.get()
-                    .load(R.drawable.demo_picture)
-                    .transform(new RoundedSquareTransform(1000))
-                    .into(userImage);
+            // Load user image into the ImageView
+            ImageViewController imageViewController = new ImageViewController();
+            imageViewController.setImage(user.getFirstName(),userImage);
+
             String name = user.getFirstName();
             if (name.length() > 4) {
                 name = name.substring(0, 4) + "...";

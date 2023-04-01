@@ -72,12 +72,10 @@ public class BasicUserArrayAdapter extends ArrayAdapter<BasicPlayerProfile> {
         TextView nameTextView = convertView.findViewById(R.id.user_name);
         TextView scoreTextView = convertView.findViewById(R.id.user_score);
         ImageView user_icon = convertView.findViewById(R.id.user_image);
+        // Set images
+        ImageViewController imageViewController = new ImageViewController();
+        imageViewController.setImage(currentUser.getFirstName(),user_icon);
 
-        // Load user image with Picasso library
-        Picasso.get()
-                .load(R.drawable.demo_picture)
-                .transform(new CircleTransform())
-                .into(user_icon);
 
         // Set the text for the views
         nameTextView.setText(currentUser.getFirstName());

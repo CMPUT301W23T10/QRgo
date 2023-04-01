@@ -86,7 +86,9 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
         }
         commentedOnTextView.setText(commentedOn);
 
-        Picasso.get().load("https://i.imgur.com/DvpvklR.png").transform(new CircleTransform()).into(commentsProfilePictureImageView);
+        // Load user image into the ImageView
+        ImageViewController imageViewController = new ImageViewController();
+        imageViewController.setImage(comment.getPlayerFirstName(),commentsProfilePictureImageView);
 
         return convertView;
     }
