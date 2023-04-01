@@ -1,5 +1,7 @@
 package com.example.qrgo.IntentTests;
 
+import static org.junit.Assert.assertTrue;
+
 import android.widget.ImageView;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -118,8 +120,9 @@ public class QRListBasicTest {
 
         FloatingActionButton sort_button = (FloatingActionButton) solo.getView(R.id.sort_button);
         solo.clickOnView(sort_button);
+        solo.waitForFragmentByTag("QrListviewFragment");
 
-        solo.waitForFragmentByTag("QRItemFragment");
+
 
     }
 
