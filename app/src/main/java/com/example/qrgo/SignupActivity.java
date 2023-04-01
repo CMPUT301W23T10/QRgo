@@ -139,6 +139,7 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onUserAdd(boolean success) {
                         //Add Profile
+
                         db.getPlayerProfileManager().addNewPlayerProfile(userName, firstName, lastName,  contactPhone, contactEmail,0, 0, 0, 0, new OnUserProfileAddListener() {
                             @Override
 
