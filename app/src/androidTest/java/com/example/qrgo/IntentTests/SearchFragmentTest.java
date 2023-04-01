@@ -55,7 +55,7 @@ public class SearchFragmentTest {
     @Test
     public void testSearchUser() {
         // tests when something is not there
-        solo.enterText(0, "testUser");
+        solo.enterText(0, "RLukey#086e");
         solo.sleep(2000); // Wait for search results to load
         ListView userList = (ListView) solo.getView(R.id.user_list);
         assertNotNull("User list not found", userList);
