@@ -79,6 +79,7 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
         commentNameTextView.setText(comment.getPlayerFirstName() + ' ' + comment.getPlayerLastName());
 
         commentBodyTimeTextView.setText(comment.getCommentString());
+        // This would be the qrCode name instead of id
         String commentedOn = comment.getQrCodeId();
         // Truncate the commented on string to 10
         if (commentedOn.length() > 22) {

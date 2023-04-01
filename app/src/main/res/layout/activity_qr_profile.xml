@@ -14,12 +14,12 @@
 
 <!--        CHANGE TO VISIBLE-->
         <LinearLayout
-            android:id="@+id/progressBar"
+            android:id="@+id/qr_progressBar"
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_centerInParent="true"
             android:layout_marginTop="300dp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_height="match_parent">
             <TextView
                 android:layout_width="wrap_content"
@@ -39,11 +39,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <RelativeLayout
-                android:id="@+id/player_profile"
+                android:id="@+id/qr_profile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/background"
-                android:visibility="visible"
+                android:visibility="invisible"
                 tools:context=".models.PlayerProfile">
 
                 <LinearLayout
@@ -78,6 +78,7 @@
                     android:orientation="vertical">
                     <!--    Profile Image -->
                     <LinearLayout
+                        android:id="@+id/qr_image_view_container"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
                         android:layout_marginStart="16dp"

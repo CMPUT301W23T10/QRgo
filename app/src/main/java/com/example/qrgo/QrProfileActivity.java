@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +76,20 @@ public class QrProfileActivity extends AppCompatActivity {
 
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {
+                LinearLayout qr_image_view_container = findViewById(R.id.qr_image_view_container);
+                // Set the background color of the qr code based on the rarity
+                if (qrCode.getHumanReadableQR().contains("(C)")) {
+                    qr_image_view_container.setBackgroundResource(R.drawable.common_rounded_corner);
+                }
+                else if (qrCode.getHumanReadableQR().contains("(R)")) {
+                    qr_image_view_container.setBackgroundResource(R.drawable.rare_rounded_corner);
+
+                } else if (qrCode.getHumanReadableQR().contains("(E)")) {
+                    qr_image_view_container.setBackgroundResource(R.drawable.epic_rounded_corner);
+
+                } else {
+                    qr_image_view_container.setBackgroundResource(R.drawable.legendary_rounded_corner);
+                }
                 ImageView imageView = findViewById(R.id.qr_image_view);
                 Picasso.get()
                         .load(R.drawable.demo_qr_image)
@@ -192,6 +207,12 @@ public class QrProfileActivity extends AppCompatActivity {
                         });
                     }
                 });
+                // Remove the progress bar and show the page
+                LinearLayout progressBar = findViewById(R.id.qr_progressBar);
+                RelativeLayout qr_profile = findViewById(R.id.qr_profile);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                qr_profile.setVisibility(View.VISIBLE);
             }
 
             @Override

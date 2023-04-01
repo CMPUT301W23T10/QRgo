@@ -155,6 +155,12 @@ public class HomeActivity extends AppCompatActivity {
                 });
 
                 viewPager.setAdapter(carouselAdapter);
+                // Remove the progress bar and show the page
+                LinearLayout progressBar = findViewById(R.id.home_progressBar);
+                LinearLayout home_loading = findViewById(R.id.home_loading);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                home_loading.setVisibility(View.VISIBLE);
             }
         });
 

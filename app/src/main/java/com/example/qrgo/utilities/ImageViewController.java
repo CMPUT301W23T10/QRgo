@@ -38,7 +38,6 @@ public class ImageViewController {
             try {
                 // Load image from assets folder
                 String imageName = String.format("%02d.png", charVal);
-                Log.d("imageViewController", "setImage: " + imageName);
                 InputStream ims = imageView.getContext().getAssets().open(imageName);
                 Bitmap bitmap = BitmapFactory.decodeStream(ims);
                 imageView.setImageBitmap(bitmap);
