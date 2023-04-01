@@ -7,11 +7,6 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.LightingColorFilter;
-import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +30,7 @@ import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.FirebaseConnect;
-import com.example.qrgo.utilities.QRCodeVisualRenderer;
+import com.example.qrgo.utilities.ImageViewController;
 import com.example.qrgo.utilities.RoundedSquareTransform;
 import com.example.qrgo.utilities.UserCarouselAdapter;
 import com.squareup.picasso.Picasso;
@@ -80,19 +76,25 @@ public class QrProfileActivity extends AppCompatActivity {
 
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {
-                ImageView imageView = findViewById(R.id.qr_image_view);
-                ArrayList<Integer> testfeaturelist = new ArrayList<Integer>();
-                testfeaturelist.add(1);
-                testfeaturelist.add(1);
-                testfeaturelist.add(3);
-                testfeaturelist.add(2);
+                LinearLayout qr_image_view_container = findViewById(R.id.qr_image_view_container);
+                // Set the background color of the qr code based on the rarity
+                if (qrCode.getHumanReadableQR().contains("(C)")) {
+                    qr_image_view_container.setBackgroundResource(R.drawable.common_rounded_corner);
+                }
+                else if (qrCode.getHumanReadableQR().contains("(R)")) {
+                    qr_image_view_container.setBackgroundResource(R.drawable.rare_rounded_corner);
 
-                Bitmap bitmap = QRCodeVisualRenderer.renderQRCodeVisual(QrProfileActivity.this, testfeaturelist);
-                imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 1000, 1000, true));
-//                Picasso.get()
-//                        .load(R.drawable.demo_qr_image)
-//                        .transform(new RoundedSquareTransform(100))
-//                        .into(imageView);
+                } else if (qrCode.getHumanReadableQR().contains("(E)")) {
+                    qr_image_view_container.setBackgroundResource(R.drawable.epic_rounded_corner);
+
+                } else {
+                    qr_image_view_container.setBackgroundResource(R.drawable.legendary_rounded_corner);
+                }
+                ImageView imageView = findViewById(R.id.qr_image_view);
+                Picasso.get()
+                        .load(R.drawable.demo_qr_image)
+                        .transform(new RoundedSquareTransform(100))
+                        .into(imageView);
 
                 TextView qrCodeName = findViewById(R.id.qr_name);
                 qrCodeName.setText(qrCode.getHumanReadableQR());
@@ -178,10 +180,10 @@ public class QrProfileActivity extends AppCompatActivity {
 
                 // Set up the picture for the current user
                 ImageView qr_user_profile_picture = findViewById(R.id.qr_user_profile_picture);
-                Picasso.get()
-                        .load(R.drawable.demo_picture)
-                        .transform(new CircleTransform())
-                        .into(qr_user_profile_picture);
+
+                // Load user image into the ImageView
+                ImageViewController imageViewController = new ImageViewController();
+                imageViewController.setImage(firstName,qr_user_profile_picture);
                 ImageView qr_send_comment = findViewById(R.id.qr_send_comment);
                 qr_send_comment.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -205,6 +207,12 @@ public class QrProfileActivity extends AppCompatActivity {
                         });
                     }
                 });
+                // Remove the progress bar and show the page
+                LinearLayout progressBar = findViewById(R.id.qr_progressBar);
+                RelativeLayout qr_profile = findViewById(R.id.qr_profile);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                qr_profile.setVisibility(View.VISIBLE);
             }
 
             @Override
