@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -133,6 +134,7 @@ public class CarouselAdapter extends PagerAdapter {
         TextView qrCodeRank = view.findViewById(R.id.qr_code_rank);
         TextView qrCodeName = view.findViewById(R.id.qr_code_name);
         TextView qrCodePoints = view.findViewById(R.id.qr_code_points);
+        LinearLayout caraousel_image_container = view.findViewById(R.id.caraousel_image_container);
 
         // Set rounded square image using Picasso and RoundedSquareTransform
         Picasso.get()
@@ -145,9 +147,33 @@ public class CarouselAdapter extends PagerAdapter {
         // Truncate the qrname if it is too long
         if (carouselItem.getHumanReadableQR().length() > 6) {
             String truncatedName = carouselItem.getHumanReadableQR().substring(0, 6) + "...";
-            qrCodeName.setText(truncatedName);
+            if (carouselItem.getHumanReadableQR().contains("(C)")) {
+                caraousel_image_container.setBackgroundResource(R.drawable.common_rounded_corner);
+            }
+            else if (carouselItem.getHumanReadableQR().contains("(R)")) {
+                caraousel_image_container.setBackgroundResource(R.drawable.rare_rounded_corner);
+
+            } else if (carouselItem.getHumanReadableQR().contains("(E)")) {
+                caraousel_image_container.setBackgroundResource(R.drawable.epic_rounded_corner);
+
+            } else {
+                caraousel_image_container.setBackgroundResource(R.drawable.legendary_rounded_corner);
+            }
+
         } else {
             qrCodeName.setText(carouselItem.getHumanReadableQR());
+            if (carouselItem.getHumanReadableQR().contains("(C)")) {
+                caraousel_image_container.setBackgroundResource(R.drawable.common_rounded_corner);
+            }
+            else if (carouselItem.getHumanReadableQR().contains("(R)")) {
+                caraousel_image_container.setBackgroundResource(R.drawable.rare_rounded_corner);
+
+            } else if (carouselItem.getHumanReadableQR().contains("(E)")) {
+                caraousel_image_container.setBackgroundResource(R.drawable.epic_rounded_corner);
+
+            } else {
+                caraousel_image_container.setBackgroundResource(R.drawable.legendary_rounded_corner);
+            }
         }
         String pointsString = Integer.toString(carouselItem.getQrCodePoints());
         qrCodePoints.setText(pointsString);

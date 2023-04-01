@@ -12,14 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <!--        CHANGE THIS TO INVISIBLE AT THE END-->
         <LinearLayout
-            android:id="@+id/progressBar"
+            android:id="@+id/home_progressBar"
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:layout_centerInParent="true"
             android:layout_marginTop="300dp"
-            android:visibility="invisible"
+            android:visibility="visible"
             android:layout_height="match_parent">
             <TextView
                 android:layout_width="wrap_content"
@@ -38,8 +37,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/home_loading"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
+                android:visibility="invisible"
                 android:layout_height="match_parent"
                 xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -58,7 +59,6 @@
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/circle"
-                            android:src="@drawable/demo_picture"
                             android:layout_marginVertical="10dp"
                             android:layout_gravity="center" />
                         <LinearLayout

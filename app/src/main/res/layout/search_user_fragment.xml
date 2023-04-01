@@ -87,12 +87,16 @@
     <FrameLayout
         android:id="@+id/user_list_fragment_container"
         android:layout_width="match_parent"
+        android:layout_marginHorizontal="30dp"
         android:layout_height="match_parent"
         android:layout_weight="1">
         <ListView
+            android:layout_marginTop="20dp"
             android:id="@+id/user_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="#FFFFFF"
+            android:dividerHeight="1dp"
             android:layout_weight="1">
         </ListView>
     </FrameLayout>
