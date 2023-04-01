@@ -172,15 +172,13 @@ public class QRIntakeActivity extends AppCompatActivity {
     }
     public void addLocationData(Location location) {
         if (location != null) {
-            playerLocation[0] = 12.3;
-            playerLocation[1] = 12.3;
-            Log.d("AddLocationData", "can we get here?");
+            playerLocation[0] = location.getLatitude();
+            playerLocation[1] = location.getLongitude();
             addLocationPhoto();
         } else {
             playerLocation[0] = 181;
             playerLocation[1] = 181;
             generator.setPhotoUrl("None");
-            Log.d("AddLocationData", "is this where we are");
             submitQR();
         }
     }
@@ -214,6 +212,10 @@ public class QRIntakeActivity extends AppCompatActivity {
                     // We have permission, so get the user's location
                     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (location == null) {
+                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        Log.d("Location", "location is null");
+                    }
                     addLocationData(location);
                 } else {
                     ActivityCompat.requestPermissions(QRIntakeActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
@@ -233,20 +235,6 @@ public class QRIntakeActivity extends AppCompatActivity {
         });
         builder.create().show();
     }
-
-    public void checkPermission() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,}, 1);
-            }
-        }
-    }
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
