@@ -37,6 +37,7 @@ import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.example.qrgo.utilities.CarouselAdapter;
 import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.FirebaseConnect;
+import com.example.qrgo.utilities.ImageViewController;
 import com.example.qrgo.utilities.UserCarouselAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
@@ -106,6 +107,11 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onPlayerProfileGet(PlayerProfile userProfile) {
+                // Load user image into the ImageView
+                imageView = findViewById(R.id.main_profile_picture);
+                ImageViewController imageViewController = new ImageViewController();
+                imageViewController.setImage(userProfile.getFirstName(),imageView);
+
                 TextView scans = findViewById(R.id.collected);
                 scans.setText("Collected "+userProfile.getTotalScans());
 
@@ -149,6 +155,12 @@ public class HomeActivity extends AppCompatActivity {
                 });
 
                 viewPager.setAdapter(carouselAdapter);
+                // Remove the progress bar and show the page
+                LinearLayout progressBar = findViewById(R.id.home_progressBar);
+                LinearLayout home_loading = findViewById(R.id.home_loading);
+
+                progressBar.setVisibility(View.INVISIBLE);
+                home_loading.setVisibility(View.VISIBLE);
             }
         });
 
@@ -231,10 +243,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Handle click event on the profile picture and also set the profile picture
         imageView = findViewById(R.id.main_profile_picture);
-        Picasso.get()
-                .load(R.drawable.demo_picture)
-                .transform(new CircleTransform())
-                .into(imageView);
+
         imageView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Handle click event here

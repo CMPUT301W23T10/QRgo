@@ -16,6 +16,7 @@ import android.widget.ListView;
 import com.example.qrgo.listeners.OnUserSearchListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.utilities.BasicUserArrayAdapter;
+import com.example.qrgo.utilities.SearchArrayAdapter;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -28,7 +29,7 @@ public class SearchFragment extends Fragment {
     private LinearLayout loadingScreen;
     private ListView userList;
     private ArrayList<BasicPlayerProfile> dataList;
-    private BasicUserArrayAdapter userSearchListAdapter;
+    private SearchArrayAdapter searchArrayAdapter;
     public SearchFragment() {
         // Required empty public constructor
     }
@@ -48,8 +49,8 @@ public class SearchFragment extends Fragment {
         dataList = new ArrayList<>();
 
         // set up the user list adapter
-        userSearchListAdapter = new BasicUserArrayAdapter(getContext(), dataList, "totalScore");
-        userList.setAdapter(userSearchListAdapter);
+        searchArrayAdapter = new SearchArrayAdapter(getContext(), dataList);
+        userList.setAdapter(searchArrayAdapter);
         FirebaseConnect fb = new FirebaseConnect();
 
         OnUserSearchListener listener = new OnUserSearchListener() {
@@ -58,7 +59,7 @@ public class SearchFragment extends Fragment {
                 // Do something with the search results
                 for (BasicPlayerProfile user : users) {
                     dataList.add(user);
-                    userSearchListAdapter.notifyDataSetChanged();
+                    searchArrayAdapter.notifyDataSetChanged();
                 }
 
                 loadingScreen.setVisibility(View.GONE);
@@ -88,7 +89,7 @@ public class SearchFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // on text changed, update the view
                 dataList.clear();
-                userSearchListAdapter.notifyDataSetChanged();
+                searchArrayAdapter.notifyDataSetChanged();
                 userList.setVisibility(View.VISIBLE);
                 loadingScreen.setVisibility(View.GONE);
 
@@ -103,7 +104,7 @@ public class SearchFragment extends Fragment {
                 } else {
                     // clear the dataList and hide the userList and loadingScreen
                     dataList.clear();
-                    userSearchListAdapter.notifyDataSetChanged();
+                    searchArrayAdapter.notifyDataSetChanged();
                     userList.setVisibility(View.VISIBLE);
                     loadingScreen.setVisibility(View.GONE);
 
