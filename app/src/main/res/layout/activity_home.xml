@@ -127,15 +127,16 @@
                                 android:textStyle="bold"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"/>
+
                             <TextView
                                 android:id="@+id/user_qr_view_all"
-                                android:textColor="#A2A0A0"
-                                android:textStyle="bold"
-                                android:text="View all"
-                                android:textSize="16sp"
-                                android:layout_marginBottom="5sp"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="5sp"
+                                android:text="View all"
+                                android:textColor="#A2A0A0"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
                         </TableRow>
                     </TableLayout>
 
