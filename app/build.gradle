@@ -64,8 +64,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.firebase:firebase-installations:17.0.0'
     implementation 'com.google.firebase:firebase-auth-ktx'
-    // Import the BoM for the Firebase platform
-    implementation platform('com.google.firebase:firebase-bom:31.3.0')
 
     // Add the dependency for the Cloud Storage library
     // When using the BoM, you don't specify versions in Firebase library dependencies
