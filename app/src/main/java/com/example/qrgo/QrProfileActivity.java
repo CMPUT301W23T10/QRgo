@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +39,14 @@ import com.example.qrgo.utilities.QRCodeVisualRenderer;
 import com.example.qrgo.utilities.ImageViewController;
 import com.example.qrgo.utilities.RoundedSquareTransform;
 import com.example.qrgo.utilities.UserCarouselAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class QrProfileActivity extends AppCompatActivity {
+    String comeFrom = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,10 +56,19 @@ public class QrProfileActivity extends AppCompatActivity {
         String user = sharedPreferences.getString("user", "");
         String firstName = sharedPreferences.getString("firstName", "");
         String LastName = sharedPreferences.getString("lastName", "");
-        Log.d("QrProfileActivity", "User " + user + " " + firstName + " " + LastName);
         // Checking intent for qr_code key
         Intent intent = getIntent();
         String qr_code_id = intent.getStringExtra("qr_code");
+
+        comeFrom = intent.getStringExtra("comeFrom");
+        // if we are coming displaying a qr code that is scanned by the user then we need to display
+        // the camera button
+        FloatingActionButton camera = findViewById(R.id.add_picture_btn);
+        if (comeFrom != null && comeFrom.equals("scanned")) {
+            camera.setVisibility(View.VISIBLE);
+        } else {
+            camera.setVisibility(View.INVISIBLE);
+        }
 
 
         // Hide the action bar
@@ -81,6 +93,21 @@ public class QrProfileActivity extends AppCompatActivity {
 
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {
+                LinearLayout qr_image_view_container = findViewById(R.id.qr_image_view_container);
+
+                // Set the background color of the qr code based on the rarity
+                if (qrCode.getHumanReadableQR().contains("(C)")) {
+                    qr_image_view_container.setBackgroundResource(R.drawable.common_rounded_corner);
+                }
+                else if (qrCode.getHumanReadableQR().contains("(R)")) {
+                    qr_image_view_container.setBackgroundResource(R.drawable.rare_rounded_corner);
+
+                } else if (qrCode.getHumanReadableQR().contains("(E)")) {
+                    qr_image_view_container.setBackgroundResource(R.drawable.epic_rounded_corner);
+
+                } else {
+                    qr_image_view_container.setBackgroundResource(R.drawable.legendary_rounded_corner);
+                }
                 ImageView imageView = findViewById(R.id.qr_image_view);
                 ArrayList<Integer> testfeaturelist = new ArrayList<Integer>();
                 testfeaturelist.add(1);
@@ -183,6 +210,8 @@ public class QrProfileActivity extends AppCompatActivity {
                 // Load user image into the ImageView
                 ImageViewController imageViewController = new ImageViewController();
                 imageViewController.setImage(firstName,qr_user_profile_picture);
+                ImageView qr_send_comment = findViewById(R.id.qr_send_comment);
+
                 qr_send_comment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -205,6 +234,11 @@ public class QrProfileActivity extends AppCompatActivity {
                         });
                     }
                 });
+                // Remove the progress bar and show the page
+                LinearLayout progressBar = findViewById(R.id.qr_progressBar);
+                RelativeLayout qr_profile = findViewById(R.id.qr_profile);
+                progressBar.setVisibility(View.INVISIBLE);
+                qr_profile.setVisibility(View.VISIBLE);
             }
 
             @Override

@@ -205,7 +205,14 @@ public class QRGenerationController {
         return this.humanReadableName;
     }
 
-    public void setPhotoUrl(String downloadUrl) {this.photoUrl = downloadUrl;}
+    public void setPhotoUrl(String downloadUrl) {
+        if (downloadUrl != null) {
+            this.photoUrl = downloadUrl;
+        }
+        else {
+            return;
+        }
+        }
 
     public String getPhotoUrl() {return this.photoUrl;}
 }

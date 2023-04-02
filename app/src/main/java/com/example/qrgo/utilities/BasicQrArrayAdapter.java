@@ -63,18 +63,6 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
             String user = sharedPreferences.getString("user", "");
             String qr_code_id = currentQRCode.getQRString();
 
-            qr_arrow_icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(view.getContext(), QrProfileActivity.class);
-                    if (currentQRCode.getQRString() != "NaN") {
-                        intent.putExtra("qr_code", currentQRCode.getQRString());
-                        view.getContext().startActivity(intent);
-                    }
-
-                }
-
-            });
             qr_delete_icon.setOnClickListener(v -> {
                 FirebaseConnect firebaseConnect = new FirebaseConnect();
                 firebaseConnect.getQRCodeManager().deleteUserFromQRCode(
@@ -95,13 +83,35 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
                 );
             });
         }
+        View.OnClickListener QRprofileListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), QrProfileActivity.class);
+                if (currentQRCode.getQRString() != "NaN") {
+                    intent.putExtra("qr_code", currentQRCode.getQRString());
+                    if (!(caller.equals("player")) && !(caller.equals("homeAll"))) {
+                        intent.putExtra("comeFrom", "scanned");
+                    }
+                    view.getContext().startActivity(intent);
+                }
+
+            }
+        };
+
 
         ImageView qr_arrow_icon = convertView.findViewById(R.id.qr_arrow_icon);
+        qr_arrow_icon.setOnClickListener(QRprofileListener);
+
         ImageView qr_delete_icon = convertView.findViewById(R.id.qr_delete_icon);
         // Get references to the views in the list item layout
         TextView nameTextView = convertView.findViewById(R.id.qr_name);
+        nameTextView.setOnClickListener(QRprofileListener);
+
         TextView scoreTextView = convertView.findViewById(R.id.qr_score);
+        scoreTextView.setOnClickListener(QRprofileListener);
         TextView rankTextView = convertView.findViewById(R.id.qr_rank);
+        rankTextView.setOnClickListener(QRprofileListener);
+
 
         if (this.caller.equals("player") || this.caller.equals("homeAll")) {
             // set height to match parent

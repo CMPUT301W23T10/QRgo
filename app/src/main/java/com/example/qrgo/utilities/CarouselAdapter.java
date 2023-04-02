@@ -125,6 +125,7 @@ public class CarouselAdapter extends PagerAdapter {
                 Intent intent = new Intent(view.getContext(), QrProfileActivity.class);
                 if (carouselItem.getQRString() != "NaN") {
                     intent.putExtra("qr_code", carouselItem.getQRString());
+                    intent.putExtra("comeFrom", "scanned");
                     view.getContext().startActivity(intent);
                 }
             }
@@ -156,9 +157,13 @@ public class CarouselAdapter extends PagerAdapter {
             } else if (carouselItem.getHumanReadableQR().contains("(E)")) {
                 caraousel_image_container.setBackgroundResource(R.drawable.epic_rounded_corner);
 
-            } else {
+            } else if (carouselItem.getHumanReadableQR().contains("(L)")) {
                 caraousel_image_container.setBackgroundResource(R.drawable.legendary_rounded_corner);
             }
+            else {
+                caraousel_image_container.setBackgroundResource(R.drawable.home_card_rounded_corners);
+            }
+            qrCodeName.setText(truncatedName);
 
         } else {
             qrCodeName.setText(carouselItem.getHumanReadableQR());
@@ -171,8 +176,11 @@ public class CarouselAdapter extends PagerAdapter {
             } else if (carouselItem.getHumanReadableQR().contains("(E)")) {
                 caraousel_image_container.setBackgroundResource(R.drawable.epic_rounded_corner);
 
-            } else {
+            } else if (carouselItem.getHumanReadableQR().contains("(L)")) {
                 caraousel_image_container.setBackgroundResource(R.drawable.legendary_rounded_corner);
+            }
+            else {
+                caraousel_image_container.setBackgroundResource(R.drawable.home_card_rounded_corners);
             }
         }
         String pointsString = Integer.toString(carouselItem.getQrCodePoints());

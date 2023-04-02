@@ -1,6 +1,7 @@
 package com.example.qrgo.firebase;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -32,6 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,26 +68,24 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                 String qrCodeId = documentSnapshot.getId();
 
                 List<String> scanUsers = (List<String>) documentSnapshot.get("scannedUsers");
+                // Allow USERS to update pictures
+                // Add the user's photo URL to "locationObjectPhoto"
+                if(photoUrl != "None" && photoUrl != null && photoUrl != "") {
+                    db.collection("QRCodes").document(qrCodeId)
+                            .update("locationObjectPhoto", FieldValue.arrayUnion(photoUrl));
+                }
 
                 // The user has scanned the same code previously
                 if (scanUsers.contains(username)) {
                     listener.onQRScanComplete(false);
                     return;
                 }
-
-                // Add the user's photo URL to "locationObjectPhoto"
-                if(photoUrl != "None") {
-                    db.collection("QRCodes").document(qrCodeId)
-                            .update("locationObjectPhoto", FieldValue.arrayUnion(photoUrl));
-                }
-
                 // Add the user's location coordinates to the "locations" array
                 if (latitude != 181 && longitude != 181) {
                     GeoPoint location = new GeoPoint(latitude, longitude);
                     db.collection("QRCodes").document(qrCodeId)
                             .update("locations", FieldValue.arrayUnion(location));
                 }
-
                 // Add the user's username to the "scannedUsers" array
                 db.collection("QRCodes").document(qrCodeId)
                         .update("scannedUsers", FieldValue.arrayUnion(username));
@@ -139,6 +139,7 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
             });
         });
     }
+    // This functions uploads a file to Firebase Storage and returns the download URL
     public void uploadAndRetrieveDownloadUrl(Uri file, String qrString, OnQRCodeUploadListener listener) {
         StorageReference locationPhotosRef = st.getReference().child("LocationPhotos/" + qrString + "/" + file.getLastPathSegment());
         Task<Uri> urlTask = locationPhotosRef.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {

@@ -81,6 +81,7 @@ public class QRIntakeActivity extends AppCompatActivity {
 
     private final ActivityResultLauncher<Uri> captureLocationPhoto = registerForActivityResult( new ActivityResultContracts.TakePicture(), result -> {
         if (result) {
+            Log.d("QRIntakeActivity", result.toString());
             try {
                 Bitmap uncompressed = MediaStore.Images.Media.getBitmap(this.getContentResolver(), locationPhotoUri);
                 if (uncompressed.compress(Bitmap.CompressFormat.JPEG, 50, this.getContentResolver().openOutputStream(locationPhotoUri))) {
@@ -95,27 +96,10 @@ public class QRIntakeActivity extends AppCompatActivity {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        } else {
-            //write a dialog box that tells the user they must take a photo and have 2 options that offer to retake a photo or scan without location
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Location Photo Required");
-            builder.setMessage("You must take a photo of if you want to add location data");
-            builder.setPositiveButton("Retake Photo", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    addLocationPhoto();
-                }
-            });
-            builder.setNegativeButton("Scan Without Location", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    addLocationData(null);
-                }
-            });
-            builder.show();
-
         }
-
+        else {
+            submitQR();
+        }
     });
 
 
@@ -155,37 +139,64 @@ public class QRIntakeActivity extends AppCompatActivity {
         options.setBeepEnabled(false);
         QRScanLauncher.launch(options);
     }
-    public void addLocationPhoto() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String prefix = "JPEG_" + timeStamp + "_";
-        locationPhotoFile = new File(getCacheDir(), prefix + ".jpg");
-        if (!locationPhotoFile.exists()) {
-            try {
-                locationPhotoFile.createNewFile();
-            } catch (Exception e) {
-                e.printStackTrace();
+    // Function to add photo
+    public void addLocationPhoto(boolean click) {
+        if (click == true) {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String prefix = "JPEG_" + timeStamp + "_";
+            locationPhotoFile = new File(getCacheDir(), prefix + ".jpg");
+            if (!locationPhotoFile.exists()) {
+                try {
+                    locationPhotoFile.createNewFile();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+            locationPhotoUri = FileProvider.getUriForFile(this, "com.example.qrgo.fileprovider", locationPhotoFile);
+            captureLocationPhoto.launch(locationPhotoUri);
+            locationPhotoFile.deleteOnExit();
+        } else {
+            submitQR();
         }
-        locationPhotoUri = FileProvider.getUriForFile(this, "com.example.qrgo.fileprovider", locationPhotoFile);
-        captureLocationPhoto.launch(locationPhotoUri);
-        locationPhotoFile.deleteOnExit();
+
     }
     public void addLocationData(Location location) {
         if (location != null) {
             playerLocation[0] = location.getLatitude();
             playerLocation[1] = location.getLongitude();
-            addLocationPhoto();
+            askUserForPicture();
         } else {
             playerLocation[0] = 181;
             playerLocation[1] = 181;
-            generator.setPhotoUrl("None");
-            submitQR();
+            askUserForPicture();
         }
     }
+    // Function to ask user if they want to click a photo of the location or not
+    public void askUserForPicture() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Add Location Photo?");
+        builder.setMessage("Would you like to add a photo of the location?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                addLocationPhoto(true);
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                addLocationPhoto(false);
+            }
+        });
+        builder.show();
+    }
+
+    // Function to add QR to database and go to QrProfileActivity with the scanned QR code
     public void submitQR() {
         SharedPreferences sharedPreferences = getSharedPreferences(sharedPrefdb, Context.MODE_PRIVATE);
         user = sharedPreferences.getString("user", "");
         db.getQRCodeManager().scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], generator.getPhotoUrl(), generator.getScore(), new OnQRCodeScannedListener() {
+            // After scan is done then go to QrProfileActivity with the scanned QR code
             @Override
             public void onQRScanComplete(boolean success) {
                 Intent intent = new Intent(QRIntakeActivity.this, QrProfileActivity.class);
@@ -228,8 +239,8 @@ public class QRIntakeActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 playerLocation[0] = 181;
                 playerLocation[1] = 181;
-                generator.setPhotoUrl("None");
-                submitQR();
+                // Go to QrProfileActivity with the scanned QR code but no location
+                addLocationData(null);
 
             }
         });
