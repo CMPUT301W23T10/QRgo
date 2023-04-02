@@ -117,9 +117,7 @@ public class QRProfileTest extends AndroidJUnitRunner {
 
         } else {
             solo.clickInList(0);
-            //solo.clickOnView(solo.getView(R.id.user_arrow_icon));
             solo.waitForActivity(QrProfileActivity.class);
-            //solo.assertCurrentActivity("Expected QRProfileActivity", QrProfileActivity.class);
         }
 
         solo.assertCurrentActivity("Expected HomeActivity", HomeActivity.class);
@@ -127,7 +125,7 @@ public class QRProfileTest extends AndroidJUnitRunner {
     }
 
     public static void addQR() {
-        String qrString = "QRCODE WITH THIS HASH WON'T EXIST";
+        String qrString = "QRCODE";
         String humanReadableQR = "Human Readable QR";
         String photoUrl = "https://example.com/photo.jpg";
         int points = 10;

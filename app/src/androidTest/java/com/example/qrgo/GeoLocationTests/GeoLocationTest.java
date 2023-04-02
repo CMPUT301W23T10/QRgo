@@ -150,13 +150,16 @@ public class GeoLocationTest extends AndroidJUnitRunner {
 
         // go back to HomeActivity
         solo.sleep(2000);
+        solo.assertCurrentActivity("Expected GeoLocationActivity", GeoLocationActivity.class);
         solo.clickOnView(solo.getView(R.id.close_button));
         solo.waitForActivity(HomeActivity.class, 2000);
         solo.assertCurrentActivity("Expected HomeActivity", HomeActivity.class);
     }
 
+
+
     public static void addQR() {
-        String qrString = "QRCODE WITH THIS HASH WON'T EXIST";
+        String qrString = "QRCODE";
         String humanReadableQR = "Human Readable QR";
         String photoUrl = "https://example.com/photo.jpg";
         int points = 10;
@@ -208,7 +211,7 @@ public class GeoLocationTest extends AndroidJUnitRunner {
             db.collection("Profiles").document(username).delete(); // replace with the actual username used in the tests
             solo.finishOpenedActivities();
         }
-        String qrString = "QRCODE WITH THIS HASH WON'T EXIST";
+        String qrString = "QRCODE";
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("QRCodes").whereEqualTo("qrString", qrString)
                 .get()
