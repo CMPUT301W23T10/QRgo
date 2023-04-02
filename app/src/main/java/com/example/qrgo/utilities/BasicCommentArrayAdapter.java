@@ -8,9 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.qrgo.R;
+import com.example.qrgo.listeners.QRCodeListener;
 import com.example.qrgo.models.Comment;
+import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.CircleTransform;
 import com.squareup.picasso.Picasso;
 
@@ -26,6 +29,7 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
     private Context mContext;
     private int mResource;
     private ArrayList<Comment> mComments;
+
 
     /**
      Constructor for the BasicCommentArrayAdapter class.
@@ -47,6 +51,7 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
      @param parent the parent ViewGroup that this view will eventually be attached to.
      @return the View for the item at the specified position.
      */
+    FirebaseConnect db = new FirebaseConnect();
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Comment comment = mComments.get(position);
@@ -79,13 +84,28 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
         commentNameTextView.setText(comment.getPlayerFirstName() + ' ' + comment.getPlayerLastName());
 
         commentBodyTimeTextView.setText(comment.getCommentString());
-        // This would be the qrCode name instead of id
-        String commentedOn = comment.getQrCodeId();
-        // Truncate the commented on string to 10
-        if (commentedOn.length() > 18) {
-            commentedOn = commentedOn.substring(0, 18) + "...";
-        }
-        commentedOnTextView.setText(commentedOn);
+        db.getQRCodeManager().getQRCode(comment.getQrCodeId(), new QRCodeListener() {
+            @Override
+            public void onQRCodeRetrieved(QRCode qrCode) {
+                String name = qrCode.getHumanReadableQR();
+                Log.d("QRCode", qrCode.getHumanReadableQR());
+                // Truncate the commented on string to 10
+                if (name.length() > 18) {
+                    name = name.substring(0, 18) + "...";
+                }
+                commentedOnTextView.setText(name);
+            }
+
+            @Override
+            public void onQRCodeNotFound() {
+                Toast.makeText(mContext, "QR Code not found", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onQRCodeRetrievalFailure(Exception e) {
+                Toast.makeText(mContext, "QR Code retrieval failed", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Load user image into the ImageView
         ImageViewController imageViewController = new ImageViewController();
