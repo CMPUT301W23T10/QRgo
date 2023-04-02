@@ -15,6 +15,7 @@ import androidx.test.rule.ActivityTestRule;
 
 import com.example.qrgo.HomeActivity;
 import com.example.qrgo.MainActivity;
+import com.example.qrgo.QrProfileActivity;
 import com.example.qrgo.R;
 import com.example.qrgo.listeners.OnQRCodeScannedListener;
 import com.example.qrgo.utilities.FirebaseConnect;
@@ -39,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class QRListBasicTest {
 
 
-    private Solo solo;
+    private static Solo solo;
 
     private static String imei;
 
@@ -65,9 +66,9 @@ public class QRListBasicTest {
     @Test
     public void A_setUpSomethingElse() throws Exception{
         // Launch the activity under test
-        rule.launchActivity(new Intent());
-        // Initialize the solo object
-        solo = new Solo(getInstrumentation(), rule.getActivity());
+//        rule.launchActivity(new Intent());
+//        // Initialize the solo object
+//        solo = new Solo(getInstrumentation(), rule.getActivity());
         SharedPreferences sharedPreferences = rule.getActivity().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
         imei = sharedPreferences.getString("qrgodb", "");
 
@@ -89,8 +90,8 @@ public class QRListBasicTest {
 
         // Launch the MainActivity
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
-        solo.enterText((EditText) solo.getView(R.id.firstNameEntry), "first");
-        solo.enterText((EditText) solo.getView(R.id.lastNameEntry), "last");
+        solo.enterText((EditText) solo.getView(R.id.firstNameEntry), "Lukey");
+        solo.enterText((EditText) solo.getView(R.id.lastNameEntry), "Razz");
         solo.enterText((EditText) solo.getView(R.id.emailEntry), "testemail@gmail.com");
         solo.enterText((EditText) solo.getView(R.id.phoneEntry), "1234567890");
         solo.clickOnView(solo.getView(R.id.register));
@@ -122,34 +123,33 @@ public class QRListBasicTest {
                         latch.countDown();
                     }
                 });
+
+
             }
         });
     }
 
 
     @Test
-    public void B_VoidTest(){
-
-    }
-    @Test
-    public void C_testNavigateToQRList() {
-        solo.waitForActivity(HomeActivity.class);
-        solo.assertCurrentActivity("Expected HomeActivity", HomeActivity.class);
+    public void B_testNavigateToQRList() {
+        solo.waitForActivity(MainActivity.class);
+        solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 
         solo.waitForFragmentByTag("QRFragment");
 
         //click on QR desk
         solo.clickOnView(solo.getView(R.id.user_qr_view_all));
         solo.waitForFragmentByTag("QrListviewFragment");
-//        solo.clickInList(0);
+
         ImageView qr_arrow_icon = (ImageView) solo.getView(R.id.qr_arrow_icon);
         solo.clickOnView(qr_arrow_icon);
-        solo.assertCurrentActivity("HomeActivity", HomeActivity.class);
+        Log.d("Test_B", "we got here: ");
+        solo.assertCurrentActivity("QrProfileActivity", QrProfileActivity.class);
     }
 
 
     @Test
-    public void D_testNavigateQRListBackToHomeActivity() {
+    public void C_testNavigateQRListBackToHomeActivity() {
         solo.waitForActivity(MainActivity.class);
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 
@@ -167,7 +167,7 @@ public class QRListBasicTest {
 
 
     @Test
-    public void E_testNavigateToQRItem() {
+    public void D_testNavigateToQRItem() {
         solo.waitForActivity(MainActivity.class);
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 
@@ -177,16 +177,14 @@ public class QRListBasicTest {
         solo.clickOnView(solo.getView(R.id.view_pager));
         solo.waitForFragmentByTag("QRItemFragment");
 
-//        ImageView qr_arrow_icon = (ImageView) solo.getView(R.id.qr_arrow_icon);
-//        solo.clickOnView(qr_arrow_icon);
 
         solo.waitForFragmentByTag("QRItemFragment");
 
-//        solo.clickOnView(solo.getView(R.id.close_button));
+
     }
 
     @Test
-    public void F_testDeleteQRItem() {
+    public void E_testDeleteQRItem() {
         solo.waitForActivity(MainActivity.class);
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 
@@ -204,7 +202,7 @@ public class QRListBasicTest {
 
 
     @Test
-    public void G_testQRListSort(){
+    public void F_testQRListSort(){
         solo.waitForActivity(MainActivity.class);
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 
@@ -250,8 +248,7 @@ public class QRListBasicTest {
 
                     });
 
-
-//            solo.finishOpenedActivities();
+            solo.finishOpenedActivities();
         }
     }
 
