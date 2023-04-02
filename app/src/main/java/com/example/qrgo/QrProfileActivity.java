@@ -1,7 +1,12 @@
 package com.example.qrgo;
 
+import static com.example.qrgo.SignupActivity.user;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
@@ -13,8 +18,10 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -28,6 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.qrgo.listeners.OnCommentAddListener;
+import com.example.qrgo.listeners.OnQRCodeScannedListener;
+import com.example.qrgo.listeners.OnQRCodeUploadListener;
 import com.example.qrgo.listeners.QRCodeListener;
 import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.Comment;
@@ -42,11 +51,50 @@ import com.example.qrgo.utilities.UserCarouselAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class QrProfileActivity extends AppCompatActivity {
-    String comeFrom = "";
+    private File locationPhotoFile;
+    private Uri locationPhotoUri;
+
+    private QRCode generator;
+
+    private String qr_code_id;
+    private FirebaseConnect db = new FirebaseConnect();
+
+    final ActivityResultLauncher<Uri> captureLocationPhoto = registerForActivityResult( new ActivityResultContracts.TakePicture(), result -> {
+        if (result) {
+            Log.d("QRIntakeActivity", result.toString());
+            try {
+                Bitmap uncompressed = MediaStore.Images.Media.getBitmap(this.getContentResolver(), locationPhotoUri);
+                if (uncompressed.compress(Bitmap.CompressFormat.JPEG, 50, this.getContentResolver().openOutputStream(locationPhotoUri))) {
+                    db.getQRCodeManager().uploadAndRetrieveDownloadUrl(locationPhotoUri, qr_code_id, new OnQRCodeUploadListener() {
+                        @Override
+                        public void onQRCodeUploadSuccess(String downloadUrl) {
+                            // Call the scan QR code method which would just update the landmark picture, so we could pass Bogus values as the other parameters.
+                            db.getQRCodeManager().scanQRCode(qr_code_id, user, "ignoreThis", 181, 181, downloadUrl, 0, new OnQRCodeScannedListener() {
+                                // After scan is done then restart the activity
+                                @Override
+                                public void onQRScanComplete(boolean success) {
+                                    Intent intent = new Intent(QrProfileActivity.this, QrProfileActivity.class);
+                                    intent.putExtra("qr_code", qr_code_id);
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    });
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    });
+    private String comeFrom = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +106,7 @@ public class QrProfileActivity extends AppCompatActivity {
         String LastName = sharedPreferences.getString("lastName", "");
         // Checking intent for qr_code key
         Intent intent = getIntent();
-        String qr_code_id = intent.getStringExtra("qr_code");
+        qr_code_id = intent.getStringExtra("qr_code");
 
         comeFrom = intent.getStringExtra("comeFrom");
         // if we are coming displaying a qr code that is scanned by the user then we need to display
@@ -207,6 +255,22 @@ public class QrProfileActivity extends AppCompatActivity {
                 // Set up the picture for the current user
                 ImageView qr_user_profile_picture = findViewById(R.id.qr_user_profile_picture);
 
+                camera.setOnClickListener(view -> {
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String prefix = "JPEG_" + timeStamp + "_";
+                    locationPhotoFile = new File(getCacheDir(), prefix + ".jpg");
+                    if (!locationPhotoFile.exists()) {
+                        try {
+                            locationPhotoFile.createNewFile();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    locationPhotoUri = FileProvider.getUriForFile(QrProfileActivity.this, "com.example.qrgo.fileprovider", locationPhotoFile);
+                    captureLocationPhoto.launch(locationPhotoUri);
+                    locationPhotoFile.deleteOnExit();
+                });
+
                 // Load user image into the ImageView
                 ImageViewController imageViewController = new ImageViewController();
                 imageViewController.setImage(firstName,qr_user_profile_picture);
@@ -267,5 +331,4 @@ public class QrProfileActivity extends AppCompatActivity {
             startActivity(intent1);
         });
     }
-
 }

@@ -89,6 +89,9 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
                 Intent intent = new Intent(view.getContext(), QrProfileActivity.class);
                 if (currentQRCode.getQRString() != "NaN") {
                     intent.putExtra("qr_code", currentQRCode.getQRString());
+                    // if we don't come from home page or player page, that means we came
+                    // from carousel page or scanned page, so we enable the camera button
+                    // in the qr profile page
                     if (!(caller.equals("player")) && !(caller.equals("homeAll"))) {
                         intent.putExtra("comeFrom", "scanned");
                     }
