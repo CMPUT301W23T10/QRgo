@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.EditText;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -71,10 +72,10 @@ public class A_CreateNewUserAddQrTest extends AndroidJUnitRunner {
     public void testSignUpUser() {
         // Launch the MainActivity
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
-//        solo.enterText((EditText) solo.getView(R.id.username), "first");
-//        solo.enterText((EditText) solo.getView(R.id.address), "last");
-//        solo.enterText((EditText) solo.getView(R.id.phone_number), "testemail@gmail.com");
-//        solo.enterText((EditText) solo.getView(R.id.phone_number2), "1233456");
+        solo.enterText((EditText) solo.getView(R.id.firstNameEntry), "first");
+        solo.enterText((EditText) solo.getView(R.id.lastNameEntry), "last");
+        solo.enterText((EditText) solo.getView(R.id.emailEntry), "testemail@gmail.com");
+        solo.enterText((EditText) solo.getView(R.id.phoneEntry), "1233456");
         solo.clickOnView(solo.getView(R.id.register));
 
         // Wait for home activity to launch

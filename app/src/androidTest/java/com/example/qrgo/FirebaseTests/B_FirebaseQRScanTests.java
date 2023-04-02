@@ -22,7 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.robotium.solo.Solo;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
@@ -200,6 +199,8 @@ public class B_FirebaseQRScanTests {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Users").document("1234567890").delete(); // replace with the actual ID used in the tests
         db.collection("Profiles").document(username).delete(); // replace with the actual username used in the tests
+
+
         db.collection("QRCodes").whereEqualTo("qrString", qrString)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -212,6 +213,8 @@ public class B_FirebaseQRScanTests {
                             documentSnapshot.getReference().update("scannedUsers", scanUsers);
                         }
                     }
+
+
                 });
         // close the Solo instance to release any resources
         solo.finishOpenedActivities();
