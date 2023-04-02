@@ -189,6 +189,7 @@ public class QrProfileActivity extends AppCompatActivity {
                 TextView qr_users_view_all = findViewById(R.id.qr_users_view_all);
                 qr_users_view_all.setOnClickListener(v -> {
                     QRListFragment qrFragment = new QRListFragment();
+                    qrFragment.setQRid(qr_code_id);
                     ArrayList<BasicPlayerProfile> qrCodeArrayList = new ArrayList<>(scanned_list);
                     // Pass qrCodeList as a parameter to the fragment
                     qrFragment.setQrCodeList(qrCodeArrayList);

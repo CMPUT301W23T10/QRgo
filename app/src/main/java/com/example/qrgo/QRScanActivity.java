@@ -1,11 +1,15 @@
 package com.example.qrgo;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
@@ -35,6 +39,7 @@ public class QRScanActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scan);
+
         barcodeScannerView = findViewById(R.id.zxing_barcode_scanner);
 
         viewfinderView = findViewById(R.id.zxing_viewfinder_view);
@@ -44,6 +49,20 @@ public class QRScanActivity extends Activity{
         close.setOnClickListener(v -> {
             finish();
         });
+        // Hide the action bar
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.hide();
+        }
+        // Hide the status bar
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.setStatusBarColor(getResources().getColor(R.color.transparent));
+            window.setNavigationBarColor(getResources().getColor(R.color.transparent));
+            window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
+        }
+
 
         capture = new CaptureManager(this, barcodeScannerView);
         capture.initializeFromIntent(getIntent(), savedInstanceState);

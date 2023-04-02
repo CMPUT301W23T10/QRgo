@@ -75,7 +75,7 @@ public class SearchArrayAdapter extends ArrayAdapter<BasicPlayerProfile> {
         imageViewController.setImage(currentUser.getFirstName(),user_icon);
 
         // Set the text for the views
-        nameTextView.setText(currentUser.getFirstName());
+        nameTextView.setText(currentUser.getUsername());
         return convertView;
     }
 }

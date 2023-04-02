@@ -102,7 +102,7 @@ public class UserCarouselAdapter extends PagerAdapter {
             ImageViewController imageViewController = new ImageViewController();
             imageViewController.setImage(user.getFirstName(),userImage);
 
-            String name = user.getFirstName();
+            String name = user.getUsername();
             if (name.length() > 4) {
                 name = name.substring(0, 4) + "...";
             }
