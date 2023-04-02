@@ -54,7 +54,7 @@ import java.util.Map;
 public class GeoLocationActivity extends AppCompatActivity implements LocationListener {
 
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private MapView map = null;
+    public MapView map = null;
 
     private double latitude;
     private double longitude;
@@ -62,7 +62,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
     private GeoPoint startPoint;
     
     //private List<List<Double>> coordinates = new ArrayList<>();
-    private Map<String, List<List<Double>>> coordinates = new HashMap<>();
+    public Map<String, List<List<Double>>> coordinates = new HashMap<>();
 
     private LocationManager mLocationManager;
 
@@ -296,7 +296,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
      * @param latitude double value representing the latitude
      * @param longitude double value representing the longitude
      */
-    private void addMarker(double latitude, double longitude) {
+    public void addMarker(double latitude, double longitude) {
         Marker marker = new Marker(map);
         marker.setPosition(new GeoPoint(latitude, longitude));
         marker.setTitle("Latitude: " + Double.toString(latitude) + " Longitude: " + Double.toString(longitude));
@@ -404,6 +404,14 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         marker.setTitle(title);
         marker.setDraggable(true);
         List<List<Double>> markerCoordinates = new ArrayList<>();
+
+        for (List<List<Double>> coordinateList : coordinates.values()) {
+            for (List<Double> coordinate : coordinateList) {
+                addMarker(coordinate.get(0), coordinate.get(1));
+                markerCoordinates.add(coordinate);
+            }
+        }
+
         marker.setOnMarkerDragListener(new Marker.OnMarkerDragListener() {
             @Override
             public void onMarkerDrag(Marker marker) {
@@ -474,7 +482,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
      * @param markerPositions A nested list of doubles containing the latitude and longitude values of all the markers fetched from the firebase
      * @param center the GeoPoint of the draggable marker
      */
-    private void addMarkersInRange(MapView map, Map<String, List<List<Double>>> markerPositions, GeoPoint center, Integer click) {
+    public void addMarkersInRange(MapView map, Map<String, List<List<Double>>> markerPositions, GeoPoint center, Integer click) {
         double range = 0.05;
         for (Map.Entry<String, List<List<Double>>> entry : markerPositions.entrySet()) {
             String title = entry.getKey();
@@ -521,7 +529,7 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
      * @return the current location of the user given the location permission is granted
      */
     private Location getLastKnownLocation() {
-        mLocationManager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         List<String> providers = mLocationManager.getProviders(true);
         Location bestLocation = null;
         for (String provider : providers) {
@@ -536,4 +544,5 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         }
         return bestLocation;
     }
+
 }
