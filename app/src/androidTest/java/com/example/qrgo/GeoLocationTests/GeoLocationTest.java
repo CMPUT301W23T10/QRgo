@@ -146,9 +146,10 @@ public class GeoLocationTest extends AndroidJUnitRunner {
         solo.waitForDialogToOpen();
 
         // Click on the "Yes" button
-        solo.clickOnText("Yes");
+        solo.clickOnText("No");
 
         // go back to HomeActivity
+        solo.sleep(2000);
         solo.clickOnView(solo.getView(R.id.close_button));
         solo.waitForActivity(HomeActivity.class, 2000);
         solo.assertCurrentActivity("Expected HomeActivity", HomeActivity.class);
