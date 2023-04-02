@@ -47,6 +47,12 @@
             android:label="Player Activity" />
         <activity android:name=".QRIntakeActivity" />
         <activity android:name=".QRScanActivity" />
+        <provider
+            android:name="com.example.qrgo.utilities.LocationPhotoFileProvider"
+            android:authorities="com.example.qrgo.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+        </provider>
     </application>
 
 </manifest>

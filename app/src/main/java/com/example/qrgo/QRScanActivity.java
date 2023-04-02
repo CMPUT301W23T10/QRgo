@@ -10,9 +10,11 @@ import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.journeyapps.barcodescanner.ViewfinderView;
+
 
 import java.util.Random;
 
@@ -33,18 +35,15 @@ public class QRScanActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_scan);
-
-//        Switch locationSwitch = findViewById(R.id.location_switch);
-//        locationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            if (isChecked) {
-//                locationSetListener.onLocationSet(true);
-//            } else {
-//                locationSetListener.onLocationSet(false);
-//            }
-//        });
         barcodeScannerView = findViewById(R.id.zxing_barcode_scanner);
 
         viewfinderView = findViewById(R.id.zxing_viewfinder_view);
+
+        FloatingActionButton close = findViewById(R.id.close_button_camera);
+
+        close.setOnClickListener(v -> {
+            finish();
+        });
 
         capture = new CaptureManager(this, barcodeScannerView);
         capture.initializeFromIntent(getIntent(), savedInstanceState);
@@ -89,8 +88,7 @@ public class QRScanActivity extends Activity{
      * @param view
      */
     public void changeMaskColor(View view) {
-        Random rnd = new Random();
-        int color = Color.argb(100, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+        int color = Color.argb(70,200, 200, 200);
         viewfinderView.setMaskColor(color);
     }
 

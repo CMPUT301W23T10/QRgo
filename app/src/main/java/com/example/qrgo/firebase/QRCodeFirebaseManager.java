@@ -1,10 +1,16 @@
 package com.example.qrgo.firebase;
 
+import android.net.Uri;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import com.example.qrgo.listeners.OnBasicPlayerProfileLoadedListener;
 import com.example.qrgo.listeners.OnCommentLoadedListener;
 import com.example.qrgo.listeners.OnCommentsLoadedListener;
 import com.example.qrgo.listeners.OnCoordinatesListLoadedListener;
 import com.example.qrgo.listeners.OnQRCodeScannedListener;
+import com.example.qrgo.listeners.OnQRCodeUploadListener;
 import com.example.qrgo.listeners.OnQrListLoadedListener;
 import com.example.qrgo.listeners.OnScannedUsersLoadedListener;
 import com.example.qrgo.listeners.OnUserDeleteFromQRCodeListener;
@@ -13,6 +19,8 @@ import com.example.qrgo.models.BasicPlayerProfile;
 import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.models.Comment;
 import com.example.qrgo.models.QRCode;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -21,8 +29,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,9 +42,10 @@ import java.util.List;
 import java.util.Map;
 
 public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
-
+    protected final FirebaseStorage st;
     public QRCodeFirebaseManager() {
         super();
+        st = FirebaseStorage.getInstance();
     }
 
     /**
@@ -56,24 +68,24 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                 String qrCodeId = documentSnapshot.getId();
 
                 List<String> scanUsers = (List<String>) documentSnapshot.get("scannedUsers");
+                // Allow USERS to update pictures
+                // Add the user's photo URL to "locationObjectPhoto"
+                if(photoUrl != "None" && photoUrl != null && photoUrl != "") {
+                    db.collection("QRCodes").document(qrCodeId)
+                            .update("locationObjectPhoto", FieldValue.arrayUnion(photoUrl));
+                }
 
                 // The user has scanned the same code previously
                 if (scanUsers.contains(username)) {
                     listener.onQRScanComplete(false);
                     return;
                 }
-
-                // Add the user's photo URL to "locationObjectPhoto"
-                db.collection("QRCodes").document(qrCodeId)
-                        .update("locationObjectPhoto", FieldValue.arrayUnion(photoUrl));
-
                 // Add the user's location coordinates to the "locations" array
                 if (latitude != 181 && longitude != 181) {
                     GeoPoint location = new GeoPoint(latitude, longitude);
                     db.collection("QRCodes").document(qrCodeId)
                             .update("locations", FieldValue.arrayUnion(location));
                 }
-
                 // Add the user's username to the "scannedUsers" array
                 db.collection("QRCodes").document(qrCodeId)
                         .update("scannedUsers", FieldValue.arrayUnion(username));
@@ -86,8 +98,10 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                 data.put("humanReadableQR", humanReadableQR);
                 data.put("qrString", qrString);
                 data.put("scannedUsers", Arrays.asList(username));
-                data.put("locationObjectPhoto", Arrays.asList(photoUrl));
                 data.put("qrPoints", points);
+                if (photoUrl != "None") {
+                    data.put("locationObjectPhoto", Arrays.asList(photoUrl));
+                }
                 if (latitude != 181 && longitude != 181) {
                     data.put("locations", Arrays.asList(new GeoPoint(latitude, longitude)));
                 }
@@ -123,6 +137,29 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                                 "totalScans", FieldValue.increment(1));
                 listener.onQRScanComplete(true);
             });
+        });
+    }
+    // This functions uploads a file to Firebase Storage and returns the download URL
+    public void uploadAndRetrieveDownloadUrl(Uri file, String qrString, OnQRCodeUploadListener listener) {
+        StorageReference locationPhotosRef = st.getReference().child("LocationPhotos/" + qrString + "/" + file.getLastPathSegment());
+        Task<Uri> urlTask = locationPhotosRef.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+
+                // Continue with the task to get the download URL
+                return locationPhotosRef.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    listener.onQRCodeUploadSuccess(task.getResult().toString());
+                } else {
+                }
+            }
         });
     }
 

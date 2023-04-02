@@ -65,6 +65,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-installations:17.0.0'
     implementation 'com.google.firebase:firebase-auth-ktx'
 
+    // Add the dependency for the Cloud Storage library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-storage:20.0.0'
+
     // Mockito
     testImplementation 'org.mockito:mockito-core:2.19.0'
 

@@ -120,7 +120,6 @@ public class HomeActivity extends AppCompatActivity {
 
                 // Define the carousel items
                 List<BasicQRCode> carouselItems = userProfile.getQrCodeBasicProfiles();
-                Log.d("HomeActivity", "onPlayerProfileGet: " + carouselItems);
                 List<BasicQRCode> temp = carouselItems;
                 if (temp.size() > 3) {
                     temp = temp.subList(0, 3);
