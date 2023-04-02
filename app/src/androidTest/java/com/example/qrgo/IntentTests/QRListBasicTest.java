@@ -128,7 +128,11 @@ public class QRListBasicTest {
 
 
     @Test
-    public void B_testNavigateToQRList() {
+    public void B_VoidTest(){
+
+    }
+    @Test
+    public void C_testNavigateToQRList() {
         solo.waitForActivity(HomeActivity.class);
         solo.assertCurrentActivity("Expected HomeActivity", HomeActivity.class);
 
@@ -145,7 +149,7 @@ public class QRListBasicTest {
 
 
     @Test
-    public void C_testNavigateQRListBackToHomeActivity() {
+    public void D_testNavigateQRListBackToHomeActivity() {
         solo.waitForActivity(MainActivity.class);
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 
@@ -163,7 +167,7 @@ public class QRListBasicTest {
 
 
     @Test
-    public void D_testNavigateToQRItem() {
+    public void E_testNavigateToQRItem() {
         solo.waitForActivity(MainActivity.class);
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 
@@ -182,7 +186,7 @@ public class QRListBasicTest {
     }
 
     @Test
-    public void E_testDeleteQRItem() {
+    public void F_testDeleteQRItem() {
         solo.waitForActivity(MainActivity.class);
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 
@@ -200,7 +204,7 @@ public class QRListBasicTest {
 
 
     @Test
-    public void F_testQRListSort(){
+    public void G_testQRListSort(){
         solo.waitForActivity(MainActivity.class);
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 
