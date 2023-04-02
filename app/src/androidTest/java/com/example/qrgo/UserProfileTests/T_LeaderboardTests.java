@@ -24,21 +24,22 @@ public class T_LeaderboardTests extends BaseUserProfileTest {
         // Wait for home activity to launch
         solo.waitForActivity(HomeActivity.class, 2000);
 
-
-        // Click on the leaderboard view
-        solo.clickOnView(solo.getView(R.id.user_view_all));
-        solo.waitForFragmentByTag("LeaderboardFragment");
-
         SharedPreferences sharedPreferences = rule.getActivity().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
         username = sharedPreferences.getString("user", "");
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Profiles").document(username).update(
-                "totalScore", 100000000
+                "highestScore",100000000
         );
+        solo.sleep(2000);
+
+        // Click on the leaderboard view
+        solo.clickOnView(solo.getView(R.id.user_view_all));
+        solo.sleep(2000);
 
 
         ListView allUsersListView = (ListView) solo.getView(R.id.all_users_listview);
         assertNotNull(allUsersListView);
+
 
         solo.clickOnView(allUsersListView.getChildAt(0));
 
@@ -56,9 +57,6 @@ public class T_LeaderboardTests extends BaseUserProfileTest {
             solo.waitForActivity(HomeActivity.class, 2000);
 
 
-            // Click on the leaderboard view
-            solo.clickOnView(solo.getView(R.id.user_view_all));
-            solo.waitForFragmentByTag("LeaderboardFragment");
 
             SharedPreferences sharedPreferences = rule.getActivity().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
             username = sharedPreferences.getString("user", "");
@@ -67,7 +65,15 @@ public class T_LeaderboardTests extends BaseUserProfileTest {
                     "totalScore", 100000000
             );
 
-            solo.clickOnView(solo.getView(R.id.most_scanned_button));
+            solo.sleep(2000);
+
+            // Click on the leaderboard view
+            solo.clickOnView(solo.getView(R.id.user_view_all));
+            solo.sleep(2000);
+
+            solo.clickOnView(solo.getView(R.id.total_score_button));
+            solo.sleep(2000);
+
 
             ListView allUsersListView = (ListView) solo.getView(R.id.all_users_listview);
             assertNotNull(allUsersListView);
@@ -87,18 +93,24 @@ public class T_LeaderboardTests extends BaseUserProfileTest {
             solo.waitForActivity(HomeActivity.class, 2000);
 
 
-            // Click on the leaderboard view
-            solo.clickOnView(solo.getView(R.id.user_view_all));
-            solo.waitForFragmentByTag("LeaderboardFragment");
-
             SharedPreferences sharedPreferences = rule.getActivity().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
             username = sharedPreferences.getString("user", "");
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("Profiles").document(username).update(
                     "totalScans", 100000000
             );
+            solo.sleep(2000);
+
+            // Click on the leaderboard view
+            solo.clickOnView(solo.getView(R.id.user_view_all));
+
+            solo.sleep(2000);
+
+
 
             solo.clickOnView(solo.getView(R.id.most_scanned_button));
+            solo.sleep(2000);
+
 
             ListView allUsersListView = (ListView) solo.getView(R.id.all_users_listview);
             assertNotNull(allUsersListView);
