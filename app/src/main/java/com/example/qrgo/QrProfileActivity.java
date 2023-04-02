@@ -44,6 +44,7 @@ import com.example.qrgo.models.QRCode;
 import com.example.qrgo.utilities.BasicCommentArrayAdapter;
 import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.FirebaseConnect;
+import com.example.qrgo.utilities.LandmarkCarouselAdapter;
 import com.example.qrgo.utilities.QRCodeVisualRenderer;
 import com.example.qrgo.utilities.ImageViewController;
 import com.example.qrgo.utilities.RoundedSquareTransform;
@@ -138,7 +139,6 @@ public class QrProfileActivity extends AppCompatActivity {
 
 
         firebaseconnect.getQRCodeManager().getQRCode(qr_code_id, new QRCodeListener() {
-
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {
                 LinearLayout qr_image_view_container = findViewById(R.id.qr_image_view_container);
@@ -189,6 +189,7 @@ public class QrProfileActivity extends AppCompatActivity {
                 TextView qr_users_view_all = findViewById(R.id.qr_users_view_all);
                 qr_users_view_all.setOnClickListener(v -> {
                     QRListFragment qrFragment = new QRListFragment();
+                    qrFragment.setQRid(qr_code_id);
                     ArrayList<BasicPlayerProfile> qrCodeArrayList = new ArrayList<>(scanned_list);
                     // Pass qrCodeList as a parameter to the fragment
                     qrFragment.setQrCodeList(qrCodeArrayList);
@@ -198,6 +199,23 @@ public class QrProfileActivity extends AppCompatActivity {
                             .addToBackStack(null)
                             .commit();
                 });
+
+                // Define the landmark carousel items
+                ViewPager LandmarkViewPager = findViewById(R.id.qr_landmarks_pager);
+
+                LandmarkCarouselAdapter landmarkCarouselAdapter = new LandmarkCarouselAdapter(QrProfileActivity.this, (ArrayList<String>) qrCode.getPhotoIds());
+                TextView qr_landmarks_head = findViewById(R.id.qr_landmarks_head);
+                qr_landmarks_head.setText("Landmarks (" + qrCode.getPhotoIds().size() + ")");
+                LandmarkViewPager.setAdapter(landmarkCarouselAdapter);
+                TextView qr_landmarks_view_all = findViewById(R.id.qr_landmarks_view_all);
+                qr_landmarks_view_all.setOnClickListener(v -> {
+                            ArrayList<String> links = new ArrayList<>(qrCode.getPhotoIds());
+                            // Put intent to StaggeredGallery.java
+                            Intent intent = new Intent(QrProfileActivity.this, StaggeredGallery.class);
+                            intent.putStringArrayListExtra("dataList", links);
+                            intent.putExtra("qr_code", qr_code_id);
+                            startActivity(intent);
+                        });
 
 
                 TextView qr_score = findViewById(R.id.qr_score);
@@ -307,11 +325,12 @@ public class QrProfileActivity extends AppCompatActivity {
 
             @Override
             public void onQRCodeNotFound() {
-                Toast.makeText(QrProfileActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(QrProfileActivity.this, "No Internet / Invalid QR", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onQRCodeRetrievalFailure(Exception e) {
+                Toast.makeText(QrProfileActivity.this, "No Internet / Invalid QR", Toast.LENGTH_SHORT).show();
 
             }
         });

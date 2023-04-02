@@ -78,7 +78,7 @@ public class BasicUserArrayAdapter extends ArrayAdapter<BasicPlayerProfile> {
 
 
         // Set the text for the views
-        nameTextView.setText(currentUser.getFirstName());
+        nameTextView.setText(currentUser.getUsername());
         if (field == "totalScore") {
             scoreTextView.setText(currentUser.getTotalScore() + " pts");
         } else if (field == "highScore") {

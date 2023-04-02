@@ -178,7 +178,50 @@
                         </TableRow>
 
                     </TableLayout>
+                    <!--                    ######################################################-->
 
+                    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="25dp"
+                        android:stretchColumns="*">
+
+                        <TableRow>
+                            <!--    Player QR Code-->
+                            <TextView
+                                android:id="@+id/qr_landmarks_head"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:text="Landmarks"
+                                android:textColor="#fff"
+                                android:textSize="20sp"
+                                />
+
+                            <TextView
+                                android:id="@+id/qr_landmarks_view_all"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end"
+                                android:textColor="#A2A0A0"
+                                android:textStyle="bold"
+                                android:text="View all"
+                                android:textSize="16sp" />
+                        </TableRow>
+                    </TableLayout>
+                    <com.example.qrgo.utilities.NonSwipeableViewPager
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/qr_landmarks_pager"
+                        android:overScrollMode="never"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="170dp" />
+
+
+
+                    <!--                    ######################################################-->
 
 <!--                    ######################################################-->
 
@@ -186,7 +229,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="16dp"
-                        android:layout_marginTop="20dp"
+                        android:layout_marginTop="10dp"
                         android:stretchColumns="*">
 
                         <TableRow>
@@ -196,7 +239,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
-                                android:layout_marginTop="25dp"
                                 android:text="Users"
                                 android:textColor="#fff"
                                 android:textSize="20sp"
@@ -207,7 +249,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="end"
-                                android:layout_marginTop="25dp"
                                 android:textColor="#A2A0A0"
                                 android:textStyle="bold"
                                 android:text="View all"

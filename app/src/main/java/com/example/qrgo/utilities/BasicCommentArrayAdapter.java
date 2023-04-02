@@ -82,8 +82,8 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
         // This would be the qrCode name instead of id
         String commentedOn = comment.getQrCodeId();
         // Truncate the commented on string to 10
-        if (commentedOn.length() > 22) {
-            commentedOn = commentedOn.substring(0, 22) + "...";
+        if (commentedOn.length() > 18) {
+            commentedOn = commentedOn.substring(0, 18) + "...";
         }
         commentedOnTextView.setText(commentedOn);
 
