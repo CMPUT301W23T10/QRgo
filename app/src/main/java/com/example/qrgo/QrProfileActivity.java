@@ -139,7 +139,6 @@ public class QrProfileActivity extends AppCompatActivity {
 
 
         firebaseconnect.getQRCodeManager().getQRCode(qr_code_id, new QRCodeListener() {
-
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {
                 LinearLayout qr_image_view_container = findViewById(R.id.qr_image_view_container);
@@ -326,11 +325,12 @@ public class QrProfileActivity extends AppCompatActivity {
 
             @Override
             public void onQRCodeNotFound() {
-                Toast.makeText(QrProfileActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(QrProfileActivity.this, "No Internet / Invalid QR", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onQRCodeRetrievalFailure(Exception e) {
+                Toast.makeText(QrProfileActivity.this, "No Internet / Invalid QR", Toast.LENGTH_SHORT).show();
 
             }
         });
