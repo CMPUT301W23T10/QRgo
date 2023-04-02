@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="@drawable/background"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent" >
+    <TableLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:stretchColumns="1,2,3"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="25dp"
+        android:layout_height="wrap_content">
+    <TableRow android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="0dp"
+        >
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:orientation="vertical"
+            />
+        <TextView
+            android:id="@+id/qr_list_title"
+            android:layout_width="wrap_content"
+            android:text="Gallery"
+            android:gravity="center"
+            android:elevation="4dp"
+            android:textSize="36sp"
+            android:layout_marginHorizontal="40dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/close_button_gallary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_close_24"
+            app:backgroundTint="#FF282626"
+            app:tint="@color/white" />
+    </TableRow>
+    </TableLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_gravity="center"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerView" />
+
+</LinearLayout>

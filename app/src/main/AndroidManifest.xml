@@ -22,6 +22,9 @@
         android:theme="@style/Theme.QRgo"
         tools:replace="android:allowBackup">
         <activity
+            android:name=".StaggeredGallery"
+            android:exported="false" />
+        <activity
             android:name=".QrProfileActivity"
             android:exported="false" />
         <activity
@@ -47,12 +50,12 @@
             android:label="Player Activity" />
         <activity android:name=".QRIntakeActivity" />
         <activity android:name=".QRScanActivity" />
+
         <provider
-            android:name="com.example.qrgo.utilities.LocationPhotoFileProvider"
+            android:name=".utilities.LocationPhotoFileProvider"
             android:authorities="com.example.qrgo.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
-        </provider>
+            android:exported="false"
+            android:grantUriPermissions="true"></provider>
     </application>
 
 </manifest>
