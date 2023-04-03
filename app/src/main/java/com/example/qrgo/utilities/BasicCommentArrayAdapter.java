@@ -88,7 +88,6 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {
                 String name = qrCode.getHumanReadableQR();
-                Log.d("QRCode", qrCode.getHumanReadableQR());
                 // Truncate the commented on string to 10
                 if (name.length() > 18) {
                     name = name.substring(0, 18) + "...";

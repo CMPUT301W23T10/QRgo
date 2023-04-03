@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -37,17 +38,37 @@ import java.util.Comparator;
 import java.util.List;
 
 public class LeaderboardFragment extends Fragment {
+    // If the user presses the back button, go back to the home activity
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Handle the back button press in your Fragment
+                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+    }
     private String comeFromString = "";
     private ArrayList<String> qrCodeList;
+
     public void setComeFrom(String comeFromString) {
         this.comeFromString = comeFromString;
     }
+
     public void setQrCodeList(ArrayList<String> qrCodeList) {
         this.qrCodeList = qrCodeList;
     }
+
     public LeaderboardFragment() {
         // Required empty public constructor
     }
+
     FloatingActionButton back;
     FloatingActionButton highScoreQR;
     FloatingActionButton mostScannedQR;
@@ -68,9 +89,9 @@ public class LeaderboardFragment extends Fragment {
                 fab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
                 users_subtitle.setText(fab.getContentDescription());
                 // If the active fab is highScoreQR, load the high score list
-                if (activeFab == highScoreQR){
+                if (activeFab == highScoreQR) {
                     fb.getPlayerProfileManager().getPlayersSortedByHighestScore(
-                            new OnPlayerListLoadedListener(){
+                            new OnPlayerListLoadedListener() {
                                 @Override
                                 public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                                     // convert the list to an array
@@ -78,6 +99,7 @@ public class LeaderboardFragment extends Fragment {
                                     BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "highScore");
                                     all_users_listview.setAdapter(userAdapter);
                                 }
+
                                 @Override
                                 public void onPlayerListLoadFailure(Exception e) {
                                     Toast.makeText(requireActivity(), "Failed to load players", Toast.LENGTH_SHORT).show();
@@ -86,7 +108,7 @@ public class LeaderboardFragment extends Fragment {
                     );
                 } else if (activeFab == totalHighScore) {
                     fb.getPlayerProfileManager().getPlayersSortedByTotalScore(
-                            new OnPlayerListLoadedListener (){
+                            new OnPlayerListLoadedListener() {
                                 @Override
                                 public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                                     // convert the list to an array
@@ -94,6 +116,7 @@ public class LeaderboardFragment extends Fragment {
                                     BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "totalScore");
                                     all_users_listview.setAdapter(userAdapter);
                                 }
+
                                 @Override
                                 public void onPlayerListLoadFailure(Exception e) {
                                     Toast.makeText(requireActivity(), "Failed to load players", Toast.LENGTH_SHORT).show();
@@ -102,7 +125,7 @@ public class LeaderboardFragment extends Fragment {
                     );
                 } else if (activeFab == mostScannedQR) {
                     fb.getPlayerProfileManager().getPlayersSortedByTotalScans(
-                            new OnPlayerListLoadedListener (){
+                            new OnPlayerListLoadedListener() {
                                 @Override
                                 public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
                                     // convert the list to an array
@@ -110,6 +133,7 @@ public class LeaderboardFragment extends Fragment {
                                     BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "totalScans");
                                     all_users_listview.setAdapter(userAdapter);
                                 }
+
                                 @Override
                                 public void onPlayerListLoadFailure(Exception e) {
                                     Toast.makeText(requireActivity(), "Failed to load players", Toast.LENGTH_SHORT).show();
@@ -121,8 +145,7 @@ public class LeaderboardFragment extends Fragment {
                         Intent intent = new Intent(getActivity(), GeoLocationActivity.class);
                         intent.putExtra("LeaderBoard", "leaderboard");
                         startActivity(intent);
-                    }
-                    else {
+                    } else {
                         // populate listview
                         QRCodeFirebaseManager qrCodeFirebaseManager = new QRCodeFirebaseManager();
                         //Loop through qrCodeList and get the QRCode objects and add them to the list
@@ -182,6 +205,7 @@ public class LeaderboardFragment extends Fragment {
             }
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -192,11 +216,11 @@ public class LeaderboardFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_leaderboard_highscore, container, false);
 
         back = rootView.findViewById(R.id.back_button);
-         highScoreQR = rootView.findViewById(R.id.high_score_button);
-         users_subtitle = rootView.findViewById(R.id.users_subtitle);
-         mostScannedQR = rootView.findViewById(R.id.most_scanned_button);
-         totalHighScore = rootView.findViewById(R.id.total_score_button);
-         highScoreLocation = rootView.findViewById(R.id.location_score_button);
+        highScoreQR = rootView.findViewById(R.id.high_score_button);
+        users_subtitle = rootView.findViewById(R.id.users_subtitle);
+        mostScannedQR = rootView.findViewById(R.id.most_scanned_button);
+        totalHighScore = rootView.findViewById(R.id.total_score_button);
+        highScoreLocation = rootView.findViewById(R.id.location_score_button);
         all_users_listview = rootView.findViewById(R.id.all_users_listview);
 
         // Set highScoreQR as the default active FAB
@@ -250,8 +274,6 @@ public class LeaderboardFragment extends Fragment {
         });
 
 
-
-            return rootView;
+        return rootView;
     }
-
 }

@@ -252,11 +252,12 @@
                             android:textStyle="bold"
                             android:textSize="28sp"
                             android:textColor="#FFFFFF"/>
-                        <ImageView
+                        <com.makeramen.roundedimageview.RoundedImageView
                             android:id="@+id/map_image"
                             android:src="@drawable/geo_location_button"
                             android:layout_gravity="center_horizontal"
                             android:layout_width="313sp"
+                            app:riv_corner_radius="16dp"
                             android:layout_height="187sp"/>
                     </LinearLayout>
                 </LinearLayout>

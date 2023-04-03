@@ -23,9 +23,9 @@
         <TextView
             android:id="@+id/qr_list_title"
             android:layout_width="wrap_content"
+            android:layout_gravity="center"
             android:text="All QR Codes"
             android:textSize="36sp"
-            android:layout_marginHorizontal="16dp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:layout_height="wrap_content"/>
