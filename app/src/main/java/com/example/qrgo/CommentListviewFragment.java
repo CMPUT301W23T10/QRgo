@@ -19,6 +19,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link QrListviewFragment} factory method to
+ * {@link Comment} object that represents the comment to be displayed.
  * create an instance of this fragment.
  */
 public class CommentListviewFragment extends Fragment {

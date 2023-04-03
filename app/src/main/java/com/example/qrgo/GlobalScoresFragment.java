@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 /**
-
  A fragment that displays global scores.
  */
 public class GlobalScoresFragment extends Fragment {

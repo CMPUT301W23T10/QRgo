@@ -5,30 +5,23 @@ package com.example.qrgo.utilities;
 
         import android.app.Dialog;
         import android.content.Context;
-        import android.content.Intent;
-        import android.util.Log;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
         import android.widget.ImageView;
-        import android.widget.TextView;
-        import android.widget.Toast;
 
         import androidx.viewpager.widget.PagerAdapter;
 
         import com.bumptech.glide.Glide;
-        import com.example.qrgo.HomeActivity;
-        import com.example.qrgo.PlayerActivity;
         import com.example.qrgo.R;
-        import com.example.qrgo.models.BasicPlayerProfile;
         import com.google.android.material.floatingactionbutton.FloatingActionButton;
         import com.squareup.picasso.Picasso;
 
         import java.util.ArrayList;
-        import java.util.List;
 
 /**
- * This class provides an adapter to display a carousel of user profiles.
+ * This class provides an adapter to display a carousel of user profiles. extends PagerAdapter to
+ * handle the swipe functionality.
  */
 public class LandmarkCarouselAdapter extends PagerAdapter {
 

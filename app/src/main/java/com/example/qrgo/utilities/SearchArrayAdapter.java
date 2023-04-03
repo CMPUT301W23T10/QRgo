@@ -12,13 +12,13 @@ package com.example.qrgo.utilities;
         import com.example.qrgo.PlayerActivity;
         import com.example.qrgo.R;
         import com.example.qrgo.models.BasicPlayerProfile;
-        import com.example.qrgo.models.BasicQRCode;
-        import com.squareup.picasso.Picasso;
 
         import java.util.ArrayList;
 
 /**
  * This class extends ArrayAdapter to provide a customized adapter for a ListView displaying BasicPlayerProfile objects.
+ * {@link BasicPlayerProfile} objects are displayed in a list item layout.
+ * {@link PlayerActivity} to go to the player's profile.
  */
 
 public class SearchArrayAdapter extends ArrayAdapter<BasicPlayerProfile> {

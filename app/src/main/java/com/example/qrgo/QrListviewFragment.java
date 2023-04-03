@@ -26,6 +26,8 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  * Use the {@link QrListviewFragment} factory method to
  * create an instance of this fragment.
+ * {@link BasicQRCode} objects are passed to this fragment to be displayed in a listview.
+ * {@link BasicQrArrayAdapter} is used to display the listview.
  */
 public class QrListviewFragment extends Fragment {
     // If the user presses the back button, go back to the home activity

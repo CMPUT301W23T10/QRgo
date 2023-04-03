@@ -35,7 +35,6 @@ import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.example.qrgo.utilities.CarouselAdapter;
-import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.ImageViewController;
 import com.example.qrgo.utilities.UserCarouselAdapter;
@@ -65,7 +64,19 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
         
     }
-
+    /**
+     * This method is called when the activity is created
+     * {@link FirebaseConnect} is used to get the user's insights
+     * {@link CarouselAdapter} is used to display user's scanned QR codes
+     * {@link UserCarouselAdapter} is used to display global users insights
+     * {@link BasicQrArrayAdapter} is used to display global scanned QR codes
+     * {@link ImageViewController} is used to display the user's profile picture
+     * {@link BasicPlayerProfile} class that represents the user's insights
+     * {@link BasicQRCode} class that represents the QR code
+     * {@link PlayerProfile} class that represents more detailed user's insights
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

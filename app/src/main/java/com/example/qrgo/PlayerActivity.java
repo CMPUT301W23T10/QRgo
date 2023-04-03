@@ -37,6 +37,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This activity is used to display the player profile
+ * It is used to display the player's total score, the player's qr codes, and the player's comments
+ * It is also used to display the player's global rank for total score
+ */
 public class PlayerActivity extends AppCompatActivity {
 
     // When the back button is pressed, go back to the main activity
@@ -50,6 +55,16 @@ public class PlayerActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    /**
+     * This method is called when the activity is created
+     * {@link GlobalScoresFragment} to display the global scores
+     * {@link FirebaseConnect} to get the player's profile
+     * {@link ImageViewController} to display the player's profile picture
+     * {@link BasicCommentArrayAdapter} to display the player's comments
+     * {@link BasicQrArrayAdapter} to display the player's qr codes
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

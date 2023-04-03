@@ -20,6 +20,8 @@ package com.example.qrgo.utilities;
 
 /**
  * A custom ArrayAdapter class for displaying BasicQRCode objects in a ListView
+ * {@link QrProfileActivity} to go to the profile of the QRCode
+ * {@link QRCode} to get the QRCode information
  */
 
 public class QRCodeArrayAdapter extends ArrayAdapter<QRCode> {

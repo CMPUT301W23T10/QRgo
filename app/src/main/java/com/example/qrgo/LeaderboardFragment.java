@@ -31,6 +31,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * This fragment is used to display the leaderboard
+ * {@link BasicPlayerProfile} objects are displayed in a listview
+ * {@link BasicUserArrayAdapter} is used to display the listview
+ * {@link FirebaseConnect} is used to retrieve the data from firebase
+ * {@link QRCode} is used to store the data retrieved from firebase
+ * {@link QRCodeFirebaseManager} is used to retrieve the data from firebase
+ * {@link QRCodeArrayAdapter} is used to display the listview
+ *
+ */
 public class LeaderboardFragment extends Fragment {
     // If the user presses the back button, go back to the home activity
     @Override

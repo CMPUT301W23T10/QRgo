@@ -15,14 +15,18 @@ import android.widget.ListView;
 
 import com.example.qrgo.listeners.OnUserSearchListener;
 import com.example.qrgo.models.BasicPlayerProfile;
-import com.example.qrgo.utilities.BasicUserArrayAdapter;
 import com.example.qrgo.utilities.SearchArrayAdapter;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * This fragment is used to search for a user
+ * {@link BasicPlayerProfile} class that contains the user's information
+ * {@link SearchArrayAdapter} class that is used to display the list of users
+ * {@link FirebaseConnect} class that is used to connect to the database
+ */
 public class SearchFragment extends Fragment {
 
     private EditText searchUserEditText;

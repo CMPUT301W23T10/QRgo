@@ -49,7 +49,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * GeoLocationActivity is the activity that is responsible for displaying the map and the user's
+ * location on the map. It also has the ability to add a marker to the map and save the location of
+ * the marker to the database.
  */
 public class GeoLocationActivity extends AppCompatActivity implements LocationListener {
 
@@ -67,6 +69,14 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
     private LocationManager mLocationManager;
 
     @Override
+    /**
+     * onCreate is called when the activity is first created. It is responsible for setting up the
+     * map and the user's location on the map.
+     * {@link FirebaseConnect} is used to get all coordinates from the database.
+     *
+     *  @param savedInstanceState
+     *  @return void
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
