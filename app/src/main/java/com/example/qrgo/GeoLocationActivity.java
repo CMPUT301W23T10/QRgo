@@ -71,26 +71,19 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
         super.onCreate(savedInstanceState);
 
         FirebaseConnect database = new FirebaseConnect();
+        // Get all coordinates from database
         database.getQRCodeManager().getAllQrCoordinates(new OnCoordinatesListLoadedListener() {
             @Override
             public void onCoordinatesListLoaded(Map<String, List<List<Double>>> mapped_coordinates) {
-                /*for (List<List<Double>> coordinateList : mapped_coordinates.values()) {
-                    for (List<Double> coordinate : coordinateList) {
-                        coordinates.add(coordinate);
-                    }
-                }*/
                 for (Map.Entry<String, List<List<Double>>> entry : mapped_coordinates.entrySet()) {
                     coordinates.put(entry.getKey(), entry.getValue());
                 }
             }
-
-
             @Override
             public void onCoordinatesListLoadFailure(Exception e) {
 
             }
         });
-
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         setContentView(R.layout.activity_geo_location);

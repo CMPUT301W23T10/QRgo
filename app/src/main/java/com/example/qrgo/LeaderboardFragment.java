@@ -2,20 +2,14 @@ package com.example.qrgo;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,8 +68,8 @@ public class LeaderboardFragment extends Fragment {
     FloatingActionButton mostScannedQR;
     FloatingActionButton totalHighScore;
     FloatingActionButton highScoreLocation;
-    TextView users_subtitle;
-    ListView all_users_listview;
+    TextView userSubtitle;
+    ListView allUsersListview;
     FirebaseConnect fb = new FirebaseConnect();
 
 
@@ -87,7 +81,7 @@ public class LeaderboardFragment extends Fragment {
                 // Toggle the active fab
                 fab.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FF28262C")));
                 fab.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
-                users_subtitle.setText(fab.getContentDescription());
+                userSubtitle.setText(fab.getContentDescription());
                 // If the active fab is highScoreQR, load the high score list
                 if (activeFab == highScoreQR) {
                     fb.getPlayerProfileManager().getPlayersSortedByHighestScore(
@@ -97,7 +91,7 @@ public class LeaderboardFragment extends Fragment {
                                     // convert the list to an array
                                     ArrayList<BasicPlayerProfile> playerArrayList = new ArrayList<>(playerList);
                                     BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "highScore");
-                                    all_users_listview.setAdapter(userAdapter);
+                                    allUsersListview.setAdapter(userAdapter);
                                 }
 
                                 @Override
@@ -114,7 +108,7 @@ public class LeaderboardFragment extends Fragment {
                                     // convert the list to an array
                                     ArrayList<BasicPlayerProfile> playerArrayList = new ArrayList<>(playerList);
                                     BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "totalScore");
-                                    all_users_listview.setAdapter(userAdapter);
+                                    allUsersListview.setAdapter(userAdapter);
                                 }
 
                                 @Override
@@ -131,7 +125,7 @@ public class LeaderboardFragment extends Fragment {
                                     // convert the list to an array
                                     ArrayList<BasicPlayerProfile> playerArrayList = new ArrayList<>(playerList);
                                     BasicUserArrayAdapter userAdapter = new BasicUserArrayAdapter(requireActivity(), playerArrayList, "totalScans");
-                                    all_users_listview.setAdapter(userAdapter);
+                                    allUsersListview.setAdapter(userAdapter);
                                 }
 
                                 @Override
@@ -176,17 +170,15 @@ public class LeaderboardFragment extends Fragment {
                                             });
                                         }
                                         QRCodeArrayAdapter userAdapter = new QRCodeArrayAdapter(requireActivity(), qrCodeArrayList);
-                                        all_users_listview.setAdapter(userAdapter);
+                                        allUsersListview.setAdapter(userAdapter);
 
                                     }
 
                                 }
-
                                 @Override
                                 public void onQRCodeNotFound() {
                                     Toast.makeText(requireActivity(), "QR Code not found", Toast.LENGTH_SHORT).show();
                                 }
-
                                 @Override
                                 public void onQRCodeRetrievalFailure(Exception e) {
                                     Toast.makeText(requireActivity(), "Failed to retrieve QR Code", Toast.LENGTH_SHORT).show();
@@ -217,11 +209,11 @@ public class LeaderboardFragment extends Fragment {
 
         back = rootView.findViewById(R.id.back_button);
         highScoreQR = rootView.findViewById(R.id.high_score_button);
-        users_subtitle = rootView.findViewById(R.id.users_subtitle);
+        userSubtitle = rootView.findViewById(R.id.users_subtitle);
         mostScannedQR = rootView.findViewById(R.id.most_scanned_button);
         totalHighScore = rootView.findViewById(R.id.total_score_button);
         highScoreLocation = rootView.findViewById(R.id.location_score_button);
-        all_users_listview = rootView.findViewById(R.id.all_users_listview);
+        allUsersListview = rootView.findViewById(R.id.all_users_listview);
 
         // Set highScoreQR as the default active FAB
         if (comeFromString.equals("HomeActivity")) {
@@ -230,7 +222,7 @@ public class LeaderboardFragment extends Fragment {
             toggleFabs(highScoreLocation);
         }
 
-
+        // Set listeners for the different tabs
         highScoreQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

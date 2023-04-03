@@ -68,13 +68,12 @@ public class PlayerActivity extends AppCompatActivity {
             window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
         }
 
-
         ListView listView = findViewById(R.id.play_qr_listview);
 
 
         ListView commentListView = findViewById(R.id.play_comment_listview);
 
-// Create an ArrayAdapter for the list items
+        // Create an ArrayAdapter for the list items
         FirebaseConnect firebaseConnect = new FirebaseConnect();
 
         // READ THE INTENT
@@ -154,11 +153,11 @@ public class PlayerActivity extends AppCompatActivity {
                     TextView lowestScoreTextView = findViewById(R.id.play_low_qr);
                     lowestScoreTextView.setText(String.valueOf(playerProfile.getLowestScore()));
 
-                    TextView play_qr_head = findViewById(R.id.play_qr_head);
-                    play_qr_head.setText("QR Codes (" + playerProfile.getQrCodeBasicProfiles().size() + ")");
+                    TextView playQrHead = findViewById(R.id.play_qr_head);
+                    playQrHead.setText("QR Codes (" + playerProfile.getQrCodeBasicProfiles().size() + ")");
 
-                    TextView play_comment_head = findViewById(R.id.play_comment_head);
-                    play_comment_head.setText("Comments (" + playerProfile.getComments().size() + ")");
+                    TextView playCommentHead = findViewById(R.id.play_comment_head);
+                    playCommentHead.setText("Comments (" + playerProfile.getComments().size() + ")");
 
                     TextView emailTextView = findViewById(R.id.play_email);
                     emailTextView.setText(playerProfile.getContactEmail());
@@ -228,8 +227,8 @@ public class PlayerActivity extends AppCompatActivity {
                     commentListView.getLayoutParams().height = (int) comment_height;
 
                     // Set up the view all button for QR CODES
-                    TextView play_qr_view_all = findViewById(R.id.play_qr_view_all);
-                    play_qr_view_all.setOnClickListener(new View.OnClickListener() {
+                    TextView playQrViewAll = findViewById(R.id.play_qr_view_all);
+                    playQrViewAll.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             // Call your fragment here
@@ -249,8 +248,8 @@ public class PlayerActivity extends AppCompatActivity {
 
 
                     // Set up the view all button for COMMENTS
-                    TextView play_comment_view_all = findViewById(R.id.play_comment_view_all);
-                    play_comment_view_all.setOnClickListener(new View.OnClickListener() {
+                    TextView playCommentViewAll = findViewById(R.id.play_comment_view_all);
+                    playCommentViewAll.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             // Call your fragment here
@@ -272,20 +271,5 @@ public class PlayerActivity extends AppCompatActivity {
                 }
             }
         });
-//          code to add new user
-//        firebaseConnect.scanQRCode("102", "testUser", "cobra", 22.5, 24.5, "yahoo.cad",
-//                500, new FirebaseConnect.OnQRCodeScannedListener(){
-//            @Override
-//            public void onQRScanComplete(boolean success) {
-//                if (success) {
-//                    // Do something with the player profile object
-//                    Log.d("FirebaseConnect", "QR scan complete");
-//                } else {
-//                    // Handle the case where the username is not found in the database
-//                    Log.d("FirebaseConnect", "QR scan failed");
-//                }
-//            }
-//        });
-
     }
 }
