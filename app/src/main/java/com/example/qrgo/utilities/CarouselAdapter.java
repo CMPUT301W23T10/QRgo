@@ -83,23 +83,23 @@ public class CarouselAdapter extends PagerAdapter {
 
         ImageView locationButton = view.findViewById(R.id.qr_code_location);
         ImageView deleteButton = view.findViewById(R.id.qr_code_delete);
-        String qr_code_id = carouselItem.getQRString();
+        String qrCodeId = carouselItem.getQRString();
         SharedPreferences sharedPreferences = view.getContext().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
         String user = sharedPreferences.getString("user", "");
 
-        if (qr_code_id.equals("NaN")) {
+        if (qrCodeId.equals("NaN")) {
             // Do nothing
 
         } else {
             locationButton.setOnClickListener(v -> {
                 Intent intent1 = new Intent(v.getContext(), GeoLocationActivity.class);
-                intent1.putExtra("qrCode", qr_code_id);
+                intent1.putExtra("qrCode", qrCodeId);
                 v.getContext().startActivity(intent1);
             });
             deleteButton.setOnClickListener(v -> {
                 FirebaseConnect firebaseConnect = new FirebaseConnect();
                 firebaseConnect.getQRCodeManager().deleteUserFromQRCode(
-                    qr_code_id,
+                    qrCodeId,
                     user,
                     new OnUserDeleteFromQRCodeListener() {
                         @Override
@@ -135,7 +135,7 @@ public class CarouselAdapter extends PagerAdapter {
         TextView qrCodeRank = view.findViewById(R.id.qr_code_rank);
         TextView qrCodeName = view.findViewById(R.id.qr_code_name);
         TextView qrCodePoints = view.findViewById(R.id.qr_code_points);
-        LinearLayout caraousel_image_container = view.findViewById(R.id.caraousel_image_container);
+        LinearLayout caraouselImageContainer = view.findViewById(R.id.caraousel_image_container);
 
         // Set rounded square image using Picasso and RoundedSquareTransform
         Picasso.get()
@@ -149,38 +149,38 @@ public class CarouselAdapter extends PagerAdapter {
         if (carouselItem.getHumanReadableQR().length() > 6) {
             String truncatedName = carouselItem.getHumanReadableQR().substring(0, 6) + "...";
             if (carouselItem.getHumanReadableQR().contains("(C)")) {
-                caraousel_image_container.setBackgroundResource(R.drawable.common_rounded_corner);
+                caraouselImageContainer.setBackgroundResource(R.drawable.common_rounded_corner);
             }
             else if (carouselItem.getHumanReadableQR().contains("(R)")) {
-                caraousel_image_container.setBackgroundResource(R.drawable.rare_rounded_corner);
+                caraouselImageContainer.setBackgroundResource(R.drawable.rare_rounded_corner);
 
             } else if (carouselItem.getHumanReadableQR().contains("(E)")) {
-                caraousel_image_container.setBackgroundResource(R.drawable.epic_rounded_corner);
+                caraouselImageContainer.setBackgroundResource(R.drawable.epic_rounded_corner);
 
             } else if (carouselItem.getHumanReadableQR().contains("(L)")) {
-                caraousel_image_container.setBackgroundResource(R.drawable.legendary_rounded_corner);
+                caraouselImageContainer.setBackgroundResource(R.drawable.legendary_rounded_corner);
             }
             else {
-                caraousel_image_container.setBackgroundResource(R.drawable.home_card_rounded_corners);
+                caraouselImageContainer.setBackgroundResource(R.drawable.home_card_rounded_corners);
             }
             qrCodeName.setText(truncatedName);
 
         } else {
             qrCodeName.setText(carouselItem.getHumanReadableQR());
             if (carouselItem.getHumanReadableQR().contains("(C)")) {
-                caraousel_image_container.setBackgroundResource(R.drawable.common_rounded_corner);
+                caraouselImageContainer.setBackgroundResource(R.drawable.common_rounded_corner);
             }
             else if (carouselItem.getHumanReadableQR().contains("(R)")) {
-                caraousel_image_container.setBackgroundResource(R.drawable.rare_rounded_corner);
+                caraouselImageContainer.setBackgroundResource(R.drawable.rare_rounded_corner);
 
             } else if (carouselItem.getHumanReadableQR().contains("(E)")) {
-                caraousel_image_container.setBackgroundResource(R.drawable.epic_rounded_corner);
+                caraouselImageContainer.setBackgroundResource(R.drawable.epic_rounded_corner);
 
             } else if (carouselItem.getHumanReadableQR().contains("(L)")) {
-                caraousel_image_container.setBackgroundResource(R.drawable.legendary_rounded_corner);
+                caraouselImageContainer.setBackgroundResource(R.drawable.legendary_rounded_corner);
             }
             else {
-                caraousel_image_container.setBackgroundResource(R.drawable.home_card_rounded_corners);
+                caraouselImageContainer.setBackgroundResource(R.drawable.home_card_rounded_corners);
             }
         }
         String pointsString = Integer.toString(carouselItem.getQrCodePoints());

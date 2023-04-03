@@ -65,18 +65,16 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
         TextView commentedOnTextView = convertView.findViewById(R.id.commented_on);
         ImageView commentsProfilePictureImageView = convertView.findViewById(R.id.comment_profile_picture);
 
-        String tempDate = comment.getDate().toString();
-
+        // Calculate the time since the comment was posted
         long currentTime = System.currentTimeMillis();
         long dateMs = comment.getDate().getTime();
         long diffMs = currentTime - dateMs;
         int diffHours = (int) (diffMs / 3600000);
-
+        // If the comment was posted more than 24 hours ago, display the number of days
         if (diffHours >= 24) {
             int diffDays = diffHours / 24;
-            int remainingHours = diffHours % 24;
             commentTimeTextView.setText(diffDays + " days ago");
-
+            // If the comment was posted less than 24 hours ago, display the number of hours
         } else {
             commentTimeTextView.setText(diffHours + " h ago");
         }
@@ -88,7 +86,7 @@ public class BasicCommentArrayAdapter extends ArrayAdapter<Comment> {
             @Override
             public void onQRCodeRetrieved(QRCode qrCode) {
                 String name = qrCode.getHumanReadableQR();
-                // Truncate the commented on string to 10
+                // Truncate the commented on string to 18 characters
                 if (name.length() > 18) {
                     name = name.substring(0, 18) + "...";
                 }
