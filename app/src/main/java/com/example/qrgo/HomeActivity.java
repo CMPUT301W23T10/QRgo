@@ -42,6 +42,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -146,6 +148,13 @@ public class HomeActivity extends AppCompatActivity {
 
                 // Define the carousel items
                 List<BasicQRCode> carouselItems = userProfile.getQrCodeBasicProfiles();
+// sort carouselItems in descending order based on qrCodePoints
+                Collections.sort(carouselItems, new Comparator<BasicQRCode>() {
+                    @Override
+                    public int compare(BasicQRCode q1, BasicQRCode q2) {
+                        return Integer.compare(q2.getQrCodePoints(), q1.getQrCodePoints());
+                    }
+                });
                 List<BasicQRCode> temp = carouselItems;
                 if (temp.size() > 3) {
                     temp = temp.subList(0, 3);
