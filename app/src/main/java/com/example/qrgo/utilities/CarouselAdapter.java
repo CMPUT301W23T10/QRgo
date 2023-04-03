@@ -140,7 +140,7 @@ public class CarouselAdapter extends PagerAdapter {
         TextView qrCodeRank = view.findViewById(R.id.qr_code_rank);
         TextView qrCodeName = view.findViewById(R.id.qr_code_name);
         TextView qrCodePoints = view.findViewById(R.id.qr_code_points);
-        LinearLayout caraousel_image_container = view.findViewById(R.id.caraousel_image_container);
+        LinearLayout caraouselImageContainer = view.findViewById(R.id.caraousel_image_container);
         if (carouselItem.getQRString() != "NaN") {
             QRGenerationController qrGenerationController = new QRGenerationController(carouselItem.getQRString(), 1);
 
