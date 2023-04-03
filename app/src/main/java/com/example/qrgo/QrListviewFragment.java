@@ -5,6 +5,8 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -26,6 +28,22 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class QrListviewFragment extends Fragment {
+    // If the user presses the back button, go back to the home activity
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Handle the back button press in your Fragment
+                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+    }
     private ArrayList<BasicQRCode> qrCodeList;
     private String comeFrom;
     private String userIntent;
