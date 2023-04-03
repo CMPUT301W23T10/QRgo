@@ -55,6 +55,7 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
      @param longitude The longitude of the user's location when scanning the QR code. Use 181 to skip.
      @param photoUrl The URL of the photo taken by the user when scanning the QR code.
      @param points The number of points awarded to the user for scanning the QR code.
+     @param featureList An array of 5 numbers used to generated visual representation.
      @param listener A callback listener to notify when the QR code scan is complete.
      */
     public void scanQRCode(String qrString, String username, String humanReadableQR, double latitude, double longitude, String photoUrl, int points, ArrayList<Integer> featureList, OnQRCodeScannedListener listener) {
@@ -142,7 +143,12 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
             });
         });
     }
-    // This functions uploads a file to Firebase Storage and returns the download URL
+    /**
+     Uploads a file to Firebase Storage and retrieves the download URL.
+     @param file The Uri of the file to be uploaded.
+     @param qrString The unique identifier associated with the QR code to be used as a subdirectory in Firebase Storage.
+     @param listener The OnQRCodeUploadListener that listens for upload success or failure events.
+     */
     public void uploadAndRetrieveDownloadUrl(Uri file, String qrString, OnQRCodeUploadListener listener) {
         StorageReference locationPhotosRef = st.getReference().child("LocationPhotos/" + qrString + "/" + file.getLastPathSegment());
         Task<Uri> urlTask = locationPhotosRef.putFile(file).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
