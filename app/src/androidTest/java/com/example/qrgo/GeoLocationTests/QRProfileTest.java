@@ -57,7 +57,7 @@ public class QRProfileTest extends BaseGeoLocationTest {
         solo.waitForActivity(HomeActivity.class, 2000);
         SharedPreferences sharedPreferences = rule.getActivity().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
         username = sharedPreferences.getString("user", "");
-        addTestQR("QRCODE", testLocation.getLatitude(), testLocation.getLongitude());
+        addTestQR("123456", testLocation.getLatitude(), testLocation.getLongitude());
         solo.sleep(2000);
 
 

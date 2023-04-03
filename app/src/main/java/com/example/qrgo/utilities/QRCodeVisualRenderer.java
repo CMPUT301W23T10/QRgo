@@ -9,6 +9,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -33,19 +34,22 @@ public class QRCodeVisualRenderer {
      @return The generated QR code bitmap.
      */
     public static Bitmap renderQRCodeVisual(Context context, ArrayList<Integer> featureList) {
-
-// Create a new bitmap to hold the resulting QR code.
-        Bitmap result = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-
-// Create a new canvas to draw the visual features onto the bitmap.
+        Bitmap result = Bitmap.createBitmap(275, 275, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
+        Paint p = new Paint();
+        ColorFilter filter = new LightingColorFilter(featureList.get(4), 0);
+        p.setColorFilter(filter);
+        for (int i = 0; i < 4; i++) {
 
-// Loop through the list of feature IDs, and draw each feature onto the canvas.
-        for (int i = 0; i < featureList.size(); i++) {
             String featureName = "feature_" + (i*5 + featureList.get(i) + 1);
             int featureID = context.getResources().getIdentifier(featureName, "drawable", "com.example.qrgo");
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), featureID);
-            canvas.drawBitmap(bitmap, 0, 0, null);
+            if (i < 2) {
+                canvas.drawBitmap(bitmap, 0, 0, p);
+            } else {
+                canvas.drawBitmap(bitmap, 0, 0, null);
+            }
+
         }
 
 // Return the resulting QR code bitmap.
