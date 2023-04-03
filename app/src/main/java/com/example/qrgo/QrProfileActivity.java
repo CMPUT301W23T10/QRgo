@@ -96,6 +96,18 @@ public class QrProfileActivity extends AppCompatActivity {
         }
     });
     private String comeFrom = "";
+    /**
+     * This method is called when the activity is created
+     * @param savedInstanceState
+     * {@link FirebaseConnect} to connect to the firebase database
+     * {@link QRCode} Represents the QRCode object
+     * {@link QRCodeVisualRenderer} to render the QRCode
+     * {@link LandmarkCarouselAdapter} to display the landmark images
+     * {@link UserCarouselAdapter} to display the user images
+     * {@link BasicCommentArrayAdapter} to display the comments
+     * {@link ImageViewController} to set the user profile image
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -202,7 +214,14 @@ public class QrProfileActivity extends AppCompatActivity {
 
                 // Define the landmark carousel items
                 ViewPager LandmarkViewPager = findViewById(R.id.qr_landmarks_pager);
-
+                // If photoIds is null then we need to remove the view pager
+                if (qrCode.getPhotoIds().size() == 0) {
+                    LandmarkViewPager.setVisibility(View.GONE);
+                    TextView qr_landmarks_head = findViewById(R.id.qr_landmarks_head);
+                    qr_landmarks_head.setVisibility(View.GONE);
+                    TextView qr_landmarks_view_all = findViewById(R.id.qr_landmarks_view_all);
+                    qr_landmarks_view_all.setVisibility(View.GONE);
+                }
                 LandmarkCarouselAdapter landmarkCarouselAdapter = new LandmarkCarouselAdapter(QrProfileActivity.this, (ArrayList<String>) qrCode.getPhotoIds());
                 TextView qr_landmarks_head = findViewById(R.id.qr_landmarks_head);
                 qr_landmarks_head.setText("Landmarks (" + qrCode.getPhotoIds().size() + ")");
@@ -220,10 +239,6 @@ public class QrProfileActivity extends AppCompatActivity {
 
                 TextView qr_score = findViewById(R.id.qr_score);
                 qr_score.setText(Integer.toString(qrCode.getQrCodePoints()) + " pts");
-
-
-//                TextView qr_comment_head = findViewById(R.id.qr_comment_head);
-//                qr_comment_head.setText("Comments (" + qrCode.getComments().size() + ")");
 
                 // Set up the comment list view
                 List<Comment> commentList = (List<Comment>) qrCode.getComments();

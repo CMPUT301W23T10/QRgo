@@ -16,6 +16,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+/**
+ * This fragment is used to display the list of users that have scanned a QR code
+ * {@link BasicPlayerProfile} class that contains the user's information
+ * {@link BasicUserArrayAdapter} class that is used to display the list of users
+ *
+ */
 public class QRListFragment extends Fragment {
     private ArrayList<BasicPlayerProfile> playerList;
 

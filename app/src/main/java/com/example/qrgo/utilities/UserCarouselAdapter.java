@@ -22,6 +22,8 @@ import java.util.List;
 
 /**
  * This class provides an adapter to display a carousel of user profiles.
+ * {@link PlayerActivity} to go to the player profile of the user.
+ * {@link BasicPlayerProfile} to display the user's profile information.
  */
 public class UserCarouselAdapter extends PagerAdapter {
 

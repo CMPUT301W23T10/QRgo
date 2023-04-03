@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
+/**
+ A fragment that displays global scores.
+ */
 public class GlobalScoresFragment extends Fragment {
     static String rankHeading = "";
     static String totalScoreHeading = "";
@@ -17,27 +19,63 @@ public class GlobalScoresFragment extends Fragment {
     static String rank = "";
     static String totalScore = "";
     static String currentScore = "";
+    /**
+
+     Sets the rank heading.
+     @param rankHeading The rank heading to set.
+     */
     public void setRankHeading(String rankHeading) {
         this.rankHeading = rankHeading;
     }
+    /**
+
+     Sets the total score heading.
+     @param totalScoreHeading The total score heading to set.
+     */
     public void setTotalScoreHeading(String totalScoreHeading) {
         this.totalScoreHeading = totalScoreHeading;
     }
+    /**
+
+     Sets the current score heading.
+     @param currentScoreHeading The current score heading to set.
+     */
     public void setCurrentScoreHeading(String currentScoreHeading) {
         this.currentScoreHeading = currentScoreHeading;
     }
+    /**
+
+     Sets the rank.
+     @param rank The rank to set.
+     */
     public void setRank(String rank) {
         this.rank = rank;
     }
+    /**
+
+     Sets the total score.
+     @param totalScore The total score to set.
+     */
     public void setTotalScore(String totalScore) {
         this.totalScore = totalScore;
     }
+    /**
+
+     Sets the current score.
+     @param currentScore The current score to set.
+     */
     public void setCurrentScore(String currentScore) {
         this.currentScore = currentScore;
     }
+
     public GlobalScoresFragment() {
         // Required empty public constructor
     }
+    /**
+
+     Creates a new instance of the fragment.
+     @return The new instance of the fragment.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

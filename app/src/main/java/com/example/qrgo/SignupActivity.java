@@ -16,28 +16,18 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.qrgo.R;
 import com.example.qrgo.listeners.OnUserAddListener;
 import com.example.qrgo.listeners.OnUserProfileAddListener;
 import com.example.qrgo.utilities.FirebaseConnect;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * This class is where the user will sign up for some QRGO action!
+ * {@link FirebaseConnect} is used to add the user to the database.
  */
 public class SignupActivity extends AppCompatActivity {
 

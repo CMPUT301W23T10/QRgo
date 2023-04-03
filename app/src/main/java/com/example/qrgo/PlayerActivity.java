@@ -37,6 +37,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This activity is used to display the player profile
+ * It is used to display the player's total score, the player's qr codes, and the player's comments
+ * It is also used to display the player's global rank for total score
+ */
 public class PlayerActivity extends AppCompatActivity {
 
     // When the back button is pressed, go back to the main activity
@@ -50,6 +55,16 @@ public class PlayerActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    /**
+     * This method is called when the activity is created
+     * {@link GlobalScoresFragment} to display the global scores
+     * {@link FirebaseConnect} to get the player's profile
+     * {@link ImageViewController} to display the player's profile picture
+     * {@link BasicCommentArrayAdapter} to display the player's comments
+     * {@link BasicQrArrayAdapter} to display the player's qr codes
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,13 +83,12 @@ public class PlayerActivity extends AppCompatActivity {
             window.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.transparent)));
         }
 
-
         ListView listView = findViewById(R.id.play_qr_listview);
 
 
         ListView commentListView = findViewById(R.id.play_comment_listview);
 
-// Create an ArrayAdapter for the list items
+        // Create an ArrayAdapter for the list items
         FirebaseConnect firebaseConnect = new FirebaseConnect();
 
         // READ THE INTENT
@@ -154,11 +168,11 @@ public class PlayerActivity extends AppCompatActivity {
                     TextView lowestScoreTextView = findViewById(R.id.play_low_qr);
                     lowestScoreTextView.setText(String.valueOf(playerProfile.getLowestScore()));
 
-                    TextView play_qr_head = findViewById(R.id.play_qr_head);
-                    play_qr_head.setText("QR Codes (" + playerProfile.getQrCodeBasicProfiles().size() + ")");
+                    TextView playQrHead = findViewById(R.id.play_qr_head);
+                    playQrHead.setText("QR Codes (" + playerProfile.getQrCodeBasicProfiles().size() + ")");
 
-                    TextView play_comment_head = findViewById(R.id.play_comment_head);
-                    play_comment_head.setText("Comments (" + playerProfile.getComments().size() + ")");
+                    TextView playCommentHead = findViewById(R.id.play_comment_head);
+                    playCommentHead.setText("Comments (" + playerProfile.getComments().size() + ")");
 
                     TextView emailTextView = findViewById(R.id.play_email);
                     emailTextView.setText(playerProfile.getContactEmail());
@@ -228,8 +242,8 @@ public class PlayerActivity extends AppCompatActivity {
                     commentListView.getLayoutParams().height = (int) comment_height;
 
                     // Set up the view all button for QR CODES
-                    TextView play_qr_view_all = findViewById(R.id.play_qr_view_all);
-                    play_qr_view_all.setOnClickListener(new View.OnClickListener() {
+                    TextView playQrViewAll = findViewById(R.id.play_qr_view_all);
+                    playQrViewAll.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             // Call your fragment here
@@ -249,8 +263,8 @@ public class PlayerActivity extends AppCompatActivity {
 
 
                     // Set up the view all button for COMMENTS
-                    TextView play_comment_view_all = findViewById(R.id.play_comment_view_all);
-                    play_comment_view_all.setOnClickListener(new View.OnClickListener() {
+                    TextView playCommentViewAll = findViewById(R.id.play_comment_view_all);
+                    playCommentViewAll.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             // Call your fragment here
@@ -272,20 +286,5 @@ public class PlayerActivity extends AppCompatActivity {
                 }
             }
         });
-//          code to add new user
-//        firebaseConnect.scanQRCode("102", "testUser", "cobra", 22.5, 24.5, "yahoo.cad",
-//                500, new FirebaseConnect.OnQRCodeScannedListener(){
-//            @Override
-//            public void onQRScanComplete(boolean success) {
-//                if (success) {
-//                    // Do something with the player profile object
-//                    Log.d("FirebaseConnect", "QR scan complete");
-//                } else {
-//                    // Handle the case where the username is not found in the database
-//                    Log.d("FirebaseConnect", "QR scan failed");
-//                }
-//            }
-//        });
-
     }
 }
