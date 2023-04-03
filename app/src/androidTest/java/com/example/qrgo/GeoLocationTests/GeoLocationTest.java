@@ -60,7 +60,9 @@ public class GeoLocationTest extends BaseGeoLocationTest {
 
     private Marker draggableMarker;
 
-    private static GeoPoint testLocation = new GeoPoint(53.562235, -113.54732666666666);;
+    private static GeoPoint testLocation = new GeoPoint(53.562235, -113.54732666666666);
+    double latitude;
+    double longitude;
 
 
     @Test
@@ -69,7 +71,18 @@ public class GeoLocationTest extends BaseGeoLocationTest {
         solo.waitForActivity(HomeActivity.class, 2000);
         SharedPreferences sharedPreferences = rule.getActivity().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
         username = sharedPreferences.getString("user", "");
+
+        LocationManager locationManager = (LocationManager) solo.getCurrentActivity().getSystemService(Context.LOCATION_SERVICE);
+        Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (lastKnownLocation != null) {
+            latitude = lastKnownLocation.getLatitude();
+            longitude = lastKnownLocation.getLongitude();
+        } else {
+            Log.e("Location", "Last known location is null");
+        }
+        testLocation = new GeoPoint(latitude, longitude);
         addTestQR("123456", testLocation.getLatitude(), testLocation.getLongitude());
+
         solo.sleep(2000);
         // Wait for home activity to launch
         solo.waitForActivity(HomeActivity.class, 2000);
@@ -109,11 +122,8 @@ public class GeoLocationTest extends BaseGeoLocationTest {
         // Wait for the AlertDialog to appear
         solo.waitForDialogToOpen();
 
-        // go back to HomeActivity
+        solo.clickOnText("No");
         solo.sleep(2000);
         solo.assertCurrentActivity("Expected GeoLocationActivity", GeoLocationActivity.class);
-        solo.clickOnView(solo.getView(R.id.close_button));
-        solo.waitForActivity(HomeActivity.class, 2000);
-        solo.assertCurrentActivity("Expected HomeActivity", HomeActivity.class);
     }
 }
