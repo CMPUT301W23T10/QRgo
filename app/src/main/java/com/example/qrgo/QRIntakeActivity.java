@@ -195,7 +195,7 @@ public class QRIntakeActivity extends AppCompatActivity {
     public void submitQR() {
         SharedPreferences sharedPreferences = getSharedPreferences(sharedPrefdb, Context.MODE_PRIVATE);
         user = sharedPreferences.getString("user", "");
-        db.getQRCodeManager().scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], generator.getPhotoUrl(), generator.getScore(), new OnQRCodeScannedListener() {
+        db.getQRCodeManager().scanQRCode(generator.getHash(), user, generator.getHumanReadableName(), playerLocation[0], playerLocation[1], generator.getPhotoUrl(), generator.getScore(), generator.getFeatureList(), new OnQRCodeScannedListener() {
             // After scan is done then go to QrProfileActivity with the scanned QR code
             @Override
             public void onQRScanComplete(boolean success) {
@@ -203,7 +203,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                 intent.putExtra("qr_code", generator.getHash());
                 startActivity(intent);
             }
-        }, generator.getFeatureList());
+        });
     }
 
     /**

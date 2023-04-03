@@ -17,6 +17,7 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.Overlay;
 
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -52,10 +53,16 @@ public abstract class BaseGeoLocationTest extends BaseTestManager {
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicBoolean result = new AtomicBoolean(false);
 
+        ArrayList<Integer> featurelist= new ArrayList<Integer>();
+        featurelist.add(1);
+        featurelist.add(1);
+        featurelist.add(1);
+        featurelist.add(1);
+        featurelist.add(1);
         solo.getCurrentActivity().runOnUiThread(new Runnable() {
             public void run() {
                 FirebaseConnect connect = new FirebaseConnect();
-                connect.getQRCodeManager().scanQRCode(qrString, username, humanReadableQR, latitude, longitude, photoUrl, points, new OnQRCodeScannedListener() {
+                connect.getQRCodeManager().scanQRCode(qrString, username, humanReadableQR, latitude, longitude, photoUrl, points, featurelist, new OnQRCodeScannedListener() {
                     @Override
                     public void onQRScanComplete(boolean success) {
                         Log.d("onQRScanComplete", "onQRScanComplete: Complete");

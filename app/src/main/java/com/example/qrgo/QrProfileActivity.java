@@ -78,7 +78,7 @@ public class QrProfileActivity extends AppCompatActivity {
                         @Override
                         public void onQRCodeUploadSuccess(String downloadUrl) {
                             // Call the scan QR code method which would just update the landmark picture, so we could pass Bogus values as the other parameters.
-                            db.getQRCodeManager().scanQRCode(qr_code_id, user, "ignoreThis", 181, 181, downloadUrl, 0, new OnQRCodeScannedListener() {
+                            db.getQRCodeManager().scanQRCode(qr_code_id, user, "ignoreThis", 181, 181, downloadUrl, 0, null, new OnQRCodeScannedListener() {
                                 // After scan is done then restart the activity
                                 @Override
                                 public void onQRScanComplete(boolean success) {
@@ -86,7 +86,7 @@ public class QrProfileActivity extends AppCompatActivity {
                                     intent.putExtra("qr_code", qr_code_id);
                                     startActivity(intent);
                                 }
-                            }, null);
+                            });
                         }
                     });
                 }

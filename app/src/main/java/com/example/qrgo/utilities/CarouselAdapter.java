@@ -29,7 +29,7 @@ import java.util.Set;
 
 /**
  * An adapter class for displaying a list of QR codes in a carousel format using a ViewPager.
- *
+ * <p>
  * This adapter extends PagerAdapter to handle the swipe functionality.
  */
 public class CarouselAdapter extends PagerAdapter {
@@ -104,24 +104,23 @@ public class CarouselAdapter extends PagerAdapter {
             deleteButton.setOnClickListener(v -> {
                 FirebaseConnect firebaseConnect = new FirebaseConnect();
                 firebaseConnect.getQRCodeManager().deleteUserFromQRCode(
-                    qrCodeId,
-                    user,
-                    new OnUserDeleteFromQRCodeListener() {
-                        @Override
-                        public void onUserDeleteFromQRCode(boolean success) {
-                            if (success) {
-                                // Refresh the activity
-                                Intent intent = new Intent(v.getContext(), HomeActivity.class);
-                                v.getContext().startActivity(intent);
-                            } else {
-                                Toast.makeText(v.getContext(), "Error deleting user from QR code", Toast.LENGTH_SHORT).show();
+                        qrCodeId,
+                        user,
+                        new OnUserDeleteFromQRCodeListener() {
+                            @Override
+                            public void onUserDeleteFromQRCode(boolean success) {
+                                if (success) {
+                                    // Refresh the activity
+                                    Intent intent = new Intent(v.getContext(), HomeActivity.class);
+                                    v.getContext().startActivity(intent);
+                                } else {
+                                    Toast.makeText(v.getContext(), "Error deleting user from QR code", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
-                    }
-            );
+                );
             });
         }
-
 
 
         view.setOnClickListener(new View.OnClickListener() {
@@ -143,9 +142,8 @@ public class CarouselAdapter extends PagerAdapter {
         LinearLayout caraouselImageContainer = view.findViewById(R.id.caraousel_image_container);
         if (carouselItem.getQRString() != "NaN") {
             QRGenerationController qrGenerationController = new QRGenerationController(carouselItem.getQRString(), 1);
-
-          Bitmap bitmap = QRCodeVisualRenderer.renderQRCodeVisual(context, qrGenerationController.getFeatureList());
-          qrCodeImage.setImageBitmap(bitmap);
+            Bitmap bitmap = QRCodeVisualRenderer.renderQRCodeVisual(context, qrGenerationController.getFeatureList());
+            qrCodeImage.setImageBitmap(bitmap);
         } else {
             Picasso.get()
                     // CHANGE THIS TO THE ACTUAL IMAGE URL
@@ -160,8 +158,7 @@ public class CarouselAdapter extends PagerAdapter {
             String truncatedName = carouselItem.getHumanReadableQR().substring(0, 6) + "...";
             if (carouselItem.getHumanReadableQR().contains("(C)")) {
                 caraouselImageContainer.setBackgroundResource(R.drawable.common_rounded_corner);
-            }
-            else if (carouselItem.getHumanReadableQR().contains("(R)")) {
+            } else if (carouselItem.getHumanReadableQR().contains("(R)")) {
                 caraouselImageContainer.setBackgroundResource(R.drawable.rare_rounded_corner);
 
             } else if (carouselItem.getHumanReadableQR().contains("(E)")) {
@@ -169,8 +166,7 @@ public class CarouselAdapter extends PagerAdapter {
 
             } else if (carouselItem.getHumanReadableQR().contains("(L)")) {
                 caraouselImageContainer.setBackgroundResource(R.drawable.legendary_rounded_corner);
-            }
-            else {
+            } else {
                 caraouselImageContainer.setBackgroundResource(R.drawable.home_card_rounded_corners);
             }
             qrCodeName.setText(truncatedName);
@@ -179,8 +175,7 @@ public class CarouselAdapter extends PagerAdapter {
             qrCodeName.setText(carouselItem.getHumanReadableQR());
             if (carouselItem.getHumanReadableQR().contains("(C)")) {
                 caraouselImageContainer.setBackgroundResource(R.drawable.common_rounded_corner);
-            }
-            else if (carouselItem.getHumanReadableQR().contains("(R)")) {
+            } else if (carouselItem.getHumanReadableQR().contains("(R)")) {
                 caraouselImageContainer.setBackgroundResource(R.drawable.rare_rounded_corner);
 
             } else if (carouselItem.getHumanReadableQR().contains("(E)")) {
@@ -188,8 +183,7 @@ public class CarouselAdapter extends PagerAdapter {
 
             } else if (carouselItem.getHumanReadableQR().contains("(L)")) {
                 caraouselImageContainer.setBackgroundResource(R.drawable.legendary_rounded_corner);
-            }
-            else {
+            } else {
                 caraouselImageContainer.setBackgroundResource(R.drawable.home_card_rounded_corners);
             }
         }

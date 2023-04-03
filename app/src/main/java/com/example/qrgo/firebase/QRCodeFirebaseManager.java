@@ -57,7 +57,7 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
      @param points The number of points awarded to the user for scanning the QR code.
      @param listener A callback listener to notify when the QR code scan is complete.
      */
-    public void scanQRCode(String qrString, String username, String humanReadableQR, double latitude, double longitude, String photoUrl, int points, OnQRCodeScannedListener listener, ArrayList<Integer> featureList) {
+    public void scanQRCode(String qrString, String username, String humanReadableQR, double latitude, double longitude, String photoUrl, int points, ArrayList<Integer> featureList, OnQRCodeScannedListener listener) {
         // Check if a QR Code document exists with the given qrString attribute
         Query query = db.collection("QRCodes").whereEqualTo("qrString", qrString);
         query.get().addOnSuccessListener(querySnapshot -> {

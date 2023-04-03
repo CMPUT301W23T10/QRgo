@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -100,11 +101,16 @@ public class FirebaseQRScanTests {
         final CountDownLatch latch = new CountDownLatch(1);
         final CountDownLatch nlatch = new CountDownLatch(1);
         final AtomicBoolean result = new AtomicBoolean(false);
-
+        ArrayList<Integer> featurelist= new ArrayList<Integer>();
+        featurelist.add(1);
+        featurelist.add(1);
+        featurelist.add(1);
+        featurelist.add(1);
+        featurelist.add(1);
         solo.getCurrentActivity().runOnUiThread(new Runnable() {
             public void run() {
                 FirebaseConnect connect = new FirebaseConnect();
-                connect.getQRCodeManager().scanQRCode(qrString, username, humanReadableQR, latitude, longitude, photoUrl, points, new OnQRCodeScannedListener() {
+                connect.getQRCodeManager().scanQRCode(qrString, username, humanReadableQR, latitude, longitude, photoUrl, points, featurelist, new OnQRCodeScannedListener() {
                     @Override
                     public void onQRScanComplete(boolean success) {
                         Log.d("onQRScanComplete", "onQRScanComplete: Complete");
