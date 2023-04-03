@@ -80,8 +80,8 @@ public class SearchFragment extends Fragment {
         cross.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // GO back
-                getActivity().onBackPressed();
+                // Close the fragment
+                getActivity().getSupportFragmentManager().beginTransaction().remove(SearchFragment.this).commit();
             }
         });
         searchUserEditText.addTextChangedListener(new TextWatcher() {
