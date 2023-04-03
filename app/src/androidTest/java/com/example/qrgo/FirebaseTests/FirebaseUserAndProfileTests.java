@@ -13,7 +13,6 @@ import com.example.qrgo.utilities.FirebaseConnect;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.robotium.solo.Solo;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class A_FirebaseUserAndProfileTests {
+public class FirebaseUserAndProfileTests {
     private static Solo solo;
     private FirebaseConnect firebaseConnect;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -199,7 +198,7 @@ public class A_FirebaseUserAndProfileTests {
     @Test
     public void testGetBasicPlayerProfile() throws InterruptedException {
         // Arrange
-        String username = "testuser1";
+        String username = "AUTOTESTUSERNAME";
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicReference<BasicPlayerProfile> result = new AtomicReference<>();
 

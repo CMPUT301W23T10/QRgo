@@ -5,10 +5,10 @@ import static org.junit.Assert.assertNotNull;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.qrgo.BaseUserProfileTest;
 import com.example.qrgo.HomeActivity;
 import com.example.qrgo.PlayerActivity;
 import com.example.qrgo.R;
@@ -16,7 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Test;
 
-public class T_LeaderboardTests extends BaseUserProfileTest {
+public class LeaderboardTest extends BaseUserProfileTest {
     @Test
     public void testLeaderboardQRHiScore() {
         signUpTestUser();
