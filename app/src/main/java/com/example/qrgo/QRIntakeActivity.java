@@ -203,7 +203,7 @@ public class QRIntakeActivity extends AppCompatActivity {
                 intent.putExtra("qr_code", generator.getHash());
                 startActivity(intent);
             }
-        });
+        }, generator.getFeatureList());
     }
 
     /**

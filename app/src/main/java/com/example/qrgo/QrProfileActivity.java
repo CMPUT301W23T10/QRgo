@@ -86,7 +86,7 @@ public class QrProfileActivity extends AppCompatActivity {
                                     intent.putExtra("qr_code", qr_code_id);
                                     startActivity(intent);
                                 }
-                            });
+                            }, null);
                         }
                     });
                 }
@@ -157,14 +157,8 @@ public class QrProfileActivity extends AppCompatActivity {
                     qr_image_view_container.setBackgroundResource(R.drawable.legendary_rounded_corner);
                 }
                 ImageView imageView = findViewById(R.id.qr_image_view);
-                ArrayList<Integer> testfeaturelist = new ArrayList<Integer>();
-                testfeaturelist.add(1);
-                testfeaturelist.add(1);
-                testfeaturelist.add(3);
-                testfeaturelist.add(2);
-
-                Bitmap bitmap = QRCodeVisualRenderer.renderQRCodeVisual(QrProfileActivity.this, testfeaturelist);
-                imageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 1000, 1000, true));
+                Bitmap bitmap = QRCodeVisualRenderer.renderQRCodeVisual(QrProfileActivity.this, qrCode.getFeatureList());
+                imageView.setImageBitmap(bitmap);
 //                Picasso.get()
 //                        .load(R.drawable.demo_qr_image)
 //                        .transform(new RoundedSquareTransform(100))

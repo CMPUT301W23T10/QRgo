@@ -1,7 +1,10 @@
 package com.example.qrgo.models;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,6 +26,8 @@ public class QRCode {
     protected List<Comment> comments;
     protected List<BasicPlayerProfile> scannedPlayer;
 
+    protected ArrayList<Integer> featureList;
+
     /**
      * Creates a new instance of QRCode with the given parameters
      *
@@ -34,7 +39,7 @@ public class QRCode {
      * @param scannedPlayerIds the list of player IDs who have scanned this QR code
      * @param commentIds       the list of comment IDs associated with this QR code
      */
-    public QRCode(String qrString, String humanReadableQR, int qrCodePoints, List<GeoPoint> locations, List<String> photoIds, List<String> scannedPlayerIds, List<String> commentIds) {
+    public QRCode(String qrString, String humanReadableQR, int qrCodePoints, List<GeoPoint> locations, List<String> photoIds, List<String> scannedPlayerIds, List<String> commentIds, ArrayList<Integer> featureList) {
         this.qrString = qrString;
         this.humanReadableQR = humanReadableQR;
         this.qrCodePoints = qrCodePoints;
@@ -42,6 +47,7 @@ public class QRCode {
         this.photoIds = photoIds;
         this.scannedPlayerIds = scannedPlayerIds;
         this.commentIds = commentIds;
+        this.featureList = featureList;
     }
 
     /**
@@ -241,6 +247,11 @@ public class QRCode {
      */
     public void setScannedPlayer(List<BasicPlayerProfile> scannedPlayer) {
         this.scannedPlayer = scannedPlayer;
+    }
+
+    public ArrayList<Integer> getFeatureList() {
+        Log.d("QRCode", "getFeatureList: " + this.featureList.toString());
+    	return this.featureList;
     }
 }
 

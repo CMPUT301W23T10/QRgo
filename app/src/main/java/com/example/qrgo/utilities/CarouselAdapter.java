@@ -3,6 +3,7 @@ package com.example.qrgo.utilities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.example.qrgo.models.BasicQRCode;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -35,6 +37,8 @@ public class CarouselAdapter extends PagerAdapter {
     private List<BasicQRCode> carouselItems;
     private LayoutInflater layoutInflater;
 
+    private Context context;
+
     /**
      * Constructs a new CarouselAdapter object.
      *
@@ -42,6 +46,7 @@ public class CarouselAdapter extends PagerAdapter {
      * @param carouselItems The list of BasicQRCode objects to be displayed in the carousel.
      */
     public CarouselAdapter(Context context, List<BasicQRCode> carouselItems) {
+        this.context = context;
         this.carouselItems = carouselItems;
         this.layoutInflater = LayoutInflater.from(context);
     }
@@ -136,13 +141,18 @@ public class CarouselAdapter extends PagerAdapter {
         TextView qrCodeName = view.findViewById(R.id.qr_code_name);
         TextView qrCodePoints = view.findViewById(R.id.qr_code_points);
         LinearLayout caraousel_image_container = view.findViewById(R.id.caraousel_image_container);
+        if (carouselItem.getQRString() != "NaN") {
+            QRGenerationController qrGenerationController = new QRGenerationController(carouselItem.getQRString(), 1);
 
-        // Set rounded square image using Picasso and RoundedSquareTransform
-        Picasso.get()
-                // CHANGE THIS TO THE ACTUAL IMAGE URL
-                .load(R.drawable.demo_qr_image)
-                .transform(new RoundedSquareTransform(500))
-                .into(qrCodeImage);
+          Bitmap bitmap = QRCodeVisualRenderer.renderQRCodeVisual(context, qrGenerationController.getFeatureList());
+          qrCodeImage.setImageBitmap(bitmap);
+        } else {
+            Picasso.get()
+                    // CHANGE THIS TO THE ACTUAL IMAGE URL
+                    .load(R.drawable.demo_qr_image)
+                    .transform(new RoundedSquareTransform(500))
+                    .into(qrCodeImage);
+        }
         String positionString = Integer.toString(position + 1);
         qrCodeRank.setText("#" + positionString);
         // Truncate the qrname if it is too long

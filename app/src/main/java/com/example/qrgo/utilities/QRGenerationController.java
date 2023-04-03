@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class QRGenerationController {
     private HashMap<Character, int[]> hexKey = new HashMap<Character, int[]>();
-    private HashMap<Character, String> color = new HashMap<Character, String>();
+    private HashMap<Character, String[]> color = new HashMap<Character, String[]>();
     private String hash;
     private ArrayList<int[]> parsedHash = new ArrayList<int[]>();
     private String rarity;
@@ -36,44 +36,52 @@ public class QRGenerationController {
         generateHumanReadableName();
 
     }
+    public QRGenerationController(String hash, int constant) {
+        initializeHashMaps();
+        this.hash = hash;
+        parseHash();
+        calculateScore();
+        generateFeatureList();
+        generateHumanReadableName();
+    }
 
     /**
      Initializes the hexKey and color HashMaps with their corresponding values.
      */
     private void initializeHashMaps() {
-        hexKey.put('0', new int[] {3, 0});
-        hexKey.put('1', new int[] {2, 1});
+        hexKey.put('0', new int[] {1, 0});
+        hexKey.put('1', new int[] {1, 0});
         hexKey.put('2', new int[] {1, 1});
         hexKey.put('3', new int[] {1, 2});
-        hexKey.put('4', new int[] {1, 1});
-        hexKey.put('5', new int[] {1, 2});
-        hexKey.put('6', new int[] {1, 2});
-        hexKey.put('7', new int[] {2, 3});
-        hexKey.put('8', new int[] {2, 1});
-        hexKey.put('9', new int[] {1, 2});
-        hexKey.put('A', new int[] {4, 2});
-        hexKey.put('B', new int[] {1, 3});
-        hexKey.put('C', new int[] {1, 2});
-        hexKey.put('D', new int[] {1, 3});
-        hexKey.put('E', new int[] {2, 3});
-        hexKey.put('F', new int[] {3, 4});
+        hexKey.put('4', new int[] {2, 3});
+        hexKey.put('5', new int[] {2, 4});
+        hexKey.put('6', new int[] {2, 0});
+        hexKey.put('7', new int[] {2, 1});
+        hexKey.put('8', new int[] {3, 2});
+        hexKey.put('9', new int[] {3, 3});
+        hexKey.put('A', new int[] {3, 4});
+        hexKey.put('B', new int[] {3, 0});
+        hexKey.put('C', new int[] {4, 1});
+        hexKey.put('D', new int[] {4, 2});
+        hexKey.put('E', new int[] {4, 3});
+        hexKey.put('F', new int[] {4, 4});
 
-        color.put('0', "Black ");
-        color.put('1', "White ");
-        color.put('2', "Gray ");
-        color.put('3', "Silver ");
-        color.put('4', "Maroon ");
-        color.put('5', "Red ");
-        color.put('6', "Purple ");
-        color.put('7', "Fushsia ");
-        color.put('8', "Green ");
-        color.put('9', "Lime ");
-        color.put('A', "Olive ");
-        color.put('B', "Yellow ");
-        color.put('C', "Navy ");
-        color.put('D', "Blue ");
-        color.put('E', "Teal ");
-        color.put('F', "Aqua ");
+        color.put('0', new String[] {"Black ", "000000"});
+        color.put('1', new String[] {"White ", "FFFFFF"});
+        color.put('2', new String[] {"Gray ", "808080"});
+        color.put('3', new String[] {"Silver ", "C0C0C0"});
+        color.put('4', new String[] {"Maroon ", "800000"});
+        color.put('5', new String[] {"Red ", "FF0000"});
+        color.put('6', new String[] {"Purple ", "800080"});
+        color.put('7', new String[] {"Fuchsia ", "FF00FF"});
+        color.put('8', new String[] {"Green ", "008000"});
+        color.put('9', new String[] {"Lime ", "00FF00"});
+        color.put('A', new String[] {"Olive ", "808000"});
+        color.put('B', new String[] {"Yellow ", "FFFF00"});
+        color.put('C', new String[] {"Navy ", "000080"});
+        color.put('D', new String[] {"Blue ", "0000FF"});
+        color.put('E', new String[] {"Teal ", "008080"});
+        color.put('F', new String[] {"Aqua ", "00FFFF"});
     }
 
     /**
@@ -117,6 +125,7 @@ public class QRGenerationController {
 
         for (int[] i : parsedHash) {
             if (i != null) {
+
                 score += i[1];
                 rarityArray.add(i[0]);
             }
@@ -162,6 +171,7 @@ public class QRGenerationController {
                 this.featureList.add(this.parsedHash.get(i)[1]);
             }
         }
+       this.featureList.add(Integer.parseInt(color.get(this.hash.charAt(0))[1], 16));
     }
 
     /**
@@ -172,7 +182,7 @@ public class QRGenerationController {
         String[] monsterNames = {"Skralix", "Gloombrute", "Phantasmaur", "Murkfiend", "Vilegloom", "Doomfang", "Nightshade", "Spectrashock", "Dreadmaw", "Blightspawn", "Necroclaw", "Shadowbeak", "Wraithhound", "Bloodbane", "Voidspawn", "Graveclaw", "Darkhowl", "Venomwing", "Thundercrush", "Frostbite", "Soulripper", "Infernojaw", "Bonecruncher", "Nightstalker", "Deathshade"};
         String[] monsterAdjectives = {"Sinister ", "Menacing ", "Ghostly ", "Mysterious ", "Repulsive ", "Lethal ", "Shadowy ", "Eerie ", "Terrifying ", "Foul ", "Ghastly ", "Dark ", "Haunting ", "Deadly ", "Otherworldly ", "Gruesome ", "Ominous ", "Poisonous ", "Powerful ", "Cold ", "Malevolent ", "Fiery ", "Brutal ", "Stealthy ", "Fatal "};
         humanReadableName = this.rarity;
-        humanReadableName += color.get(this.hash.charAt(0));
+        humanReadableName += color.get(this.hash.charAt(0))[0];
         humanReadableName += monsterAdjectives[this.featureList.get(0) *5 + this.featureList.get(1)];
         humanReadableName += monsterNames[this.featureList.get(2) *5 + this.featureList.get(3)];
         this.humanReadableName = humanReadableName;
@@ -215,4 +225,6 @@ public class QRGenerationController {
         }
 
     public String getPhotoUrl() {return this.photoUrl;}
+
+    public ArrayList<Integer> getFeatureList() {return this.featureList;}
 }

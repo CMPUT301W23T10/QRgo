@@ -33,6 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.j256.ormlite.stmt.query.In;
 
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
      @param points The number of points awarded to the user for scanning the QR code.
      @param listener A callback listener to notify when the QR code scan is complete.
      */
-    public void scanQRCode(String qrString, String username, String humanReadableQR, double latitude, double longitude, String photoUrl, int points, OnQRCodeScannedListener listener) {
+    public void scanQRCode(String qrString, String username, String humanReadableQR, double latitude, double longitude, String photoUrl, int points, OnQRCodeScannedListener listener, ArrayList<Integer> featureList) {
         // Check if a QR Code document exists with the given qrString attribute
         Query query = db.collection("QRCodes").whereEqualTo("qrString", qrString);
         query.get().addOnSuccessListener(querySnapshot -> {
@@ -99,6 +100,7 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                 data.put("qrString", qrString);
                 data.put("scannedUsers", Arrays.asList(username));
                 data.put("qrPoints", points);
+                data.put("featureList", featureList);
                 if (photoUrl != "None") {
                     data.put("locationObjectPhoto", Arrays.asList(photoUrl));
                 }
@@ -242,13 +244,18 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                     listener.onQRCodeNotFound();
                 } else {
                     DocumentSnapshot documentSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+                    ArrayList<Integer> featureList = new ArrayList<Integer>();
+                    for (Long feature : (ArrayList<Long>) documentSnapshot.get("featureList")) {
+                        featureList.add(feature.intValue());
+                    }
                     QRCode qrCode = new QRCode(documentSnapshot.getString("qrString"),
                             documentSnapshot.getString("humanReadableQR"),
                             (int) documentSnapshot.getLong("qrPoints").intValue(),
                             (List<GeoPoint>) documentSnapshot.get("locations"),
                             (List<String>) documentSnapshot.get("locationObjectPhoto"),
                             null,
-                            null
+                            null,
+                            featureList
                     );
 
                     // Get scanned users
