@@ -30,7 +30,7 @@
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
-                    android:text="All Users"
+                    android:text="Leaderboard"
                     android:textSize="36sp"
                     android:layout_marginHorizontal="16dp"
                     android:textStyle="bold"

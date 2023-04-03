@@ -241,7 +241,6 @@ public class QRIntakeActivity extends AppCompatActivity {
                 playerLocation[1] = 181;
                 // Go to QrProfileActivity with the scanned QR code but no location
                 addLocationData(null);
-
             }
         });
         builder.create().show();

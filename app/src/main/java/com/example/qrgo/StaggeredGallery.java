@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 
@@ -17,7 +16,10 @@ import com.example.qrgo.utilities.StaggeredAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-
+/**
+ * This class is where the user will view the images in a staggered grid layout.
+ * {@link StaggeredAdapter} is used to display the images.
+ */
 public class StaggeredGallery extends AppCompatActivity {
     private RecyclerView recyclerView;
     private String qr_id;

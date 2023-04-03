@@ -1,8 +1,6 @@
 package com.example.qrgo.firebase;
 
 import android.net.Uri;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.example.qrgo.listeners.OnBasicPlayerProfileLoadedListener;
@@ -101,8 +99,11 @@ public class QRCodeFirebaseManager extends BaseFirebaseConnectManager{
                 data.put("scannedUsers", Arrays.asList(username));
                 data.put("qrPoints", points);
                 data.put("featureList", featureList);
-                if (photoUrl != "None") {
+                if (photoUrl != "None" && photoUrl != null && photoUrl != "") {
+
                     data.put("locationObjectPhoto", Arrays.asList(photoUrl));
+                } else {
+                    data.put("locationObjectPhoto", Arrays.asList());
                 }
                 if (latitude != 181 && longitude != 181) {
                     data.put("locations", Arrays.asList(new GeoPoint(latitude, longitude)));

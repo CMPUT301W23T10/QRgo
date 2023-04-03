@@ -35,7 +35,6 @@ import com.example.qrgo.models.BasicQRCode;
 import com.example.qrgo.models.PlayerProfile;
 import com.example.qrgo.utilities.BasicQrArrayAdapter;
 import com.example.qrgo.utilities.CarouselAdapter;
-import com.example.qrgo.utilities.CircleTransform;
 import com.example.qrgo.utilities.FirebaseConnect;
 import com.example.qrgo.utilities.ImageViewController;
 import com.example.qrgo.utilities.UserCarouselAdapter;
@@ -45,10 +44,17 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is the home activity of the app
+ * It contains the insights of the user
+ */
 public class HomeActivity extends AppCompatActivity {
     ImageView imageView;
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    /**
+     * This method is called when the back button is pressed
+     */
     @Override
     public void onBackPressed() {
         // Create a new intent to close the app
@@ -58,16 +64,27 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
         
     }
-
+    /**
+     * This method is called when the activity is created
+     * {@link FirebaseConnect} is used to get the user's insights
+     * {@link CarouselAdapter} is used to display user's scanned QR codes
+     * {@link UserCarouselAdapter} is used to display global users insights
+     * {@link BasicQrArrayAdapter} is used to display global scanned QR codes
+     * {@link ImageViewController} is used to display the user's profile picture
+     * {@link BasicPlayerProfile} class that represents the user's insights
+     * {@link BasicQRCode} class that represents the QR code
+     * {@link PlayerProfile} class that represents more detailed user's insights
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        // Get the user from the shared preferences
         SharedPreferences sharedPreferences = getSharedPreferences(sharedPrefdb, Context.MODE_PRIVATE);
         user = sharedPreferences.getString("user", "");
-
         setContentView(R.layout.activity_home);
-
+        // Set up the add button to add a new QR code
         FloatingActionButton addBtn = findViewById(R.id.add_button);
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,8 +141,8 @@ public class HomeActivity extends AppCompatActivity {
                 TextView scans = findViewById(R.id.collected);
                 scans.setText("Collected "+userProfile.getTotalScans());
 
-                TextView main_total_score = findViewById(R.id.main_total_score);
-                main_total_score.setText(userProfile.getTotalScore()+"");
+                TextView mainTotalScore = findViewById(R.id.main_total_score);
+                mainTotalScore.setText(userProfile.getTotalScore()+"");
 
                 // Define the carousel items
                 List<BasicQRCode> carouselItems = userProfile.getQrCodeBasicProfiles();
@@ -144,8 +161,8 @@ public class HomeActivity extends AppCompatActivity {
                 CarouselAdapter carouselAdapter = new CarouselAdapter(HomeActivity.this, temp);
 
                 // Set up the view all button for QR CODES
-                TextView user_qr_view_all = findViewById(R.id.user_qr_view_all);
-                user_qr_view_all.setOnClickListener(new View.OnClickListener() {
+                TextView userQrViewAll = findViewById(R.id.user_qr_view_all);
+                userQrViewAll.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // Call your fragment here
@@ -165,10 +182,10 @@ public class HomeActivity extends AppCompatActivity {
                 viewPager.setAdapter(carouselAdapter);
                 // Remove the progress bar and show the page
                 LinearLayout progressBar = findViewById(R.id.home_progressBar);
-                LinearLayout home_loading = findViewById(R.id.home_loading);
+                LinearLayout homeLoading = findViewById(R.id.home_loading);
 
                 progressBar.setVisibility(View.INVISIBLE);
-                home_loading.setVisibility(View.VISIBLE);
+                homeLoading.setVisibility(View.VISIBLE);
             }
         });
 
@@ -176,8 +193,8 @@ public class HomeActivity extends AppCompatActivity {
                 new OnPlayerListLoadedListener() {
                     @Override
                     public void onPlayerListLoaded(List<BasicPlayerProfile> playerList) {
-                        TextView play_user_head = findViewById(R.id.users_head);
-                        play_user_head.setText("Users (" + playerList.size() + ")");
+                        TextView playUserHead = findViewById(R.id.users_head);
+                        playUserHead.setText("Users (" + playerList.size() + ")");
                         if (playerList.size() > 3) {
                             playerList = playerList.subList(0, 3);
                         }
@@ -274,7 +291,7 @@ public class HomeActivity extends AppCompatActivity {
             }
 
         });
-
+        // Handle click event on the search bar
         LinearLayout searchLayout = findViewById(R.id.call_search_fragment);
         searchLayout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -314,11 +331,18 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    /**
+     * Start the GeoLocationActivity
+     */
     private void startGeoLocationActivity() {
         Intent intent = new Intent(HomeActivity.this, GeoLocationActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Handle the result of the permission request
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

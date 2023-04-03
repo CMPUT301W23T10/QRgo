@@ -49,7 +49,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * GeoLocationActivity is the activity that is responsible for displaying the map and the user's
+ * location on the map. It also has the ability to add a marker to the map and save the location of
+ * the marker to the database.
  */
 public class GeoLocationActivity extends AppCompatActivity implements LocationListener {
 
@@ -67,30 +69,31 @@ public class GeoLocationActivity extends AppCompatActivity implements LocationLi
     private LocationManager mLocationManager;
 
     @Override
+    /**
+     * onCreate is called when the activity is first created. It is responsible for setting up the
+     * map and the user's location on the map.
+     * {@link FirebaseConnect} is used to get all coordinates from the database.
+     *
+     *  @param savedInstanceState
+     *  @return void
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FirebaseConnect database = new FirebaseConnect();
+        // Get all coordinates from database
         database.getQRCodeManager().getAllQrCoordinates(new OnCoordinatesListLoadedListener() {
             @Override
             public void onCoordinatesListLoaded(Map<String, List<List<Double>>> mapped_coordinates) {
-                /*for (List<List<Double>> coordinateList : mapped_coordinates.values()) {
-                    for (List<Double> coordinate : coordinateList) {
-                        coordinates.add(coordinate);
-                    }
-                }*/
                 for (Map.Entry<String, List<List<Double>>> entry : mapped_coordinates.entrySet()) {
                     coordinates.put(entry.getKey(), entry.getValue());
                 }
             }
-
-
             @Override
             public void onCoordinatesListLoadFailure(Exception e) {
 
             }
         });
-
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         setContentView(R.layout.activity_geo_location);

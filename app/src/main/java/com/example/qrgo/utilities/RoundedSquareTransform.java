@@ -9,7 +9,6 @@ package com.example.qrgo.utilities;
         import com.squareup.picasso.Transformation;
 
 /**
-
  A transformation that rounds a square image to have rounded corners.
  */
 public class RoundedSquareTransform implements Transformation {

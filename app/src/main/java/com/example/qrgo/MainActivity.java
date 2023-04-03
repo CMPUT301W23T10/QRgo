@@ -22,7 +22,12 @@ import com.example.qrgo.listeners.OnImeiCheckListener;
 import com.example.qrgo.utilities.FirebaseConnect;
 
 import java.util.UUID;
-
+/**
+ * MainActivity
+ * This is the first activity that is called when the app is opened.
+ * It checks if the user is already signed up, and if they are, it navigates to the HomeActivity.
+ * If they are not signed up, it navigates to the SignupActivity.
+ */
 public class MainActivity extends AppCompatActivity {
 
     // not actually imei, but a unique id
