@@ -57,16 +57,15 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
         // Inflate the list item layout if necessary
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(com.example.qrgo.R.layout.qr_items, parent, false);
-            ImageView qr_arrow_icon = convertView.findViewById(R.id.qr_arrow_icon);
-            ImageView qr_delete_icon = convertView.findViewById(R.id.qr_delete_icon);
+            ImageView qrDeleteIcon = convertView.findViewById(R.id.qr_delete_icon);
             SharedPreferences sharedPreferences = convertView.getContext().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
             String user = sharedPreferences.getString("user", "");
-            String qr_code_id = currentQRCode.getQRString();
+            String qrCodeId = currentQRCode.getQRString();
 
-            qr_delete_icon.setOnClickListener(v -> {
+            qrDeleteIcon.setOnClickListener(v -> {
                 FirebaseConnect firebaseConnect = new FirebaseConnect();
                 firebaseConnect.getQRCodeManager().deleteUserFromQRCode(
-                        qr_code_id,
+                        qrCodeId,
                         user,
                         new OnUserDeleteFromQRCodeListener() {
                             @Override
@@ -102,10 +101,10 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
         };
 
 
-        ImageView qr_arrow_icon = convertView.findViewById(R.id.qr_arrow_icon);
-        qr_arrow_icon.setOnClickListener(QRprofileListener);
+        ImageView qrArrowIcon = convertView.findViewById(R.id.qr_arrow_icon);
+        qrArrowIcon.setOnClickListener(QRprofileListener);
 
-        ImageView qr_delete_icon = convertView.findViewById(R.id.qr_delete_icon);
+        ImageView qrDeleteIcon = convertView.findViewById(R.id.qr_delete_icon);
         // Get references to the views in the list item layout
         TextView nameTextView = convertView.findViewById(R.id.qr_name);
         nameTextView.setOnClickListener(QRprofileListener);
@@ -118,15 +117,15 @@ public class BasicQrArrayAdapter extends ArrayAdapter<BasicQRCode> {
 
         if (this.caller.equals("player") || this.caller.equals("homeAll")) {
             // set height to match parent
-            qr_arrow_icon.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+            qrArrowIcon.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
             // set width to 50dp
-            qr_arrow_icon.getLayoutParams().width = 150;
+            qrArrowIcon.getLayoutParams().width = 150;
             // remove margin top and right and set margin to 10
-            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) qr_arrow_icon.getLayoutParams();
+            ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) qrArrowIcon.getLayoutParams();
             marginParams.setMargins(10, 10, 10, 10);
-            qr_arrow_icon.requestLayout();
+            qrArrowIcon.requestLayout();
             // make this is Gone
-            qr_delete_icon.setVisibility(View.INVISIBLE);
+            qrDeleteIcon.setVisibility(View.INVISIBLE);
 
         }
         // Set the text for the views

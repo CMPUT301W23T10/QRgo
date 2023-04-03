@@ -2,7 +2,7 @@ package com.example.qrgo.utilities;
 
 import org.junit.jupiter.api.Test;
 
-public class QRGenerationTests {
+public class QRGenerationTest {
 
     //ensures that a variety of different strings produce a 64 hash with a valid hex value.
     @Test

@@ -71,10 +71,10 @@ public class BasicUserArrayAdapter extends ArrayAdapter<BasicPlayerProfile> {
         // Get references to the views in the list item layout
         TextView nameTextView = convertView.findViewById(R.id.user_name);
         TextView scoreTextView = convertView.findViewById(R.id.user_score);
-        ImageView user_icon = convertView.findViewById(R.id.user_image);
+        ImageView userIcon = convertView.findViewById(R.id.user_image);
         // Set images
         ImageViewController imageViewController = new ImageViewController();
-        imageViewController.setImage(currentUser.getFirstName(),user_icon);
+        imageViewController.setImage(currentUser.getFirstName(),userIcon);
 
 
         // Set the text for the views

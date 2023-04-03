@@ -21,7 +21,6 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnitRunner;
 
 import com.example.qrgo.BaseGeoLocationTest;
-import com.example.qrgo.BaseUserProfileTest;
 import com.example.qrgo.GeoLocationActivity;
 import com.example.qrgo.HomeActivity;
 import com.example.qrgo.MainActivity;
@@ -86,11 +85,15 @@ public class GeoLocationTest extends BaseGeoLocationTest {
         map.setMultiTouchControls(true);
 
         IGeoPoint startPoint = new org.osmdroid.util.GeoPoint(testLocation.getLatitude(), testLocation.getLongitude());
-        IMapController mapController = map.getController();
-        mapController.setCenter((IGeoPoint) startPoint);
+        solo.getCurrentActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                IMapController mapController = map.getController();
+                mapController.setCenter((IGeoPoint) startPoint);
+            }
+        });
 
         Marker marker = getMarker(map);
-
         // Get the screen size
         Display display = solo.getCurrentActivity().getWindowManager().getDefaultDisplay();
         int centerX = display.getWidth() / 2;
@@ -105,9 +108,6 @@ public class GeoLocationTest extends BaseGeoLocationTest {
 
         // Wait for the AlertDialog to appear
         solo.waitForDialogToOpen();
-
-        // Click on the "Yes" button
-        solo.clickOnText("No");
 
         // go back to HomeActivity
         solo.sleep(2000);

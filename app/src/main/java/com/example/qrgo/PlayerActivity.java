@@ -39,7 +39,17 @@ import java.util.List;
 
 public class PlayerActivity extends AppCompatActivity {
 
-
+    // When the back button is pressed, go back to the main activity
+    @Override
+    public void onBackPressed() {
+        // Create a new intent to navigate to the QrProfileActivity
+        Intent intent = new Intent(this, HomeActivity.class);
+        // Clear the activity stack so that becomes the new root activity
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        // Start the QrProfileActivity and finish the current activity
+        startActivity(intent);
+        finish();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

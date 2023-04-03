@@ -85,8 +85,8 @@ public class QRCodeArrayAdapter extends ArrayAdapter<QRCode> {
         qr_arrow_icon.requestLayout();
 
         // make this is Gone
-        ImageView qr_delete_icon = convertView.findViewById(R.id.qr_delete_icon);
-        qr_delete_icon.setVisibility(View.INVISIBLE);
+        ImageView qrDeleteIcon = convertView.findViewById(R.id.qr_delete_icon);
+        qrDeleteIcon.setVisibility(View.INVISIBLE);
         // Set the text for the views
         String name = currentQRCode.getHumanReadableQR();
         if (name.length() > 8) {

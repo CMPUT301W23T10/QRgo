@@ -332,7 +332,7 @@ public class QrProfileActivity extends AppCompatActivity {
         // Define the back button
         ImageView backButton = findViewById(R.id.close_button);
         backButton.setOnClickListener(v -> {
-           Intent intent1 = new Intent(QrProfileActivity.this, MainActivity.class);
+           Intent intent1 = new Intent(QrProfileActivity.this, HomeActivity.class);
               startActivity(intent1);
         });
 
@@ -343,5 +343,16 @@ public class QrProfileActivity extends AppCompatActivity {
             intent1.putExtra("qrCode", qr_code_id);
             startActivity(intent1);
         });
+    }
+    // When the back button is pressed, go back to the main activity
+    @Override
+    public void onBackPressed() {
+        // Create a new intent to navigate to the QrProfileActivity
+        Intent intent = new Intent(this, HomeActivity.class);
+        // Clear the activity stack so that becomes the new root activity
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        // Start the QrProfileActivity and finish the current activity
+        startActivity(intent);
+        finish();
     }
 }

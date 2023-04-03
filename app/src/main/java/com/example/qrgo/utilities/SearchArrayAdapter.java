@@ -68,11 +68,11 @@ public class SearchArrayAdapter extends ArrayAdapter<BasicPlayerProfile> {
 
         // Get references to the views in the list item layout
         TextView nameTextView = convertView.findViewById(R.id.search_user_name);
-        ImageView user_icon = convertView.findViewById(R.id.search_user_image);
+        ImageView userIcon = convertView.findViewById(R.id.search_user_image);
 
         // Load user image into the ImageView
         ImageViewController imageViewController = new ImageViewController();
-        imageViewController.setImage(currentUser.getFirstName(),user_icon);
+        imageViewController.setImage(currentUser.getFirstName(),userIcon);
 
         // Set the text for the views
         nameTextView.setText(currentUser.getUsername());

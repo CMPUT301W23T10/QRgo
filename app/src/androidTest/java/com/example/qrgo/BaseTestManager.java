@@ -1,4 +1,4 @@
-package com.example.qrgo.UserProfileTests;
+package com.example.qrgo;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
@@ -10,13 +10,9 @@ import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.EditText;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnitRunner;
 
-import com.example.qrgo.MainActivity;
-import com.example.qrgo.R;
 import com.example.qrgo.listeners.OnCommentAddListener;
 import com.example.qrgo.listeners.OnQRCodeScannedListener;
 import com.example.qrgo.utilities.FirebaseConnect;
@@ -27,44 +23,17 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.robotium.solo.Solo;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Rule;
-import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-
-public abstract class BaseUserProfileTest extends AndroidJUnitRunner {
+public abstract class BaseTestManager extends AndroidJUnitRunner {
     protected static Solo solo;
     protected static String username;
     protected static String imei;
     protected static SharedPreferences sharedPreferences;
     public ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class,true, true);
-
-    @Before
-    public void setUp() throws Exception {
-        // Launch the activity under test
-        rule.launchActivity(new Intent());
-        // Initialize the solo object
-        solo = new Solo(getInstrumentation(), rule.getActivity());
-        sharedPreferences = rule.getActivity().getSharedPreferences("qrgodb", Context.MODE_PRIVATE);
-        imei = sharedPreferences.getString("qrgodb", "");
-
-        // Edit the shared preferences using the editor
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("imei").commit();
-        editor.remove("user").commit();
-        editor.remove("qrgodb").commit();
-
-        getInstrumentation().getUiAutomation().executeShellCommand(
-                "pm grant com.example.qrgo android.permission.ACCESS_COARSE_LOCATION");
-        getInstrumentation().getUiAutomation().executeShellCommand(
-                "pm grant com.example.qrgo android.permission.ACCESS_FINE_LOCATION");
-        getInstrumentation().getUiAutomation().executeShellCommand(
-                "pm grant com.example.qrgo android.permission.CAMERA");
-    }
 
     public void signUpTestUser() {
         solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
@@ -125,23 +94,48 @@ public abstract class BaseUserProfileTest extends AndroidJUnitRunner {
         assert (actionBar == null);
     }
 
-    @After
-    public void cleanup() {
-        if (imei.equals("") && username.equals("")) {
-            Log.d("testSignUpUser", "imei or username is empty");
-        } else {
-            Log.d("testSignUpUser", "imei: " + imei + " username: " + username);
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("Users").whereEqualTo("username", username).get().addOnCompleteListener(task -> {
+    public void deleteUser(String username) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Users").whereEqualTo("username", username).get().addOnCompleteListener(task -> {
+            QuerySnapshot querySnapshot = task.getResult();
+            if (querySnapshot.size() == 1) {
+                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                db.collection("Users").document(document.getId()).delete();
+            }
+        });
+        db.collection("Profiles").document(username).delete();
+    }
+
+    public void deleteQrCode(String username, String qrString) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("QRCodes").whereEqualTo("qrString", qrString)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                        documentSnapshot.getReference().delete();
+                    }
+                });
+    }
+
+    public void deleteComment(String qrString) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Comments").whereEqualTo("commentQRCode", qrString).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
                 QuerySnapshot querySnapshot = task.getResult();
                 if (querySnapshot.size() == 1) {
                     DocumentSnapshot document = querySnapshot.getDocuments().get(0);
-                    db.collection("Users").document(document.getId()).delete();
+                    DocumentReference qrCodeRef = db.collection("Comments").document(document.getId());
+                    qrCodeRef.delete();
                 }
+            }
+        });
+    }
 
-            }); // replace with the actual ID used in the tests
-            db.collection("Profiles").document(username).delete(); // replace with the actual username used in the tests
-            solo.finishOpenedActivities();
-        }
+
+    @After
+    public void cleanup() {
+        deleteUser(username);
+        solo.finishOpenedActivities();
     }
 }
+

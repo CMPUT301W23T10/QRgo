@@ -22,7 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.robotium.solo.Solo;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,7 +32,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class B_FirebaseQRScanTests {
+public class FirebaseQRScanTests {
     private static Solo solo;
     private FirebaseConnect firebaseConnect;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();

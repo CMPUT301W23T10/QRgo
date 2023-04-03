@@ -29,12 +29,6 @@ public class CommentListviewFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private ArrayList<Comment> commentList;
     ListView listView;
-
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public CommentListviewFragment() {
         // Required empty public constructor
     }
@@ -56,16 +50,11 @@ public class CommentListviewFragment extends Fragment {
         FloatingActionButton closeButton = rootView.findViewById(R.id.back_button);
         BasicCommentArrayAdapter commentAdapter = new BasicCommentArrayAdapter(getActivity(), R.layout.comment_items, commentList);
         listView.setAdapter(commentAdapter);
-
-
-
-
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().finish();
             }
-
         });
         return rootView;
     }

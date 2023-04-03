@@ -24,12 +24,12 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:text="QR Users"
                     android:textSize="36sp"
-                    android:layout_marginHorizontal="16dp"
                     android:textStyle="bold"
                     android:textColor="@color/white"
                     android:layout_height="wrap_content"/>
@@ -37,8 +37,8 @@
                     android:id="@+id/qr_code_title"
                     android:layout_width="wrap_content"
                     android:text="Code name"
+                    android:layout_gravity="center"
                     android:textSize="18sp"
-                    android:layout_marginHorizontal="16dp"
                     android:textStyle="normal"
                     android:textColor="#878787"
                     android:layout_height="wrap_content"/>
